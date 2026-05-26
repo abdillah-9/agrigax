@@ -1,0 +1,288 @@
+/* =========================
+   PRIMARY (Green)
+========================= */
+
+.primary-lightest { color: #F1F7F3; }
+.primary-lighter  { color: #DDEBE1; }
+.primary-light    { color: #BFD6C6; }
+.primary-base     { color: #4B815B; }
+.primary-dark     { color: #3E6E52; }
+.primary-darker   { color: #325744; }
+.primary-darkest  { color: #254036; }
+
+/* Background variants */
+.bg-primary-lightest { background-color: #F1F7F3; }
+.bg-primary-lighter  { background-color: #DDEBE1; }
+.bg-primary-light    { background-color: #BFD6C6; }
+.bg-primary-base     { background-color: #4B815B; }
+.bg-primary-dark     { background-color: #3E6E52; }
+.bg-primary-darker   { background-color: #325744; }
+.bg-primary-darkest  { background-color: #254036; }
+
+
+/* =========================
+   SECONDARY (Sand/Gold)
+========================= */
+
+.secondary-lightest { color: #FDF8F0; }
+.secondary-lighter  { color: #F5E9D6; }
+.secondary-light    { color: #E8D4B0; }
+.secondary-base     { color: #AF9A5A; }
+.secondary-dark     { color: #8C7A48; }
+.secondary-darker   { color: #6A5C36; }
+.secondary-darkest  { color: #4A4025; }
+
+/* Background variants */
+.bg-secondary-lightest { background-color: #FDF8F0; }
+.bg-secondary-lighter  { background-color: #F5E9D6; }
+.bg-secondary-light    { background-color: #E8D4B0; }
+.bg-secondary-base     { background-color: #AF9A5A; }
+.bg-secondary-dark     { background-color: #8C7A48; }
+.bg-secondary-darker   { background-color: #6A5C36; }
+.bg-secondary-darkest  { background-color: #4A4025; }
+
+
+/* =========================
+   SUCCESS (GREEN)
+========================= */
+
+.success-light { color: #DDF3E6; }
+.success-base  { color: #2E7D4F; }
+.success-dark  { color: #1F5A38; }
+
+.bg-success-light { background-color: #DDF3E6; }
+.bg-success-base  { background-color: #2E7D4F; }
+.bg-success-dark  { background-color: #1F5A38; }
+
+
+/* =========================
+   DANGER (RED)
+========================= */
+
+.danger-light { color: #FBE3E3; }
+.danger-base  { color: #D64545; }
+.danger-dark  { color: #9E2F2F; }
+
+.bg-danger-light { background-color: #FBE3E3; }
+.bg-danger-base  { background-color: #D64545; }
+.bg-danger-dark  { background-color: #9E2F2F; }
+
+
+/* =========================
+   WARNING (YELLOW)
+========================= */
+
+.warning-light { color: #FAF4DD; }
+.warning-base  { color: #D4C685; }
+.warning-dark  { color: #9C8B3D; }
+
+.bg-warning-light { background-color: #FAF4DD; }
+.bg-warning-base  { background-color: #D4C685; }
+.bg-warning-dark  { background-color: #9C8B3D; }
+
+
+/* =========================
+   INFO (BLUE)
+========================= */
+
+.info-light { color: #E3EEFB; }
+.info-base  { color: #3A7BD5; }
+.info-dark  { color: #25579E; }
+
+.bg-info-light { background-color: #E3EEFB; }
+.bg-info-base  { background-color: #3A7BD5; }
+.bg-info-dark  { background-color: #25579E; }
+
+
+/* =========================
+   NEUTRALS (LIGHT)
+========================= */
+
+.neutral-lightest { color: #FDFFFC; }
+.neutral-lighter  { color: #F5F7F6; }
+.neutral-light    { color: #E6E9E8; }
+
+.bg-neutral-lightest { background-color: #FDFFFC; }
+.bg-neutral-lighter  { background-color: #F5F7F6; }
+.bg-neutral-light    { background-color: #E6E9E8; }
+
+
+/* =========================
+   NEUTRALS (DARK)
+========================= */
+
+.neutral-dark    { color: #181818; }
+.neutral-darker  { color: #121212; }
+.neutral-darkest { color: #0B0B0B; }
+
+.bg-neutral-dark    { background-color: #181818; }
+.bg-neutral-darker  { background-color: #121212; }
+.bg-neutral-darkest { background-color: #0B0B0B; }
+
+/* =====================================================
+   SPACING SYSTEM
+===================================================== */
+
+/* PADDING */
+
+.p-xs  { padding: 4px; }
+.p-sm  { padding: 8px; }
+.p-md  { padding: 12px; }
+.p-lg  { padding: 16px; }
+.p-xl  { padding: 24px; }
+.p-2xl { padding: 32px; }
+
+/* PADDING X */
+
+.px-xs  { padding-left: 4px; padding-right: 4px; }
+.px-sm  { padding-left: 8px; padding-right: 8px; }
+.px-md  { padding-left: 12px; padding-right: 12px; }
+.px-lg  { padding-left: 16px; padding-right: 16px; }
+.px-xl  { padding-left: 24px; padding-right: 24px; }
+
+/* PADDING Y */
+
+.py-xs  { padding-top: 4px; padding-bottom: 4px; }
+.py-sm  { padding-top: 8px; padding-bottom: 8px; }
+.py-md  { padding-top: 12px; padding-bottom: 12px; }
+.py-lg  { padding-top: 16px; padding-bottom: 16px; }
+.py-xl  { padding-top: 24px; padding-bottom: 24px; }
+
+
+/* =====================================================
+   MARGIN SYSTEM
+===================================================== */
+
+.m-xs  { margin: 4px; }
+.m-sm  { margin: 8px; }
+.m-md  { margin: 12px; }
+.m-lg  { margin: 16px; }
+.m-xl  { margin: 24px; }
+.m-2xl { margin: 32px; }
+
+/* MARGIN TOP */
+
+.mt-xs  { margin-top: 4px; }
+.mt-sm  { margin-top: 8px; }
+.mt-md  { margin-top: 12px; }
+.mt-lg  { margin-top: 16px; }
+.mt-xl  { margin-top: 24px; }
+
+/* MARGIN BOTTOM */
+
+.mb-xs  { margin-bottom: 4px; }
+.mb-sm  { margin-bottom: 8px; }
+.mb-md  { margin-bottom: 12px; }
+.mb-lg  { margin-bottom: 16px; }
+.mb-xl  { margin-bottom: 24px; }
+
+/* MARGIN X */
+
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+
+/* =====================================================
+   FONT SIZE SYSTEM
+===================================================== */
+
+.text-xs  { font-size: 12px; }
+.text-sm  { font-size: 14px; }
+.text-md  { font-size: 16px; }
+.text-lg  { font-size: 18px; }
+.text-xl  { font-size: 24px; }
+.text-2xl { font-size: 32px; }
+.text-3xl { font-size: 40px; }
+
+
+/* =====================================================
+   FONT WEIGHT SYSTEM
+===================================================== */
+
+.fw-light    { font-weight: 300; }
+.fw-regular  { font-weight: 400; }
+.fw-medium   { font-weight: 500; }
+.fw-semibold { font-weight: 600; }
+.fw-bold     { font-weight: 700; }
+
+
+/* =====================================================
+   BORDER RADIUS
+===================================================== */
+
+.radius-sm  { border-radius: 4px; }
+.radius-md  { border-radius: 8px; }
+.radius-lg  { border-radius: 12px; }
+.radius-xl  { border-radius: 16px; }
+.radius-full { border-radius: 9999px; }
+
+
+/* =====================================================
+   SHADOWS 
+===================================================== */
+
+.shadow-sm {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.shadow-lg {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* =====================================================
+   FLEX UTILITIES
+===================================================== */
+
+.flex { display: flex; }
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-sm { gap: 8px; }
+.gap-md { gap: 12px; }
+.gap-lg { gap: 16px; }
+.gap-xl { gap: 24px; }
+
+
+/* =====================================================
+   WIDTHS
+===================================================== */
+
+.w-full { width: 100%; }
+
+.h-full { height: 100%; }
+
+
+/* =====================================================
+   CURSOR
+===================================================== */
+
+.pointer {
+  cursor: pointer;
+}
+
+
+/* =====================================================
+   TRANSITIONS
+===================================================== */
+
+.transition {
+  transition: all 0.2s ease;
+}

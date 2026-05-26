@@ -1,0 +1,799 @@
+/* auth.css - Enhanced Luxury Minimal Golden Edition */
+
+/* ============ LUXURY MINIMAL PAGE ============ */
+.auth-page-luxury {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FDFFFC 0%, #F5F7F6 50%, #FDF8F0 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+}
+
+/* Background Pattern */
+.luxury-bg-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.04;
+  background-image: 
+    radial-gradient(circle at 20% 30%, #2E7D4F 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, #AF9A5A 1px, transparent 1px),
+    radial-gradient(circle at 50% 50%, #2E7D4F 1.5px, transparent 1.5px);
+  background-size: 80px 80px, 100px 100px, 60px 60px;
+  animation: luxury-pattern-shift 30s linear infinite;
+}
+
+@keyframes luxury-pattern-shift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(40px, 40px); }
+}
+
+/* Ambient Orbs */
+.luxury-bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.08;
+  animation: luxury-orb-float 20s infinite ease-in-out;
+}
+
+.luxury-orb-1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #4B815B, transparent);
+  top: -20%;
+  right: -10%;
+  animation-delay: 0s;
+}
+
+.luxury-orb-2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #AF9A5A, transparent);
+  bottom: -20%;
+  left: -10%;
+  animation-delay: -10s;
+}
+
+@keyframes luxury-orb-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(50px, -30px) scale(1.1); }
+  66% { transform: translate(-30px, 20px) scale(0.9); }
+}
+
+/* Luxury Card - Distinctive Elevation */
+.luxury-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 950px;
+  background: #FFFFFF;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Golden gradient outline using box-shadow instead of mask */
+  box-shadow: 
+    0 0 0 1px rgba(46, 125, 79, 0.08),
+    0 0 0 2px rgba(175, 154, 90, 0.06),
+    0 1px 3px rgba(0, 0, 0, 0.02),
+    0 4px 8px rgba(0, 0, 0, 0.04),
+    0 12px 24px rgba(0, 0, 0, 0.04),
+    0 24px 48px rgba(46, 125, 79, 0.06);
+}
+
+/* NO MORE ::before - removed the mask technique that caused the flash */
+
+.luxury-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 0 0 1px rgba(46, 125, 79, 0.12),
+    0 0 0 2px rgba(175, 154, 90, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.02),
+    0 8px 16px rgba(0, 0, 0, 0.04),
+    0 16px 32px rgba(0, 0, 0, 0.04),
+    0 32px 64px rgba(46, 125, 79, 0.08);
+}
+
+.luxury-card-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  min-height: 520px;
+}
+
+/* Visual Side */
+.luxury-visual {
+  background: linear-gradient(160deg, #2E7D4F 0%, #3E6E52 30%, #1F5A38 100%);
+  padding: 48px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.luxury-visual::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -30%;
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.luxury-visual-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.luxury-icon-frame {
+  margin-bottom: 24px;
+  display: inline-block;
+  position: relative;
+}
+
+.luxury-icon-inner {
+  width: 72px;
+  height: 72px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.luxury-icon-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 24px;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  animation: luxury-ring-pulse 3s infinite;
+}
+
+@keyframes luxury-ring-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% { 
+    transform: scale(1.08);
+    opacity: 0.6;
+  }
+}
+
+.luxury-logo {
+  width: 40px;
+  height: 40px;
+  filter: brightness(0) invert(1);
+}
+
+.luxury-brand-block {
+  margin-top: 24px;
+}
+
+.luxury-brand-name {
+  font-size: 34px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 4px;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.luxury-brand-line {
+  width: 50px;
+  height: 2.5px;
+  background: linear-gradient(90deg, transparent, #AF9A5A, transparent);
+  margin: 0 auto 12px;
+  border-radius: 2px;
+}
+
+.luxury-brand-tagline {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+  max-width: 260px;
+  letter-spacing: 0.3px;
+}
+
+/* Animated Geometric Shapes - Slightly Visible */
+.luxury-shapes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.luxury-shape {
+  position: absolute;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(2px);
+}
+
+/* Square 1 - Top Right */
+.luxury-shape-1 {
+  width: 80px;
+  height: 80px;
+  top: 30px;
+  right: 30px;
+  border-radius: 12px;
+  animation: luxury-spin-slow 25s linear infinite;
+}
+
+/* Square 2 - Bottom Left */
+.luxury-shape-2 {
+  width: 60px;
+  height: 60px;
+  bottom: 60px;
+  left: 40px;
+  border-radius: 10px;
+  animation: luxury-spin-medium 18s linear infinite reverse;
+}
+
+/* Square 3 - Center Area */
+.luxury-shape-3 {
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  left: 60%;
+  border-radius: 14px;
+  animation: luxury-spin-fast 12s linear infinite;
+}
+
+@keyframes luxury-spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes luxury-spin-medium {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes luxury-spin-fast {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Form Side */
+.luxury-form-side {
+  padding: 48px 48px 48px 44px;
+  display: flex;
+  align-items: center;
+  background: #FFFFFF;
+  position: relative;
+}
+
+.luxury-form-wrapper {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.luxury-form-head {
+  margin-bottom: 28px;
+}
+
+.luxury-form-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #254036;
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+}
+
+.luxury-form-desc {
+  font-size: 13px;
+  color: #8C7A48;
+  letter-spacing: 0.2px;
+}
+
+.luxury-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.luxury-input-wrapper {
+  position: relative;
+}
+
+.luxury-input {
+  width: 100%;
+  padding: 13px 0;
+  border: none;
+  border-bottom: 1.5px solid #E6E9E8;
+  font-size: 14px;
+  color: #254036;
+  background: transparent;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.luxury-input:focus {
+  border-bottom-color: transparent;
+}
+
+.luxury-input-label {
+  position: absolute;
+  left: 0;
+  top: 13px;
+  font-size: 14px;
+  color: #8C7A48;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left;
+}
+
+.luxury-input:focus ~ .luxury-input-label,
+.luxury-input:valid ~ .luxury-input-label {
+  top: -8px;
+  font-size: 11px;
+  color: #2E7D4F;
+  transform: scale(0.85);
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.luxury-input-border {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, #2E7D4F, #AF9A5A);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.luxury-input:focus ~ .luxury-input-border {
+  width: 100%;
+}
+
+/* Submit Button */
+.luxury-btn {
+  width: 100%;
+  padding: 13px 24px;
+  background: linear-gradient(135deg, #2E7D4F 0%, #4B815B 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 12px rgba(46, 125, 79, 0.15);
+  margin-top: 4px;
+}
+
+.luxury-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.luxury-btn:hover {
+  background: linear-gradient(135deg, #1F5A38 0%, #2E7D4F 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(46, 125, 79, 0.25);
+}
+
+.luxury-btn:hover::after {
+  width: 350px;
+  height: 350px;
+}
+
+.luxury-btn:active {
+  transform: translateY(0);
+}
+
+.luxury-btn-text {
+  position: relative;
+  z-index: 1;
+}
+
+.luxury-btn-icon {
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+  font-size: 16px;
+}
+
+.luxury-btn:hover .luxury-btn-icon {
+  transform: translateX(4px);
+}
+
+/* Alternative Section - Compact */
+.luxury-alt-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #F5F7F6;
+}
+
+.luxury-alt-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.luxury-alt-btn {
+  flex: 1;
+  padding: 10px 14px;
+  background: #FDFFFC;
+  border: 1.5px solid #E6E9E8;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4B815B;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.luxury-alt-btn:hover {
+  border-color: #2E7D4F;
+  background: rgba(46, 125, 79, 0.03);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(46, 125, 79, 0.06);
+}
+
+.luxury-alt-btn:active {
+  transform: translateY(0);
+}
+
+.luxury-alt-btn-gold {
+  border-color: rgba(175, 154, 90, 0.3);
+  color: #AF9A5A;
+}
+
+.luxury-alt-btn-gold:hover {
+  border-color: #AF9A5A;
+  background: rgba(175, 154, 90, 0.04);
+  box-shadow: 0 4px 12px rgba(175, 154, 90, 0.1);
+}
+
+.luxury-alt-btn-icon {
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.luxury-footer-text {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: #8C7A48;
+}
+
+.luxury-footer-link {
+  color: #2E7D4F;
+  font-weight: 600;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.luxury-footer-link::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, #2E7D4F, #AF9A5A);
+  transition: width 0.3s ease;
+}
+
+.luxury-footer-link:hover {
+  color: #1F5A38;
+}
+
+.luxury-footer-link:hover::after {
+  width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .luxury-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .luxury-visual {
+    padding: 40px 28px;
+  }
+
+  .luxury-form-side {
+    padding: 36px 28px;
+  }
+
+  .luxury-brand-name {
+    font-size: 28px;
+  }
+
+  .luxury-form-title {
+    font-size: 24px;
+  }
+
+  .luxury-alt-buttons {
+    flex-direction: row;
+  }
+
+  .luxury-shape-1 {
+    width: 60px;
+    height: 60px;
+    top: 20px;
+    right: 20px;
+  }
+
+  .luxury-shape-2 {
+    width: 45px;
+    height: 45px;
+    bottom: 40px;
+    left: 25px;
+  }
+
+  .luxury-shape-3 {
+    width: 75px;
+    height: 75px;
+  }
+}
+
+@media (max-width: 480px) {
+  .luxury-visual {
+    padding: 32px 20px;
+  }
+
+  .luxury-form-side {
+    padding: 28px 20px;
+  }
+
+  .luxury-icon-inner {
+    width: 60px;
+    height: 60px;
+  }
+
+  .luxury-logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .luxury-brand-name {
+    font-size: 24px;
+    letter-spacing: 3px;
+  }
+
+  .luxury-form-title {
+    font-size: 22px;
+  }
+
+  .luxury-alt-buttons {
+    gap: 8px;
+  }
+
+  .luxury-alt-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+    gap: 5px;
+  }
+
+  .luxury-shape-1 {
+    width: 45px;
+    height: 45px;
+  }
+
+  .luxury-shape-2 {
+    width: 35px;
+    height: 35px;
+  }
+
+  .luxury-shape-3 {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* ============ REGISTER PAGE ADDITIONS ============ */
+
+/* Slightly taller card for register form */
+.luxury-card-grid-register {
+  min-height: 640px;
+}
+
+/* Role Switch */
+.luxury-role-switch {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  background: #F5F7F6;
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.luxury-role-btn {
+  flex: 1;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #8C7A48;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.luxury-role-active {
+  background: #FFFFFF;
+  color: #2E7D4F;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.04);
+  font-weight: 600;
+}
+
+.luxury-role-icon {
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+/* Input Icons on the Right */
+.luxury-input-icon-right {
+  position: absolute;
+  right: 0;
+  top: 13px;
+  color: #BFD6C6;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.luxury-input:focus ~ .luxury-input-icon-right {
+  color: #2E7D4F;
+}
+
+/* Animated reveal for conditional fields */
+.luxury-input-reveal {
+  animation: luxury-reveal-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes luxury-reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============ OTP PAGE ADDITIONS ============ */
+
+/* Compact card for OTP */
+.luxury-card-grid-otp {
+  min-height: 480px;
+}
+
+/* OTP Input Styling */
+.luxury-otp-input {
+  font-size: 24px !important;
+  letter-spacing: 12px;
+  text-align: center;
+  font-weight: 600;
+  color: #254036;
+}
+
+.luxury-otp-input::placeholder {
+  font-size: 14px;
+  letter-spacing: 4px;
+  color: #BFD6C6;
+}
+
+/* OTP Hint Text */
+.luxury-otp-hint {
+  font-size: 13px;
+  color: #8C7A48;
+  text-align: center;
+  margin-top: -4px;
+}
+
+.luxury-resend-link {
+  background: none;
+  border: none;
+  color: #2E7D4F;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.luxury-resend-link:hover {
+  color: #1F5A38;
+}
+
+/* Back Link */
+.luxury-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.luxury-back-icon {
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.luxury-back-link:hover .luxury-back-icon {
+  transform: translateX(-3px);
+}
+
+/* ============ RESPONSIVE UPDATES ============ */
+
+@media (max-width: 768px) {
+  .luxury-card-grid-register,
+  .luxury-card-grid-otp {
+    min-height: auto;
+  }
+
+  .luxury-otp-input {
+    font-size: 20px !important;
+    letter-spacing: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .luxury-role-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+    gap: 5px;
+  }
+
+  .luxury-role-icon {
+    font-size: 14px;
+  }
+
+  .luxury-otp-input {
+    font-size: 18px !important;
+    letter-spacing: 6px;
+  }
+}

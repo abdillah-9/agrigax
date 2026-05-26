@@ -1,0 +1,110 @@
+/* =====================================================
+   BOOKINGS HEADER
+===================================================== */
+
+.bookings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* =====================================================
+   BOOKINGS LIST
+===================================================== */
+
+.bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* =====================================================
+   BOOKING CARD
+===================================================== */
+
+.booking-card {
+  background: white;
+  padding: 24px;
+}
+
+.booking-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.booking-details {
+  margin-top: 24px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.booking-detail-item {
+  display: flex;
+  gap: 8px;
+}
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.booking-status {
+  padding: 8px 14px;
+  border-radius: 9999px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.confirmed-status {
+  background: #DDF3E6;
+  color: #1F5A38;
+}
+
+.pending-status {
+  background: #FAF4DD;
+  color: #9C8B3D;
+}
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.booking-actions {
+  margin-top: 28px;
+
+  display: flex;
+  gap: 16px;
+}
+
+.booking-primary-btn,
+.booking-outline-btn,
+.booking-danger-btn,
+.booking-filter-btn {
+  border: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.booking-primary-btn,
+.booking-filter-btn {
+  background: #4B815B;
+  color: white;
+}
+
+.booking-danger-btn {
+  background: #D64545;
+  color: white;
+}
+
+.booking-outline-btn {
+  background: #F5F7F6;
+  color: #181818;
+}

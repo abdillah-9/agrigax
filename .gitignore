@@ -1,0 +1,165 @@
+# ===========================
+# Node.js / npm / yarn
+# ===========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ===========================
+# Environment Variables
+# ===========================
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env*.local
+.env.backup
+
+# ===========================
+# Build / Dist / Compiled
+# ===========================
+dist/
+build/
+.next/
+out/
+.cache/
+*.tsbuildinfo
+
+# ===========================
+# IDE / Editor
+# ===========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# ===========================
+# OS Files
+# ===========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===========================
+# Backend Specific
+# ===========================
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.venv/
+venv/
+env/
+virtualenv/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Flask
+instance/
+.webassets-cache
+
+# ===========================
+# Database & Backups
+# ===========================
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+dump.rdb
+*.backup
+*.bak
+
+# ===========================
+# Logs & Temp
+# ===========================
+logs/
+*.log
+tmp/
+temp/
+.tmp/
+*.tmp
+
+# ===========================
+# Testing & Coverage
+# ===========================
+coverage/
+.coverage
+.nyc_output/
+.jest/
+*.lcov
+
+# ===========================
+# Secrets & Keys
+# ===========================
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+secrets/
+credentials/
+*.secret
+service-account.json
+firebase-service-account.json
+
+# ===========================
+# Config Files (Sensitive)
+# ===========================
+config.local.js
+config.local.json
+config.local.yml
+appsettings.Development.json
+appsettings.*.json
+
+# ===========================
+# Docker
+# ===========================
+docker-compose.override.yml
+.docker/
+
+# ===========================
+# Vercel / Netlify / Cloud
+# ===========================
+.vercel
+.netlify
+.serverless/
+
+# ===========================
+# TypeScript
+# ===========================
+*.tsbuildinfo
+
+# ===========================
+# Misc
+# ===========================
+.eslintcache
+.stylelintcache
+.prettiercache
+.cache-loader/
+*.tgz

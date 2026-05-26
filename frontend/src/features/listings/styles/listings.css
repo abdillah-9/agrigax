@@ -1,0 +1,209 @@
+/* =====================================================
+   SERVICES HEADER
+===================================================== */
+
+.services-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* =====================================================
+   SERVICES GRID
+===================================================== */
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.service-card {
+  background: white;
+  overflow: hidden;
+}
+
+.service-image {
+  height: 220px;
+  background: #DDEBE1;
+}
+
+.service-content {
+  padding: 24px;
+}
+
+.service-description {
+  margin-top: 12px;
+  color: #555;
+  line-height: 1.7;
+}
+
+.service-footer {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.service-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #4B815B;
+}
+
+.service-btn {
+  border: none;
+  background: #4B815B;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* =====================================================
+   SERVICE DETAILS
+===================================================== */
+
+.service-details-card {
+  background: white;
+  overflow: hidden;
+}
+
+.service-details-image {
+  height: 380px;
+  background: #DDEBE1;
+}
+
+.service-details-content {
+  padding: 32px;
+}
+
+.service-details-text {
+  line-height: 1.8;
+  color: #555;
+}
+
+.service-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.service-meta-item {
+  display: flex;
+  gap: 8px;
+}
+
+.book-service-btn {
+  border: none;
+  background: #4B815B;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* =====================================================
+   PROVIDER SERVICES
+===================================================== */
+
+.provider-services-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.provider-service-card {
+  background: white;
+  padding: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.provider-service-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.create-service-btn,
+.edit-btn,
+.delete-btn,
+.submit-service-btn,
+.services-filter-btn {
+  border: none;
+  padding: 12px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.create-service-btn,
+.submit-service-btn,
+.services-filter-btn {
+  background: #4B815B;
+  color: white;
+}
+
+.edit-btn {
+  background: #AF9A5A;
+  color: white;
+}
+
+.delete-btn {
+  background: #D64545;
+  color: white;
+}
+
+/* =====================================================
+   SERVICE FORM
+===================================================== */
+
+.service-form-card {
+  background: white;
+  padding: 32px;
+}
+
+.service-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.service-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.service-field label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #181818;
+}
+
+.service-field input,
+.service-field select,
+.service-field textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #E6E9E8;
+  border-radius: 12px;
+  outline: none;
+  font-size: 15px;
+}
+
+.service-field textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.service-field input:focus,
+.service-field select:focus,
+.service-field textarea:focus {
+  border-color: #4B815B;
+}
