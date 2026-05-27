@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { HiMail, HiPhone, HiLocationMarker, HiCalendar, HiCheck } from "react-icons/hi";
 
 export default function Profile() {
   const [profile, setProfile] = useState({
@@ -16,54 +17,76 @@ export default function Profile() {
   };
 
   return (
-    <main className="p-xl" style={{ maxWidth: 640 }}>
-      <div className="mb-xl">
-        <h1 className="text-2xl fw-bold neutral-dark">My Profile</h1>
-        <p className="text-sm text-muted mt-xs">Manage your personal information</p>
+    <main className="customer-page customer-page-max">
+      <div className="customer-page-header">
+        <div>
+          <h1 className="customer-page-title">My Profile</h1>
+          <p className="customer-page-subtitle">Manage your personal information</p>
+        </div>
       </div>
 
       <section className="profile-premium-card">
-        <div className="profile-cover" style={{ background: "linear-gradient(135deg, #3A7BD5 0%, #25579E 100%)" }} />
+        <div className="profile-cover profile-cover-customer" />
         <div className="profile-avatar-section">
-          <div className="profile-avatar-lg" style={{ background: "linear-gradient(135deg, #3A7BD5, #25579E)" }}>A</div>
-          <div style={{ paddingBottom: 8 }}>
-            <h2 className="text-xl fw-bold neutral-dark">{profile.fullName}</h2>
-            <p className="text-sm text-muted">Customer since {profile.joinedDate}</p>
+          <div className="profile-avatar-lg profile-avatar-customer">A</div>
+          <div className="profile-avatar-info">
+            <h2 className="profile-display-name">{profile.fullName}</h2>
+            <p className="profile-member-since">Customer since {profile.joinedDate}</p>
           </div>
         </div>
 
         <div className="profile-body">
           <div className="profile-field-premium">
-            <div className="profile-field-icon" style={{ background: "rgba(58,123,213,0.1)", color: "#3A7BD5" }}>📧</div>
+            <div className="profile-field-icon profile-field-icon-blue">
+              <HiMail />
+            </div>
             <div className="profile-field-content">
               <p className="profile-field-label">Email</p>
-              <span className="text-sm">{profile.email}</span>
+              <span className="profile-field-value">{profile.email}</span>
             </div>
           </div>
+
           <div className="profile-field-premium">
-            <div className="profile-field-icon" style={{ background: "rgba(46,125,79,0.1)", color: "#2E7D4F" }}>📞</div>
+            <div className="profile-field-icon profile-field-icon-green">
+              <HiPhone />
+            </div>
             <div className="profile-field-content">
               <p className="profile-field-label">Phone</p>
-              <input className="input-text" style={{ border: "none", padding: "4px 0", background: "transparent", fontSize: 14 }} value={profile.phone} onChange={e => setProfile(p => ({ ...p, phone: e.target.value }))} />
+              <input
+                className="profile-field-input"
+                value={profile.phone}
+                onChange={e => setProfile(p => ({ ...p, phone: e.target.value }))}
+              />
             </div>
           </div>
+
           <div className="profile-field-premium">
-            <div className="profile-field-icon" style={{ background: "rgba(214,69,69,0.1)", color: "#D64545" }}>📍</div>
+            <div className="profile-field-icon profile-field-icon-red">
+              <HiLocationMarker />
+            </div>
             <div className="profile-field-content">
               <p className="profile-field-label">Location</p>
-              <input className="input-text" style={{ border: "none", padding: "4px 0", background: "transparent", fontSize: 14 }} value={profile.location} onChange={e => setProfile(p => ({ ...p, location: e.target.value }))} />
+              <input
+                className="profile-field-input"
+                value={profile.location}
+                onChange={e => setProfile(p => ({ ...p, location: e.target.value }))}
+              />
             </div>
           </div>
+
           <div className="profile-field-premium">
-            <div className="profile-field-icon" style={{ background: "rgba(150,150,150,0.1)", color: "#888" }}>📅</div>
+            <div className="profile-field-icon profile-field-icon-gray">
+              <HiCalendar />
+            </div>
             <div className="profile-field-content">
               <p className="profile-field-label">Member Since</p>
-              <span className="text-sm">{profile.joinedDate}</span>
+              <span className="profile-field-value">{profile.joinedDate}</span>
             </div>
           </div>
-          <div className="mt-xl">
+
+          <div className="profile-save-wrap">
             <button className="btn-withdraw" onClick={handleSave}>
-              {saved ? "✓ Profile Updated!" : "Update Profile"}
+              {saved ? <><HiCheck className="dash-btn-icon" /> Profile Updated!</> : "Update Profile"}
             </button>
           </div>
         </div>

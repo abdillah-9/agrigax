@@ -23,7 +23,7 @@ export function useUsers() {
   const updateProfile = async (payload: UpdateProfilePayload) => {
     setLoading(true);
     try {
-      const { data } = await apiClient.put(USERS.UPDATE_PROFILE, payload);
+      const { data } = await apiClient.put(USERS.PROFILE, payload);
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to update profile");
@@ -36,7 +36,7 @@ export function useUsers() {
   const updateSettings = async (payload: UpdateSettingsPayload) => {
     setLoading(true);
     try {
-      const { data } = await apiClient.put(USERS.UPDATE_SETTINGS, payload);
+      const { data } = await apiClient.put(USERS.SETTINGS, payload);
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to update settings");

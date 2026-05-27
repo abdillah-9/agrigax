@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { HiSearch, HiClipboardList, HiHeart, HiArrowRight, HiCalendar } from "react-icons/hi";
+import { FaWallet } from "react-icons/fa6";
 
 const recentBookings = [
   { id: "BK-001", service: "Tractor Rental", provider: "Kilimo Best", price: "TZS 120,000", status: "completed", date: "2026-05-20" },
@@ -7,97 +9,106 @@ const recentBookings = [
 ];
 
 const quickLinks = [
-  { icon: "🔍", label: "Browse Listings", path: "/app/listings" },
-  { icon: "📅", label: "My Bookings", path: "/app/bookings" },
-  { icon: "❤️", label: "Favorites", path: "/app/favorites" },
-  { icon: "💳", label: "Wallet", path: "/app/wallet" },
+  { icon: HiSearch, label: "Browse Listings", path: "/app/listings" },
+  { icon: HiCalendar, label: "My Bookings", path: "/app/bookings" },
+  { icon: HiHeart, label: "Favorites", path: "/app/favorites" },
+  { icon: FaWallet, label: "Wallet", path: "/app/wallet" },
 ];
 
 export default function Dashboard() {
   const navigate = useNavigate();
 
   return (
-    <main className="p-xl">
+    <main className="customer-page">
       {/* Welcome Banner */}
-      <div className="dash-welcome mb-xl">
-        <div className="dash-welcome-content flex justify-between items-center flex-wrap gap-lg">
-          <div>
-            <p className="dash-welcome-greeting mb-sm">Customer Dashboard</p>
-            <h1 className="text-2xl fw-bold dash-welcome-name">Welcome back, Abdillah</h1>
-            <p className="text-sm mt-sm" style={{ color: "rgba(255,255,255,0.4)" }}>
+      <div className="dash-welcome">
+        <div className="dash-welcome-content">
+          <div className="dash-welcome-text">
+            <p className="dash-welcome-greeting">Customer Dashboard</p>
+            <h1 className="dash-welcome-name">Welcome back, Abdillah</h1>
+            <p className="dash-welcome-subtitle">
               Discover agricultural services near you
             </p>
           </div>
-          <button className="dash-action-btn primary" onClick={() => navigate("/app/listings")}>
-            🔍 Browse Listings
+          <button className="dash-action-btn dash-action-btn-primary" onClick={() => navigate("/app/listings")}>
+            <HiSearch className="dash-btn-icon" />
+            <span>Browse Listings</span>
           </button>
         </div>
       </div>
 
       {/* Stats */}
       <div className="dashboard-grid">
-        <div className="dash-stat-card green">
-          <div className="flex items-center gap-md mb-md">
-            <div className="dash-stat-icon-wrap" style={{ background: "rgba(75,129,91,0.1)" }}>📋</div>
+        <div className="dash-stat-card dash-stat-green">
+          <div className="dash-stat-row">
+            <div className="dash-stat-icon-wrap dash-stat-icon-green">
+              <HiClipboardList />
+            </div>
             <div>
-              <p className="text-xs text-muted">Active Bookings</p>
-              <p className="dash-stat-value" style={{ color: "#2E7D4F" }}>12</p>
+              <p className="dash-stat-label">Active Bookings</p>
+              <p className="dash-stat-value dash-stat-value-green">12</p>
             </div>
           </div>
         </div>
-        <div className="dash-stat-card blue">
-          <div className="flex items-center gap-md mb-md">
-            <div className="dash-stat-icon-wrap" style={{ background: "rgba(58,123,213,0.1)" }}>❤️</div>
+        <div className="dash-stat-card dash-stat-blue">
+          <div className="dash-stat-row">
+            <div className="dash-stat-icon-wrap dash-stat-icon-blue">
+              <HiHeart />
+            </div>
             <div>
-              <p className="text-xs text-muted">Favorite Providers</p>
-              <p className="dash-stat-value" style={{ color: "#25579E" }}>8</p>
+              <p className="dash-stat-label">Favorite Providers</p>
+              <p className="dash-stat-value dash-stat-value-blue">8</p>
             </div>
           </div>
         </div>
-        <div className="dash-stat-card gold">
-          <div className="flex items-center gap-md mb-md">
-            <div className="dash-stat-icon-wrap" style={{ background: "rgba(175,154,90,0.1)" }}>💳</div>
+        <div className="dash-stat-card dash-stat-gold">
+          <div className="dash-stat-row">
+            <div className="dash-stat-icon-wrap dash-stat-icon-gold">
+              <FaWallet />
+            </div>
             <div>
-              <p className="text-xs text-muted">Wallet Balance</p>
-              <p className="dash-stat-value" style={{ color: "#8C7A48" }}>TZS 240K</p>
+              <p className="dash-stat-label">Wallet Balance</p>
+              <p className="dash-stat-value dash-stat-value-gold">TZS 240K</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Quick Links */}
-      <div className="dash-quick-actions mt-xl">
+      <div className="dash-quick-actions">
         {quickLinks.map(link => (
-          <button key={link.path} className="dash-action-btn" onClick={() => navigate(link.path)}>
-            {link.icon} {link.label}
+          <button key={link.path} className="dash-quick-link-btn" onClick={() => navigate(link.path)}>
+            <link.icon className="dash-quick-link-icon" />
+            <span>{link.label}</span>
           </button>
         ))}
       </div>
 
       {/* Recent Bookings */}
-      <section className="mt-xl">
-        <div className="flex justify-between items-center mb-lg">
+      <section className="dash-section">
+        <div className="dash-section-header">
           <div>
-            <h2 className="text-lg fw-bold neutral-dark">Recent Bookings</h2>
-            <p className="text-xs text-muted mt-xs">Your latest service bookings</p>
+            <h2 className="dash-section-title">Recent Bookings</h2>
+            <p className="dash-section-subtitle">Your latest service bookings</p>
           </div>
-          <button className="dash-action-btn" onClick={() => navigate("/app/bookings")}>View All →</button>
+          <button className="dash-action-btn" onClick={() => navigate("/app/bookings")}>
+            <span>View All</span>
+            <HiArrowRight className="dash-btn-icon" />
+          </button>
         </div>
-        <div className="flex flex-col gap-sm">
+        <div className="dash-booking-list">
           {recentBookings.map(b => (
             <div key={b.id} className="dash-booking-card">
-              <div className="dash-booking-avatar" style={{
-                background: b.status === "completed" ? "linear-gradient(135deg, #2E7D4F, #1F5A38)" :
-                            b.status === "pending" ? "linear-gradient(135deg, #D4C685, #9C8B3D)" :
-                            "linear-gradient(135deg, #3A7BD5, #25579E)"
-              }}>{b.service.charAt(0)}</div>
-              <div style={{ flex: 1 }}>
-                <h4 className="text-sm fw-semibold">{b.service}</h4>
-                <p className="text-xs text-muted">{b.provider} · {b.date}</p>
+              <div className={`dash-booking-avatar dash-booking-avatar-${b.status}`}>
+                {b.service.charAt(0)}
               </div>
-              <div style={{ textAlign: "right" }}>
-                <p className="text-sm fw-semibold">{b.price}</p>
-                <span className={`badge ${b.status === "completed" ? "badge-success" : b.status === "pending" ? "badge-warning" : "badge-info"} text-xs`}>
+              <div className="dash-booking-info">
+                <h4 className="dash-booking-service">{b.service}</h4>
+                <p className="dash-booking-meta">{b.provider} · {b.date}</p>
+              </div>
+              <div className="dash-booking-right">
+                <p className="dash-booking-price">{b.price}</p>
+                <span className={`badge badge-${b.status === "completed" ? "success" : b.status === "pending" ? "warning" : "info"}`}>
                   {b.status}
                 </span>
               </div>

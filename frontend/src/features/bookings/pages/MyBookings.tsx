@@ -36,7 +36,7 @@ export default function MyBookings() {
   };
 
   const handlePay = (id: string) => {
-    alert("Redirecting to payment...");
+    alert("Redirecting to payment..."+id);
   };
 
   const handleViewDetails = (booking: typeof initialBookings[0]) => {

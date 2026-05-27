@@ -23,7 +23,7 @@ export function useMessages() {
   const fetchMessages = async (conversationId: string) => {
     setLoading(true);
     try {
-      const { data } = await apiClient.get(MESSAGES.MESSAGES(conversationId));
+      const { data } = await apiClient.get(MESSAGES.BY_ID(conversationId));
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to fetch messages");

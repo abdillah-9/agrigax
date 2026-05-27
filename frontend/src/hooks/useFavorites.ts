@@ -22,7 +22,7 @@ export function useFavorites() {
   const addFavorite = async (providerId: string) => {
     setLoading(true);
     try {
-      await apiClient.post(FAVORITES.ADD(providerId));
+      await apiClient.post(FAVORITES.TOGGLE(providerId));
       return true;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to add favorite");
@@ -35,7 +35,7 @@ export function useFavorites() {
   const removeFavorite = async (providerId: string) => {
     setLoading(true);
     try {
-      await apiClient.delete(FAVORITES.REMOVE(providerId));
+      await apiClient.delete(FAVORITES.TOGGLE(providerId));
       return true;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to remove favorite");

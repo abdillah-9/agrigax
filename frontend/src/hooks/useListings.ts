@@ -1,7 +1,7 @@
 import { useState } from "react";
 import apiClient from "../api/client";
 import { LISTINGS } from "../api/endpoints";
-import type { CreateListingPayload, UpdateListingPayload, ApiResponse } from "../types/api.types";
+import type { CreateListingPayload, UpdateListingPayload } from "../types/api.types";
 
 export function useListings() {
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ export function useListings() {
   const fetchMyListings = async () => {
     setLoading(true);
     try {
-      const { data } = await apiClient.get(LISTINGS.MY_LISTINGS);
+      const { data } = await apiClient.get(LISTINGS.MY);
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to fetch your listings");
@@ -49,7 +49,7 @@ export function useListings() {
   const createListing = async (payload: CreateListingPayload) => {
     setLoading(true);
     try {
-      const { data } = await apiClient.post(LISTINGS.CREATE, payload);
+      const { data } = await apiClient.post(LISTINGS.BASE, payload);
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to create listing");
@@ -62,7 +62,7 @@ export function useListings() {
   const updateListing = async (id: string, payload: UpdateListingPayload) => {
     setLoading(true);
     try {
-      const { data } = await apiClient.put(LISTINGS.UPDATE(id), payload);
+      const { data } = await apiClient.put(LISTINGS.BY_ID(id), payload);
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to update listing");
@@ -75,7 +75,7 @@ export function useListings() {
   const deleteListing = async (id: string) => {
     setLoading(true);
     try {
-      await apiClient.delete(LISTINGS.DELETE(id));
+      await apiClient.delete(LISTINGS.BY_ID(id));
       return true;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to delete listing");

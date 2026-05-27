@@ -8,7 +8,7 @@ import {
   HiCalendar, HiUser, HiBell, HiPhotograph, HiShieldCheck,
   HiEye, HiDocumentText, HiExclamation, HiSpeakerphone,
   HiTag, HiStar, HiFlag, HiServer, HiKey, HiBan, HiTemplate,
-  HiQuestionMarkCircle, HiChat
+  HiQuestionMarkCircle, HiChat, HiX
 } from "react-icons/hi";
 
 type Props = {
@@ -17,9 +17,21 @@ type Props = {
   userName?: string;
   userRole?: string;
   isCollapsed?: boolean;
+  isMobile?: boolean;        // NEW: mobile state
+  mobileOpen?: boolean;      // NEW: mobile sidebar open state
+  onMobileClose?: () => void; // NEW: close callback for mobile
 };
 
-export default function Sidebar({ menu, userType = 'customer', userName = 'John Doe', userRole = 'User', isCollapsed = false }: Props) {
+export default function Sidebar({ 
+  menu, 
+  userType = 'customer', 
+  userName = 'John Doe', 
+  userRole = 'User', 
+  isCollapsed = false,
+  isMobile = false,
+  mobileOpen = false,
+  onMobileClose
+}: Props) {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const location = useLocation();
 
@@ -40,6 +52,13 @@ export default function Sidebar({ menu, userType = 'customer', userName = 'John 
     setExpandedItems(prev => 
       prev.includes(label) ? prev.filter(item => item !== label) : [...prev, label]
     );
+  };
+
+  // Close sidebar on mobile when a nav link is clicked
+  const handleNavClick = () => {
+    if (isMobile && onMobileClose) {
+      onMobileClose();
+    }
   };
 
   const getIcon = (label: string): JSX.Element => {
@@ -114,21 +133,46 @@ export default function Sidebar({ menu, userType = 'customer', userName = 'John 
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
   };
 
-  const sidebarClass = isCollapsed ? 'sidebar-width-collapsed' : 'sidebar-width-normal';
+  // Determine sidebar class based on state
+  let sidebarClass = 'sidebar-width-normal';
+  if (isMobile) {
+    sidebarClass = ''; // Mobile handles its own positioning
+  } else if (isCollapsed) {
+    sidebarClass = 'sidebar-width-collapsed';
+  }
 
   return (
-    <aside className={`sidebar-premium ${sidebarClass} text-white`}>
+    <aside className={`sidebar-premium ${sidebarClass} text-white ${isMobile ? (mobileOpen ? 'mobile-open' : '') : ''}`}>
       {/* Brand Section */}
-      <div className={`p-lg flex items-center gap-md ${isCollapsed ? 'justify-center' : ''}`} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
+      <div className={`p-lg flex items-center gap-md ${isCollapsed && !isMobile ? 'justify-center' : ''}`} 
+           style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
         <div className="brand-logo-premium">
           <div className="brand-logo-shimmer" />
           <HiSparkles className="text-lg" style={{ position: 'relative', zIndex: 1 }} />
         </div>
-        {!isCollapsed && (
-          <div>
+        {(!isCollapsed || isMobile) && (
+          <div style={{ flex: 1 }}>
             <h2 className="text-lg fw-bold brand-text-premium">AgriGax</h2>
             <p className="text-xs user-type-badge fw-medium mt-xs">{userType}</p>
           </div>
+        )}
+        {/* Mobile close button */}
+        {isMobile && (
+          <button 
+            onClick={onMobileClose}
+            className="text-white"
+            style={{ 
+              background: 'rgba(255,255,255,0.1)', 
+              border: 'none', 
+              borderRadius: '8px',
+              padding: '6px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            <HiX className="text-lg" />
+          </button>
         )}
       </div>
 
@@ -141,14 +185,15 @@ export default function Sidebar({ menu, userType = 'customer', userName = 'John 
               <NavLink
                 to={item.path}
                 end
+                onClick={handleNavClick}
                 className={({ isActive: active }) =>
-                  `nav-item-premium ${isCollapsed ? 'justify-center' : ''} ${active ? 'nav-item-active' : 'nav-item-inactive'}`
+                  `nav-item-premium ${(isCollapsed && !isMobile) ? 'justify-center' : ''} ${active ? 'nav-item-active' : 'nav-item-inactive'}`
                 }
               >
                 <span className={isActive(item.path) ? 'nav-icon-active' : 'nav-icon-default'}>
                   {getIcon(item.label)}
                 </span>
-                {!isCollapsed && (
+                {(!isCollapsed || isMobile) && (
                   <>
                     <span className="text-xs fw-medium nav-label">{item.label}</span>
                     {isActive(item.path) && <div className="nav-active-dot" />}
@@ -161,17 +206,17 @@ export default function Sidebar({ menu, userType = 'customer', userName = 'John 
             {item.children && (
               <div>
                 <div 
-                  className={`nav-item-premium nav-item-inactive pointer ${isCollapsed ? 'justify-center' : 'justify-between'} ${isParentActive(item) ? 'nav-parent-active' : ''}`}
-                  onClick={() => !isCollapsed && toggleExpand(item.label)}
-                  title={isCollapsed ? item.label : undefined}
+                  className={`nav-item-premium nav-item-inactive pointer ${(isCollapsed && !isMobile) ? 'justify-center' : 'justify-between'} ${isParentActive(item) ? 'nav-parent-active' : ''}`}
+                  onClick={() => (isMobile || !isCollapsed) && toggleExpand(item.label)}
+                  title={(isCollapsed && !isMobile) ? item.label : undefined}
                 >
-                  <div className={`flex items-center ${!isCollapsed ? 'gap-md' : ''}`}>
+                  <div className={`flex items-center ${(!isCollapsed || isMobile) ? 'gap-md' : ''}`}>
                     <span className={isParentActive(item) ? 'nav-icon-active' : 'nav-icon-default'}>
                       {getIcon(item.label)}
                     </span>
-                    {!isCollapsed && <span className="text-xs fw-medium nav-label">{item.label}</span>}
+                    {(!isCollapsed || isMobile) && <span className="text-xs fw-medium nav-label">{item.label}</span>}
                   </div>
-                  {!isCollapsed && (
+                  {(!isCollapsed || isMobile) && (
                     <HiChevronDown 
                       className="text-sm"
                       style={{
@@ -183,7 +228,7 @@ export default function Sidebar({ menu, userType = 'customer', userName = 'John 
                   )}
                 </div>
 
-                {!isCollapsed && (
+                {(!isCollapsed || isMobile) && (
                   <div className={`submenu-container ${expandedItems.includes(item.label) ? 'submenu-expanded' : ''}`}>
                     <div style={{ paddingLeft: 36 }}>
                       <div className="flex flex-col gap-xs">
@@ -192,6 +237,7 @@ export default function Sidebar({ menu, userType = 'customer', userName = 'John 
                             key={i} 
                             to={child.path || "#"} 
                             end
+                            onClick={handleNavClick}
                             className={({ isActive: active }) =>
                               `submenu-item ${active ? 'submenu-item-active' : ''}`
                             }
@@ -214,7 +260,7 @@ export default function Sidebar({ menu, userType = 'customer', userName = 'John 
 
       {/* User Footer */}
       <div className="user-footer-premium p-md">
-        {isCollapsed ? (
+        {(isCollapsed && !isMobile) ? (
           <div className="flex justify-center">
             <div className={`avatar-premium avatar-${userType}`}>
               {getInitials(userName)}

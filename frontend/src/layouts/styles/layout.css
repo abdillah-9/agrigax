@@ -726,3 +726,470 @@
   width: 240px;
   min-width: 240px;
 }
+
+/* ************************  RESPONSIVENES SOLUTION ************************ */
+/* =====================================================
+   RESPONSIVE DESIGN
+===================================================== */
+
+/* ---------- TABLET (max-width: 1024px) ---------- */
+@media (max-width: 1024px) {
+
+  .sidebar-width-collapsed {
+    width: 72px !important;
+    min-width: 72px !important;
+  }
+
+  .sidebar-width-normal {
+    width: 240px !important;
+    min-width: 240px !important;
+  }
+
+  .sidebar-width-collapsed .nav-label,
+  .sidebar-width-collapsed .brand-text-premium,
+  .sidebar-width-collapsed .user-name-premium,
+  .sidebar-width-collapsed .user-role-premium,
+  .sidebar-width-collapsed .user-type-badge {
+    display: none !important;
+  }
+
+  .sidebar-width-normal .nav-label,
+  .sidebar-width-normal .brand-text-premium,
+  .sidebar-width-normal .user-name-premium,
+  .sidebar-width-normal .user-role-premium,
+  .sidebar-width-normal .user-type-badge {
+    display: block !important;
+  }
+
+}
+/* ---------- MOBILE (max-width: 768px) ---------- */
+@media (max-width: 768px) {
+  /* Sidebar - off-screen by default, slides in when open */
+  aside.sidebar-premium {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    z-index: 50;
+    width: 280px !important;
+    min-width: 280px !important;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100vh;
+    box-shadow: none;
+  }
+
+  /* When sidebar has mobile-open class, slide it in */
+  aside.sidebar-premium.mobile-open {
+    left: 0 !important;
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Show text again in mobile sidebar */
+  .sidebar-premium .nav-label,
+  .sidebar-premium .brand-text-premium,
+  .sidebar-premium .user-name-premium,
+  .sidebar-premium .user-role-premium {
+    display: block !important;
+  }
+
+  .nav-item-premium {
+    justify-content: flex-start !important;
+    padding: 11px 14px !important;
+    gap: 12px !important;
+  }
+
+  /* Mobile overlay when sidebar is open */
+  .sidebar-mobile-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 49;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .sidebar-mobile-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* TopNav - stack elements, hide extras */
+  .topnav-premium {
+    height: 56px;
+    padding: 0 12px;
+  }
+
+  /* Hide search completely */
+  .search-input-premium {
+    display: none;
+  }
+
+  /* Hide page subtitle */
+  .page-title-premium {
+    font-size: 14px;
+  }
+
+  .portal-subtitle {
+    display: none;
+  }
+
+  /* Hide date on mobile */
+  .date-display {
+    display: none;
+  }
+
+  /* Compact action buttons */
+  .icon-btn-premium {
+    padding: 8px;
+  }
+
+  .profile-btn-premium span {
+    display: none;
+  }
+
+  .profile-btn-premium {
+    padding: 6px 8px;
+  }
+
+  /* Mode switch - icon only */
+  .mode-switch-premium span {
+    display: none;
+  }
+
+  /* Full-width main content */
+  .main-content-premium {
+    padding: 12px !important;
+    min-height: calc(100vh - 56px);
+  }
+
+  /* Stack flex layouts */
+  .flex-wrap-mobile {
+    flex-wrap: wrap;
+  }
+}
+
+/* ---------- SMALL MOBILE (max-width: 480px) ---------- */
+@media (max-width: 480px) {
+  .topnav-premium {
+    height: 52px;
+    padding: 0 8px;
+  }
+
+  .page-title-premium {
+    font-size: 13px;
+  }
+
+  /* Hide notification and mode buttons on very small screens */
+  .icon-btn-premium.hide-on-small {
+    display: none;
+  }
+
+  .main-content-premium {
+    padding: 8px !important;
+  }
+
+  /* Full-width sidebar on small mobile */
+  aside.sidebar-premium {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+}
+
+/* =====================================================
+   TOPNAV RESPONSIVE ADDITIONS
+===================================================== */
+
+.mobile-allowed-icon{
+  display: none;
+}
+
+.mobile-un-allowed-icon{
+  display: flex;
+}
+
+/* Mobile search overlay */
+.mobile-search-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.98);
+  z-index: 30;
+  align-items: center;
+  backdrop-filter: blur(10px);
+}
+
+.mobile-search-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 2px solid rgba(75, 129, 91, 0.2);
+  border-radius: 8px;
+  background: rgba(241, 247, 243, 0.4);
+  color: var(--primary-darkest, #254036);
+  outline: none;
+  font-size: 14px;
+}
+
+.mobile-search-input:focus {
+  border-color: var(--primary-base, #4B815B);
+}
+
+/* Hide mobile search button on desktop */
+.mobile-search-btn {
+  display: none;
+}
+
+/* Tablet & Mobile Responsive */
+@media (max-width: 1024px) {
+  .topnav-premium {
+    padding: 0 16px !important;
+  }
+
+  .desktop-search {
+    display: none;
+  }
+
+  .mobile-search-btn {
+    display: flex;
+  }
+
+  .mode-switch-label {
+    display: none;
+  }
+
+  .page-subtitle-row .hide-on-mobile {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .topnav-premium {
+    height: 56px;
+    padding: 0 12px !important;
+  }
+
+  .page-title-premium {
+    font-size: 16px;
+  }
+
+  .page-info-container {
+    max-width: 200px;
+  }
+
+  .mobile-search-overlay {
+    display: flex;
+  }
+
+  .profile-info-text {
+    display: none;
+  }
+
+  .profile-chevron {
+    display: none;
+  }
+
+  .profile-btn-premium {
+    padding: 6px 8px;
+    gap: 0;
+  }
+
+  .mode-switch-premium {
+    padding: 8px;
+    gap: 0;
+  }
+
+  .notification-dropdown {
+    width: 280px;
+    right: -80px;
+  }
+
+  .dropdown-menu-premium {
+    right: -20px;
+  }
+}
+
+@media (max-width: 640px) {
+
+  .topnav-actions {
+    gap: 8px !important;
+  }
+
+  .icon-btn-premium {
+    padding: 7px;
+  }
+
+  .profile-avatar-sm {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+
+  .page-info-container {
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .mobile-allowed-icon{
+    display: flex;
+  }
+
+    .mobile-un-allowed-icon{
+    display: none;
+  }
+
+  .topnav-premium {
+    height: 52px;
+    padding: 0 8px !important;
+  }
+
+  .page-title-premium {
+    font-size: 14px !important;
+  }
+
+  .page-info-container {
+    max-width: 150px;
+  }
+
+  .toggle-sidebar-btn,
+  .notification-btn {
+    padding: 6px;
+  }
+
+  .icon-btn-premium svg {
+    font-size: 16px;
+  }
+  .left-side {
+  width:50%;
+}
+}
+
+/* =====================================================
+   PREMIUM AGRIGAX SPLIT TITLE
+===================================================== */
+
+/* Flex wrapper for the split text */
+.agrigax-split {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+/* A G R I — Green Gradient */
+.agri-part {
+  background: linear-gradient(135deg, #4B815B 0%, #2D5A3F 40%, #6DAF7E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  position: relative;
+  text-shadow: 0 2px 10px rgba(75, 129, 91, 0.15);
+}
+
+/* G A X — Gold Gradient */
+.gax-part {
+  background: linear-gradient(135deg, #AF9A5A 0%, #8C7A48 30%, #D4B896 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  position: relative;
+  text-shadow: 0 2px 10px rgba(175, 154, 90, 0.2);
+}
+
+/* Underline accent for Agri */
+.agri-underline {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #4B815B 50%, transparent 100%);
+  border-radius: 1px;
+  opacity: 0.6;
+  display: block;
+}
+
+/* Underline accent for Gax */
+.gax-underline {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #AF9A5A 50%, transparent 100%);
+  border-radius: 1px;
+  opacity: 0.6;
+  display: block;
+}
+
+/* Premium sparkle dot on the 'x' */
+.gax-sparkle {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #E8D4B0;
+  box-shadow: 0 0 8px rgba(175, 154, 90, 0.8), 0 0 16px rgba(175, 154, 90, 0.4);
+  animation: sparklePulse 2s ease-in-out infinite;
+  display: block;
+}
+
+/* Sparkle pulse animation */
+@keyframes sparklePulse {
+  0%, 100% { 
+    opacity: 1; 
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(175, 154, 90, 0.8), 0 0 16px rgba(175, 154, 90, 0.4);
+  }
+  50% { 
+    opacity: 0.5; 
+    transform: scale(1.8);
+    box-shadow: 0 0 16px rgba(175, 154, 90, 1), 0 0 24px rgba(175, 154, 90, 0.6);
+  }
+}
+
+/* Hover: intensify both parts */
+.agrigax-split:hover .agri-part {
+  text-shadow: 0 4px 16px rgba(75, 129, 91, 0.3);
+  transition: text-shadow 0.3s ease;
+}
+
+.agrigax-split:hover .gax-part {
+  text-shadow: 0 4px 16px rgba(175, 154, 90, 0.35);
+  transition: text-shadow 0.3s ease;
+}
+
+.agrigax-split:hover .gax-sparkle {
+  animation-duration: 1s;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .agrigax-split {
+    gap: 1px;
+  }
+  
+  .gax-sparkle {
+    width: 4px;
+    height: 4px;
+    top: -3px;
+    right: -4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .agri-underline,
+  .gax-underline {
+    display: none;
+  }
+  
+  .gax-sparkle {
+    display: none;
+  }
+}

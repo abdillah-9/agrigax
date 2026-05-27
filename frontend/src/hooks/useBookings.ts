@@ -10,7 +10,7 @@ export function useBookings() {
   const fetchMyBookings = async () => {
     setLoading(true);
     try {
-      const { data } = await apiClient.get(BOOKINGS.MY_BOOKINGS);
+      const { data } = await apiClient.get(BOOKINGS.MY);
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to fetch bookings");
@@ -23,7 +23,7 @@ export function useBookings() {
   const fetchProviderBookings = async () => {
     setLoading(true);
     try {
-      const { data } = await apiClient.get(BOOKINGS.PROVIDER_BOOKINGS);
+      const { data } = await apiClient.get(BOOKINGS.PROVIDER);
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to fetch bookings");
@@ -36,7 +36,7 @@ export function useBookings() {
   const createBooking = async (payload: CreateBookingPayload) => {
     setLoading(true);
     try {
-      const { data } = await apiClient.post(BOOKINGS.CREATE, payload);
+      const { data } = await apiClient.post(BOOKINGS.BASE, payload);
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to create booking");

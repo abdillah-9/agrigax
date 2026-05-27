@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { HiSearch, HiArrowDown, HiArrowUp, HiX } from "react-icons/hi";
+import "../customer.css";
 
 const transactions = [
   { id: "TXN-001", type: "deposit", amount: 200000, method: "mpesa", date: "2026-05-20", status: "completed" },
@@ -30,20 +30,18 @@ export default function Wallet() {
   });
 
   return (
-    <main className="customer-page">
-      <div className="customer-page-header">
-        <div>
-          <h1 className="customer-page-title">Wallet</h1>
-          <p className="customer-page-subtitle">Manage your payments and balance</p>
-        </div>
+    <main className="p-xl">
+      <div className="mb-xl">
+        <h1 className="text-2xl fw-bold neutral-dark">Wallet</h1>
+        <p className="text-sm text-muted mt-xs">Manage your payments and balance</p>
       </div>
 
       <div className="wallet-premium-card">
-        <div className="wallet-card-inner">
-          <p className="wallet-balance-label">Available Balance</p>
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <p className="wallet-balance-label mb-sm">Available Balance</p>
           <h1 className="wallet-balance-value">TZS {balance.toLocaleString()}</h1>
 
-          <div className="wallet-quick-stats">
+          <div className="wallet-quick-stats mt-xl">
             <div className="wallet-stat-item">
               <p className="wallet-stat-value">TZS {totalDeposits.toLocaleString()}</p>
               <p className="wallet-stat-label">Total Deposited</p>
@@ -58,39 +56,32 @@ export default function Wallet() {
             </div>
           </div>
 
-          <div className="wallet-actions">
+          <div className="flex gap-md mt-xl">
             <button className="wallet-action-btn wallet-deposit-btn" onClick={() => { setShowDeposit(true); setShowWithdraw(false); }}>
-              <HiArrowDown className="wallet-btn-icon" />
-              <span>Deposit</span>
+              💰 Deposit
             </button>
             <button className="wallet-action-btn wallet-withdraw-btn" onClick={() => { setShowWithdraw(true); setShowDeposit(false); }}>
-              <HiArrowUp className="wallet-btn-icon" />
-              <span>Withdraw</span>
+              💸 Withdraw
             </button>
           </div>
         </div>
       </div>
 
-      {/* Deposit Modal */}
       {showDeposit && (
-        <div className="wallet-modal-backdrop" onClick={() => setShowDeposit(false)}>
-          <div className="wallet-modal" onClick={e => e.stopPropagation()}>
-            <div className="wallet-modal-header">
-              <div className="wallet-modal-header-left">
-                <div className="wallet-modal-icon-wrap wallet-modal-icon-deposit">
-                  <HiArrowDown />
-                </div>
+        <div className="inv-modal-backdrop" onClick={() => setShowDeposit(false)}>
+          <div className="inv-modal" onClick={e => e.stopPropagation()}>
+            <div className="inv-modal-header">
+              <div className="inv-modal-header-left">
+                <span className="inv-modal-icon">💰</span>
                 <div>
-                  <div className="wallet-modal-title">Deposit Funds</div>
-                  <div className="wallet-modal-subtitle">Add money to your wallet</div>
+                  <div className="inv-modal-title">Deposit Funds</div>
+                  <div className="inv-modal-subtitle">Add money to your wallet</div>
                 </div>
               </div>
-              <button className="wallet-modal-close" onClick={() => setShowDeposit(false)}>
-                <HiX />
-              </button>
+              <button className="inv-modal-close" onClick={() => setShowDeposit(false)}>×</button>
             </div>
-            <div className="wallet-modal-body">
-              <div className="wallet-form-grid">
+            <div className="inv-modal-body">
+              <div className="form-grid">
                 <div>
                   <label className="label label-required">Amount (TZS)</label>
                   <input className="input-text" type="number" placeholder="Enter amount" value={depositForm.amount} onChange={e => setDepositForm(p => ({ ...p, amount: e.target.value }))} />
@@ -110,7 +101,7 @@ export default function Wallet() {
                 </div>
               </div>
             </div>
-            <div className="wallet-modal-footer">
+            <div className="inv-modal-footer">
               <button className="inv-btn-cancel" onClick={() => setShowDeposit(false)}>Cancel</button>
               <button className="inv-btn-submit" onClick={() => { alert("Deposit request sent!"); setShowDeposit(false); }}>Confirm Deposit</button>
             </div>
@@ -118,26 +109,21 @@ export default function Wallet() {
         </div>
       )}
 
-      {/* Withdraw Modal */}
       {showWithdraw && (
-        <div className="wallet-modal-backdrop" onClick={() => setShowWithdraw(false)}>
-          <div className="wallet-modal" onClick={e => e.stopPropagation()}>
-            <div className="wallet-modal-header">
-              <div className="wallet-modal-header-left">
-                <div className="wallet-modal-icon-wrap wallet-modal-icon-withdraw">
-                  <HiArrowUp />
-                </div>
+        <div className="inv-modal-backdrop" onClick={() => setShowWithdraw(false)}>
+          <div className="inv-modal" onClick={e => e.stopPropagation()}>
+            <div className="inv-modal-header">
+              <div className="inv-modal-header-left">
+                <span className="inv-modal-icon">💸</span>
                 <div>
-                  <div className="wallet-modal-title">Withdraw Funds</div>
-                  <div className="wallet-modal-subtitle">Available: TZS {balance.toLocaleString()}</div>
+                  <div className="inv-modal-title">Withdraw Funds</div>
+                  <div className="inv-modal-subtitle">Available: TZS {balance.toLocaleString()}</div>
                 </div>
               </div>
-              <button className="wallet-modal-close" onClick={() => setShowWithdraw(false)}>
-                <HiX />
-              </button>
+              <button className="inv-modal-close" onClick={() => setShowWithdraw(false)}>×</button>
             </div>
-            <div className="wallet-modal-body">
-              <div className="wallet-form-grid">
+            <div className="inv-modal-body">
+              <div className="form-grid">
                 <div>
                   <label className="label label-required">Amount (TZS)</label>
                   <input className="input-text" type="number" placeholder="Enter amount" value={withdrawForm.amount} onChange={e => setWithdrawForm(p => ({ ...p, amount: e.target.value }))} />
@@ -157,7 +143,7 @@ export default function Wallet() {
                 </div>
               </div>
             </div>
-            <div className="wallet-modal-footer">
+            <div className="inv-modal-footer">
               <button className="inv-btn-cancel" onClick={() => setShowWithdraw(false)}>Cancel</button>
               <button className="inv-btn-submit" onClick={() => { alert("Withdrawal request sent!"); setShowWithdraw(false); }}>Confirm Withdrawal</button>
             </div>
@@ -165,19 +151,17 @@ export default function Wallet() {
         </div>
       )}
 
-      {/* Transaction History */}
-      <section className="dash-section">
-        <div className="dash-section-header dash-section-header-responsive">
+      <section className="mt-xl">
+        <div className="flex justify-between items-center mb-lg flex-wrap gap-md">
           <div>
-            <h2 className="dash-section-title">Transaction History</h2>
-            <p className="dash-section-subtitle">{filtered.length} transactions</p>
+            <h2 className="text-lg fw-bold neutral-dark">Transaction History</h2>
+            <p className="text-xs text-muted mt-xs">{filtered.length} transactions</p>
           </div>
-          <div className="wallet-filter-row">
-            <div className="customer-search-wrap wallet-search-wrap">
-              <HiSearch className="customer-search-icon" />
-              <input className="customer-search-input" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} />
+          <div className="flex gap-sm items-center">
+            <div className="inv-search-wrap">
+              <input className="inv-search" style={{ width: 180 }} placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} />
             </div>
-            <select className="input-select wallet-filter-select" value={typeFilter} onChange={e => setTypeFilter(e.target.value)}>
+            <select className="input-select" style={{ width: "auto" }} value={typeFilter} onChange={e => setTypeFilter(e.target.value)}>
               <option value="all">All Types</option>
               <option value="deposit">Deposit</option>
               <option value="payment">Payment</option>
@@ -187,51 +171,28 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* Responsive: Table on desktop, Cards on mobile */}
-        <div className="wallet-table-desktop">
-          <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr><th>ID</th><th>Type</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th></tr>
-              </thead>
-              <tbody>
-                {filtered.map(txn => (
-                  <tr key={txn.id}>
-                    <td className="fw-medium">{txn.id}</td>
-                    <td><span className="badge badge-info">{txn.type}</span></td>
-                    <td className={txn.amount > 0 ? "stat-change-positive fw-semibold" : "stat-change-negative fw-semibold"}>
-                      {txn.amount > 0 ? "+" : ""}TZS {Math.abs(txn.amount).toLocaleString()}
-                    </td>
-                    <td><span className="badge badge-default">{txn.method}</span></td>
-                    <td className="text-sm">{txn.date}</td>
-                    <td>
-                      {txn.status === "completed" ? <span className="badge badge-success">● Completed</span> : <span className="badge badge-warning">○ Pending</span>}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Mobile cards */}
-        <div className="wallet-cards-mobile">
-          {filtered.map(txn => (
-            <div key={txn.id} className="wallet-txn-card">
-              <div className="wallet-txn-card-top">
-                <span className="fw-medium">{txn.id}</span>
-                <span className={`wallet-txn-amount ${txn.amount > 0 ? "stat-change-positive" : "stat-change-negative"}`}>
-                  {txn.amount > 0 ? "+" : ""}TZS {Math.abs(txn.amount).toLocaleString()}
-                </span>
-              </div>
-              <div className="wallet-txn-card-bottom">
-                <span className="badge badge-info">{txn.type}</span>
-                <span className="badge badge-default">{txn.method}</span>
-                <span className="text-sm text-muted">{txn.date}</span>
-                <span>{txn.status === "completed" ? <span className="badge badge-success">● Completed</span> : <span className="badge badge-warning">○ Pending</span>}</span>
-              </div>
-            </div>
-          ))}
+        <div className="table-container">
+          <table className="data-table">
+            <thead>
+              <tr><th>ID</th><th>Type</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              {filtered.map(txn => (
+                <tr key={txn.id}>
+                  <td className="fw-medium">{txn.id}</td>
+                  <td><span className="badge badge-info">{txn.type}</span></td>
+                  <td className={txn.amount > 0 ? "stat-change-positive fw-semibold" : "stat-change-negative fw-semibold"}>
+                    {txn.amount > 0 ? "+" : ""}TZS {Math.abs(txn.amount).toLocaleString()}
+                  </td>
+                  <td><span className="badge badge-default">{txn.method}</span></td>
+                  <td className="text-sm">{txn.date}</td>
+                  <td>
+                    {txn.status === "completed" ? <span className="badge badge-success">● Completed</span> : <span className="badge badge-warning">○ Pending</span>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
     </main>

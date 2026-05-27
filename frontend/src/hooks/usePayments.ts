@@ -1,6 +1,6 @@
 import { useState } from "react";
 import apiClient from "../api/client";
-import { PAYMENTS } from "../api/endpoints";
+import { WALLET } from "../api/endpoints";
 import type { DepositPayload, WithdrawPayload } from "../types/api.types";
 
 export function usePayments() {
@@ -10,7 +10,7 @@ export function usePayments() {
   const fetchWallet = async () => {
     setLoading(true);
     try {
-      const { data } = await apiClient.get(PAYMENTS.WALLET);
+      const { data } = await apiClient.get(WALLET.BALANCE);
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to fetch wallet");
@@ -23,7 +23,7 @@ export function usePayments() {
   const fetchTransactions = async () => {
     setLoading(true);
     try {
-      const { data } = await apiClient.get(PAYMENTS.TRANSACTIONS);
+      const { data } = await apiClient.get(WALLET.TRANSACTIONS);
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to fetch transactions");
@@ -36,7 +36,7 @@ export function usePayments() {
   const deposit = async (payload: DepositPayload) => {
     setLoading(true);
     try {
-      const { data } = await apiClient.post(PAYMENTS.DEPOSIT, payload);
+      const { data } = await apiClient.post(WALLET.DEPOSIT, payload);
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Deposit failed");
@@ -49,7 +49,7 @@ export function usePayments() {
   const withdraw = async (payload: WithdrawPayload) => {
     setLoading(true);
     try {
-      const { data } = await apiClient.post(PAYMENTS.WITHDRAW, payload);
+      const { data } = await apiClient.post(WALLET.WITHDRAW, payload);
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Withdrawal failed");

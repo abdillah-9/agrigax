@@ -30,7 +30,7 @@ export function useNotifications() {
 
   const markAllRead = async () => {
     try {
-      await apiClient.put(NOTIFICATIONS.MARK_ALL_READ);
+      await apiClient.put(NOTIFICATIONS.MARK_ALL);
       return true;
     } catch {
       return false;

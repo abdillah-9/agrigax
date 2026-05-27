@@ -50,6 +50,8 @@ export default function Analytics() {
     return `TZS ${val}`;
   };
 
+  console.log(totalRevenue);
+
   return (
     <main className="p-xl">
       <div className="mb-xl">
