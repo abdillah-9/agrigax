@@ -46,40 +46,70 @@ export default function MyBookings() {
 
   return (
     <main className="p-xl">
-      <div className="bookings-header mb-xl">
-        <div>
-          <h1 className="text-2xl fw-bold neutral-dark">My Bookings</h1>
-          <p className="text-sm mt-sm">Track and manage your bookings</p>
+ {/* Header Banner */}
+  <div className="bookings-header-banner">
+    <div className="bookings-header-content">
+      <div>
+        <p className="bookings-header-badge">My Bookings</p>
+        <h1 className="bookings-header-title">Track & Manage</h1>
+        <p className="bookings-header-subtitle">View and manage all your service bookings</p>
+      </div>
+      <div className="bookings-header-stats">
+        <div className="bookings-stat-item">
+          <span className="bookings-stat-number">{bookings.filter(b => b.status === 'confirmed').length}</span>
+          <span className="bookings-stat-label">Active</span>
+        </div>
+        <div className="bookings-stat-divider" />
+        <div className="bookings-stat-item">
+          <span className="bookings-stat-number">{bookings.filter(b => b.status === 'pending').length}</span>
+          <span className="bookings-stat-label">Pending</span>
+        </div>
+        <div className="bookings-stat-divider" />
+        <div className="bookings-stat-item">
+          <span className="bookings-stat-number">{bookings.length}</span>
+          <span className="bookings-stat-label">Total</span>
         </div>
       </div>
+    </div>
+  </div>
 
-      {/* Search & Filters */}
-      <div className="flex gap-md mb-lg items-center" style={{ flexWrap: "wrap" }}>
-        <div className="inv-search-wrap" style={{ flex: 1, minWidth: 220 }}>
-          <input
-            className="inv-search"
-            style={{ width: "100%" }}
-            placeholder="Search by service, provider, or location..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-        </div>
-        <select className="input-select" style={{ width: "auto" }} value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
-          <option value="all">All Status</option>
-          <option value="pending">Pending</option>
-          <option value="confirmed">Confirmed</option>
-          <option value="completed">Completed</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
-        <select className="input-select" style={{ width: "auto" }} value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
-          <option value="newest">Newest First</option>
-          <option value="oldest">Oldest First</option>
-          <option value="highest">Highest Amount</option>
-          <option value="lowest">Lowest Amount</option>
-        </select>
-      </div>
+  {/* Search & Filters */}
+  <div className="bookings-filters-row">
+    <div className="bookings-search-wrap">
+      <input
+        className="bookings-search-input"
+        placeholder="Search by service, provider, or location..."
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+      />
+    </div>
+    <select 
+      className="bookings-filter-select" 
+      value={statusFilter} 
+      onChange={e => setStatusFilter(e.target.value)}
+    >
+      <option value="all">All Status</option>
+      <option value="pending">Pending</option>
+      <option value="confirmed">Confirmed</option>
+      <option value="completed">Completed</option>
+      <option value="cancelled">Cancelled</option>
+    </select>
+    <select 
+      className="bookings-filter-select" 
+      value={sortOrder} 
+      onChange={e => setSortOrder(e.target.value)}
+    >
+      <option value="newest">Newest First</option>
+      <option value="oldest">Oldest First</option>
+      <option value="highest">Highest Amount</option>
+      <option value="lowest">Lowest Amount</option>
+    </select>
+  </div>
 
-      <p className="text-sm text-muted mb-lg">{filtered.length} booking{filtered.length !== 1 ? "s" : ""} found</p>
+  <p className="bookings-count-text">
+    {filtered.length} booking{filtered.length !== 1 ? "s" : ""} found
+  </p>
+
 
       <section className="bookings-list">
         {filtered.map(booking => (

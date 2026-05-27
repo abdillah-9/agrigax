@@ -1,209 +1,696 @@
 /* =====================================================
-   SERVICES HEADER
+   LISTINGS HEADER BANNER (Premium)
 ===================================================== */
 
-.services-header {
+.listings-header-banner {
+  background: linear-gradient(135deg, #254036 0%, #325744 50%, #4B815B 100%);
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.listings-header-banner::after {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -10%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(175, 154, 90, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.listings-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.listings-header-badge {
+  display: inline-block;
+  color: var(--secondary-light, #E8D4B0);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  background: rgba(175, 154, 90, 0.15);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(175, 154, 90, 0.2);
+}
+
+.listings-header-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+
+.listings-header-subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 6px;
+}
+
+.listings-header-count {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.listings-count-number {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--secondary-light, #E8D4B0);
+}
+
+.listings-count-label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.3;
 }
 
 /* =====================================================
-   SERVICES GRID
+   FILTERS ROW (Premium)
+===================================================== */
+
+.listings-filters-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.listings-search-wrap {
+  flex: 1;
+  min-width: 240px;
+}
+
+.listings-search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(75, 129, 91, 0.12);
+  background: rgba(241, 247, 243, 0.4);
+  color: var(--primary-darkest, #254036);
+  outline: none;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.listings-search-input:focus {
+  border-color: var(--primary-base, #4B815B);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 4px rgba(75, 129, 91, 0.06);
+}
+
+.listings-search-input::placeholder {
+  color: var(--secondary-dark, #8C7A48);
+}
+
+.listings-filter-select {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(75, 129, 91, 0.12);
+  background: #FFFFFF;
+  color: var(--primary-darker, #325744);
+  outline: none;
+  font-size: 14px;
+  cursor: pointer;
+  min-width: 160px;
+  transition: all 0.3s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238C7A48' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+.listings-filter-select:focus {
+  border-color: var(--primary-base, #4B815B);
+  box-shadow: 0 0 0 4px rgba(75, 129, 91, 0.06);
+}
+
+.listings-toggle-btn {
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(75, 129, 91, 0.12);
+  background: #FFFFFF;
+  color: var(--primary-darker, #325744);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.listings-toggle-btn:hover {
+  background: rgba(75, 129, 91, 0.04);
+  border-color: rgba(75, 129, 91, 0.25);
+}
+
+.listings-count-text {
+  font-size: 13px;
+  color: var(--secondary-darker, #6A5C36);
+  margin-bottom: 16px;
+}
+
+/* =====================================================
+   FILTER PANEL (Premium)
+===================================================== */
+
+.listings-filter-panel {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(75, 129, 91, 0.08);
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+}
+
+.listings-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.listings-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.listings-filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--secondary-darker, #6A5C36);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.listings-filter-select-full {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(75, 129, 91, 0.12);
+  background: rgba(241, 247, 243, 0.3);
+  color: var(--primary-darkest, #254036);
+  outline: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.listings-filter-select-full:focus {
+  border-color: var(--primary-base, #4B815B);
+  background: #FFFFFF;
+}
+
+.listings-reset-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(214, 69, 69, 0.2);
+  background: #FFFFFF;
+  color: #D64545;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  align-self: flex-end;
+}
+
+.listings-reset-btn:hover {
+  background: #FEF2F2;
+  border-color: rgba(214, 69, 69, 0.4);
+}
+
+/* =====================================================
+   SERVICES GRID (Premium)
 ===================================================== */
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
 }
 
 .service-card {
   background: white;
+  border-radius: 16px;
   overflow: hidden;
+  border: 1px solid rgba(75, 129, 91, 0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.service-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
 }
 
 .service-image {
-  height: 220px;
-  background: #DDEBE1;
+  height: 200px;
+  background: linear-gradient(135deg, #DDEBE1 0%, #BFD6C6 50%, #4B815B 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.service-image::after {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -20%;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(175, 154, 90, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
 }
 
 .service-content {
-  padding: 24px;
+  padding: 20px;
 }
 
-.service-description {
-  margin-top: 12px;
-  color: #555;
-  line-height: 1.7;
+.service-badges {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.service-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.service-badge-type {
+  background: rgba(58, 123, 213, 0.1);
+  color: #25579E;
+}
+
+.service-badge-category {
+  background: rgba(175, 154, 90, 0.1);
+  color: #8C7A48;
+}
+
+.service-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--neutral-darkest, #0B0B0B);
+  margin-bottom: 4px;
+}
+
+.service-provider {
+  font-size: 13px;
+  color: var(--secondary-darker, #6A5C36);
+  margin-bottom: 12px;
+}
+
+.service-meta-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+.service-rating {
+  color: #D4C685;
+  font-weight: 500;
+}
+
+.service-location {
+  color: var(--secondary-darker, #6A5C36);
 }
 
 .service-footer {
-  margin-top: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid rgba(75, 129, 91, 0.06);
 }
 
 .service-price {
   font-size: 20px;
   font-weight: 700;
-  color: #4B815B;
+  color: #2E7D4F;
 }
 
 .service-btn {
   border: none;
-  background: #4B815B;
+  background: linear-gradient(135deg, #4B815B, #2E7D4F);
   color: white;
-  padding: 12px 18px;
+  padding: 10px 18px;
   border-radius: 10px;
   cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(75, 129, 91, 0.25);
+}
+
+.service-btn:hover {
+  box-shadow: 0 6px 20px rgba(75, 129, 91, 0.35);
+  transform: translateY(-1px);
 }
 
 /* =====================================================
-   SERVICE DETAILS
+   SERVICE DETAILS (Premium)
 ===================================================== */
 
 .service-details-card {
   background: white;
+  border-radius: 16px;
   overflow: hidden;
+  border: 1px solid rgba(75, 129, 91, 0.06);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
 }
 
 .service-details-image {
-  height: 380px;
-  background: #DDEBE1;
+  height: 350px;
+  background: linear-gradient(135deg, #254036 0%, #325744 40%, #4B815B 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.service-details-image::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(175, 154, 90, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
 }
 
 .service-details-content {
   padding: 32px;
 }
 
+.service-details-badges {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
 .service-details-text {
   line-height: 1.8;
   color: #555;
+  font-size: 14px;
+  margin-top: 16px;
 }
 
 .service-meta {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(241, 247, 243, 0.4);
+  border-radius: 12px;
+  border: 1px solid rgba(75, 129, 91, 0.06);
 }
 
 .service-meta-item {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+.service-meta-item .fw-semibold {
+  min-width: 100px;
+  color: var(--secondary-darker, #6A5C36);
+}
+
+.service-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
 }
 
 .book-service-btn {
   border: none;
-  background: #4B815B;
+  background: linear-gradient(135deg, #4B815B, #2E7D4F);
   color: white;
-  padding: 16px 24px;
+  padding: 14px 28px;
   border-radius: 12px;
   cursor: pointer;
   font-size: 15px;
   font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(75, 129, 91, 0.3);
 }
 
-/* =====================================================
-   PROVIDER SERVICES
-===================================================== */
-
-.provider-services-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.book-service-btn:hover {
+  box-shadow: 0 6px 24px rgba(75, 129, 91, 0.4);
+  transform: translateY(-1px);
 }
 
-.provider-service-card {
-  background: white;
-  padding: 24px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.provider-service-actions {
-  display: flex;
-  gap: 12px;
-}
-
-.create-service-btn,
-.edit-btn,
-.delete-btn,
-.submit-service-btn,
-.services-filter-btn {
-  border: none;
-  padding: 12px 18px;
-  border-radius: 10px;
+.back-outline-btn {
+  padding: 14px 28px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(75, 129, 91, 0.12);
+  background: #FFFFFF;
   cursor: pointer;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--primary-darker, #325744);
+  transition: all 0.2s ease;
 }
 
-.create-service-btn,
-.submit-service-btn,
-.services-filter-btn {
-  background: #4B815B;
-  color: white;
-}
-
-.edit-btn {
-  background: #AF9A5A;
-  color: white;
-}
-
-.delete-btn {
-  background: #D64545;
-  color: white;
+.back-outline-btn:hover {
+  background: rgba(75, 129, 91, 0.04);
+  border-color: rgba(75, 129, 91, 0.3);
 }
 
 /* =====================================================
-   SERVICE FORM
+   BACK BUTTON
 ===================================================== */
 
-.service-form-card {
-  background: white;
-  padding: 32px;
-}
-
-.service-form {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.service-field {
-  display: flex;
-  flex-direction: column;
+.back-nav-btn {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
-}
-
-.service-field label {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(75, 129, 91, 0.12);
+  background: #FFFFFF;
+  cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  color: #181818;
+  color: var(--primary-darker, #325744);
+  transition: all 0.2s ease;
+  margin-bottom: 20px;
 }
 
-.service-field input,
-.service-field select,
-.service-field textarea {
-  width: 100%;
-  padding: 14px 16px;
-  border: 1px solid #E6E9E8;
-  border-radius: 12px;
-  outline: none;
-  font-size: 15px;
+.back-nav-btn:hover {
+  background: rgba(75, 129, 91, 0.04);
+  border-color: rgba(75, 129, 91, 0.3);
 }
 
-.service-field textarea {
-  resize: vertical;
-  min-height: 140px;
+/* =====================================================
+   EMPTY STATE
+===================================================== */
+
+.listings-empty {
+  text-align: center;
+  padding: 64px 24px;
+  color: var(--secondary-darker, #6A5C36);
 }
 
-.service-field input:focus,
-.service-field select:focus,
-.service-field textarea:focus {
-  border-color: #4B815B;
+.listings-empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.listings-empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--neutral-darkest, #0B0B0B);
+  margin-bottom: 8px;
+}
+
+.listings-empty-text {
+  font-size: 14px;
+  color: var(--secondary-darker, #6A5C36);
+}
+
+/* =====================================================
+   BADGES
+===================================================== */
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-info {
+  background: rgba(58, 123, 213, 0.1);
+  color: #25579E;
+}
+
+.badge-success {
+  background: #DDF3E6;
+  color: #1F5A38;
+}
+
+.badge-default {
+  background: rgba(175, 154, 90, 0.1);
+  color: #8C7A48;
+}
+
+/* =====================================================
+   RESPONSIVE - LISTINGS
+===================================================== */
+
+@media (max-width: 768px) {
+  .listings-header-banner {
+    padding: 24px;
+    border-radius: 16px;
+  }
+
+  .listings-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .listings-header-title {
+    font-size: 22px;
+  }
+
+  .listings-header-count {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .listings-filters-row {
+    flex-direction: column;
+  }
+
+  .listings-search-wrap {
+    min-width: 100%;
+  }
+
+  .listings-filter-select {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .listings-toggle-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .listings-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .service-image {
+    height: 180px;
+  }
+
+  .service-content {
+    padding: 16px;
+  }
+
+  .service-footer {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .service-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Details page */
+  .service-details-image {
+    height: 240px;
+  }
+
+  .service-details-content {
+    padding: 20px;
+  }
+
+  .service-meta {
+    padding: 16px;
+  }
+
+  .service-meta-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .service-meta-item .fw-semibold {
+    min-width: auto;
+  }
+
+  .service-actions {
+    flex-direction: column;
+  }
+
+  .book-service-btn,
+  .back-outline-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .listings-header-banner {
+    padding: 20px;
+    border-radius: 14px;
+  }
+
+  .listings-header-title {
+    font-size: 20px;
+  }
+
+  .listings-count-number {
+    font-size: 28px;
+  }
+
+  .service-image {
+    height: 160px;
+  }
+
+  .service-details-image {
+    height: 200px;
+  }
+
+  .service-details-content {
+    padding: 16px;
+  }
+
+  .service-meta-row {
+    flex-direction: column;
+    gap: 6px;
+  }
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { HiMail, HiChat, HiBell, HiSpeakerphone, HiShieldCheck, HiCheck } from "react-icons/hi";
+import "../styles/customer.css";
 
 export default function Settings() {
   const [settings, setSettings] = useState({

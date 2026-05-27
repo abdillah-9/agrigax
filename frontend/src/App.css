@@ -1,4 +1,50 @@
 /* =========================
+   CSS VARIABLES (for layout.css)
+========================= */
+
+/* :root {
+  --primary-lightest: #F1F7F3;
+  --primary-lighter: #DDEBE1;
+  --primary-light: #BFD6C6;
+  --primary-base: #4B815B;
+  --primary-dark: #3E6E52;
+  --primary-darker: #325744;
+  --primary-darkest: #254036;
+
+  --secondary-lightest: #FDF8F0;
+  --secondary-lighter: #F5E9D6;
+  --secondary-light: #E8D4B0;
+  --secondary-base: #AF9A5A;
+  --secondary-dark: #8C7A48;
+  --secondary-darker: #6A5C36;
+  --secondary-darkest: #4A4025;
+
+  --success-base: #2E7D4F;
+  --success-dark: #1F5A38;
+  --success-light: #DDF3E6;
+
+  --danger-base: #D64545;
+  --danger-dark: #9E2F2F;
+
+  --warning-base: #D4C685;
+  --warning-dark: #9C8B3D;
+
+  --info-base: #3A7BD5;
+  --info-dark: #25579E;
+
+  --neutral-lightest: #FDFFFC;
+  --neutral-lighter: #F5F7F6;
+  --neutral-dark: #181818;
+  --neutral-darker: #121212;
+  --neutral-darkest: #0B0B0B;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+} */
+
+/* =========================
    PRIMARY (Green)
 ========================= */
 

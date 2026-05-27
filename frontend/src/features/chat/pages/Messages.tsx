@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../styles/chat.css";
 
 const conversations = [
   { id: "1", name: "Kilimo Best Supplies", lastMessage: "Your booking is confirmed for May 20th", time: "2 min ago", unread: 2, online: true, avatar: "KB" },
@@ -21,21 +22,26 @@ export default function Messages() {
   const unreadTotal = conversations.reduce((sum, c) => sum + c.unread, 0);
 
   return (
-    <main className="p-xl">
-      <div className="flex justify-between items-center mb-xl">
-        <div>
-          <h1 className="text-2xl fw-bold neutral-dark">Messages</h1>
-          <p className="text-sm text-muted mt-sm">
-            {unreadTotal > 0 ? `${unreadTotal} unread message${unreadTotal > 1 ? 's' : ''}` : 'All caught up!'}
-          </p>
+    <main className="customer-page">
+      {/* Header Banner */}
+      <div className="messages-header-banner">
+        <div className="messages-header-content">
+          <div>
+            <p className="messages-header-badge">Messages</p>
+            <h1 className="messages-header-title">Conversations</h1>
+            <p className="messages-header-subtitle">
+              {unreadTotal > 0 
+                ? `${unreadTotal} unread message${unreadTotal > 1 ? 's' : ''}` 
+                : 'All caught up! ✨'}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Search */}
-      <div className="inv-search-wrap mb-lg">
+      <div className="messages-search-wrap">
         <input
-          className="inv-search"
-          style={{ width: "100%", maxWidth: 400 }}
+          className="messages-search-input"
           placeholder="Search conversations..."
           value={search}
           onChange={e => setSearch(e.target.value)}
@@ -43,79 +49,44 @@ export default function Messages() {
       </div>
 
       {/* Conversation List */}
-      <section className="flex flex-col gap-md">
+      <section className="messages-list">
         {filtered.map(conv => (
           <div
             key={conv.id}
-            className="flex items-center gap-md p-lg pointer"
-            style={{
-              background: "white",
-              borderRadius: 12,
-              border: "1px solid #E6E9E8",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.03)",
-              transition: "all 0.2s ease",
-            }}
-            onClick={() => navigate(`/provider/messages/${conv.id}`)}
-            onMouseEnter={e => (e.currentTarget.style.boxShadow = "0 4px 12px rgba(75,129,91,0.1)")}
-            onMouseLeave={e => (e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.03)")}
+            className="message-conversation-card"
+            onClick={() => navigate(`/app/messages/${conv.id}`)}
           >
             {/* Avatar */}
-            <div style={{
-              width: 48, height: 48, minWidth: 48,
-              borderRadius: 12,
-              background: conv.unread > 0
-                ? "linear-gradient(135deg, #4B815B, #2E7D4F)"
-                : "linear-gradient(135deg, #E6E9E8, #D1D5D3)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              color: conv.unread > 0 ? "white" : "#666",
-              fontWeight: 700,
-              fontSize: 14,
-              position: "relative"
-            }}>
+            <div className={`conversation-avatar ${conv.unread > 0 ? 'conversation-avatar-unread' : 'conversation-avatar-read'}`}>
               {conv.avatar}
-              {conv.online && (
-                <div style={{
-                  position: "absolute", bottom: -2, right: -2,
-                  width: 12, height: 12, borderRadius: "50%",
-                  background: "#2E7D4F", border: "2px solid white"
-                }} />
-              )}
+              {conv.online && <div className="conversation-online-dot" />}
             </div>
 
             {/* Content */}
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div className="flex justify-between items-center">
-                <h3 className={`text-sm ${conv.unread > 0 ? "fw-bold" : "fw-semibold"}`}>
+            <div className="conversation-content">
+              <div className="conversation-top-row">
+                <h3 className={`conversation-name ${conv.unread > 0 ? 'conversation-name-unread' : ''}`}>
                   {conv.name}
                 </h3>
-                <span className="text-xs text-muted">{conv.time}</span>
+                <span className="conversation-time">{conv.time}</span>
               </div>
-              <p className={`text-sm mt-xs ${conv.unread > 0 ? "" : "text-muted"}`} style={{
-                whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"
-              }}>
+              <p className={`conversation-preview ${conv.unread > 0 ? 'conversation-preview-unread' : ''}`}>
                 {conv.lastMessage}
               </p>
             </div>
 
             {/* Unread badge */}
             {conv.unread > 0 && (
-              <span style={{
-                minWidth: 24, height: 24,
-                borderRadius: "50%",
-                background: "#4B815B",
-                color: "white",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 12, fontWeight: 700
-              }}>
-                {conv.unread}
-              </span>
+              <span className="conversation-badge">{conv.unread}</span>
             )}
           </div>
         ))}
 
         {filtered.length === 0 && (
-          <div className="table-empty">
-            <p>No conversations found.</p>
+          <div className="chat-empty">
+            <div className="chat-empty-icon">💬</div>
+            <h3 className="chat-empty-title">No conversations found</h3>
+            <p className="chat-empty-text">Try adjusting your search</p>
           </div>
         )}
       </section>

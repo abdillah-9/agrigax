@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { HiMail, HiPhone, HiLocationMarker, HiCalendar, HiCheck } from "react-icons/hi";
+import "../styles/customer.css";
 
 export default function Profile() {
   const [profile, setProfile] = useState({

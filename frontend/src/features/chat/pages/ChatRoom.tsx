@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../styles/chat.css";
 
 const initialMessages = [
   { id: "1", sender: "them", text: "Hello! How can I help you today?", time: "10:30 AM" },
@@ -22,7 +23,6 @@ export default function ChatRoom() {
     setMessages(prev => [...prev, { id: Date.now().toString(), sender: "me", text: newMessage, time }]);
     setNewMessage("");
 
-    // Simulate reply
     setTimeout(() => {
       const replyTime = new Date();
       setMessages(prev => [...prev, {
@@ -42,60 +42,32 @@ export default function ChatRoom() {
   };
 
   return (
-    <main className="p-xl flex flex-col" style={{ height: "calc(100vh - 140px)" }}>
+    <main className="customer-page chat-room-container">
       {/* Header */}
-      <div className="flex items-center gap-md mb-lg" style={{
-        background: "white",
-        borderRadius: 12,
-        padding: "14px 20px",
-        border: "1px solid #E6E9E8",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.04)"
-      }}>
-        <button
-          className="btn btn-outline btn-sm flex items-center gap-sm"
-          onClick={() => navigate(-1)}
-        >
+      <div className="chat-header">
+        <button className="chat-back-btn" onClick={() => navigate(-1)}>
           ← Back
         </button>
-        <div style={{
-          width: 40, height: 40, borderRadius: 10,
-          background: "linear-gradient(135deg, #4B815B, #2E7D4F)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          color: "white", fontWeight: 700, fontSize: 14
-        }}>KB</div>
-        <div style={{ flex: 1 }}>
-          <h2 className="fw-bold text-sm">Kilimo Best Supplies</h2>
-          <div className="flex items-center gap-sm">
-            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#2E7D4F" }} />
-            <span className="text-xs text-muted">Online</span>
+        <div className="chat-avatar">KB</div>
+        <div className="chat-header-info">
+          <h2 className="chat-header-name">Kilimo Best Supplies</h2>
+          <div className="chat-header-status">
+            <span className="chat-online-indicator" />
+            <span className="chat-status-text">Online</span>
           </div>
         </div>
-        <button className="btn btn-outline btn-sm" style={{ color: "#D64545", borderColor: "#FBE3E3" }}>
-          End Chat
-        </button>
+        <button className="chat-end-btn">End Chat</button>
       </div>
 
       {/* Messages Area */}
-      <section className="flex flex-col gap-md" style={{ flex: 1, overflowY: "auto", paddingBottom: 16 }}>
+      <section className="chat-messages-area">
         {messages.map(msg => (
-          <div key={msg.id} className="flex" style={{ justifyContent: msg.sender === "me" ? "flex-end" : "flex-start" }}>
+          <div key={msg.id} className={`chat-message-wrapper ${msg.sender === "me" ? "chat-message-wrapper-me" : "chat-message-wrapper-them"}`}>
             <div style={{ maxWidth: "70%" }}>
-              <div style={{
-                padding: "12px 16px",
-                borderRadius: msg.sender === "me" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                background: msg.sender === "me"
-                  ? "linear-gradient(135deg, #4B815B, #3E6E52)"
-                  : "#F5F7F6",
-                color: msg.sender === "me" ? "white" : "#181818",
-                fontSize: 14,
-                lineHeight: 1.5,
-                boxShadow: msg.sender === "me"
-                  ? "0 2px 8px rgba(75, 129, 91, 0.25)"
-                  : "0 1px 3px rgba(0,0,0,0.05)"
-              }}>
+              <div className={`chat-message-bubble ${msg.sender === "me" ? "chat-message-me" : "chat-message-them"}`}>
                 {msg.text}
               </div>
-              <p className={`text-xs text-muted mt-xs ${msg.sender === "me" ? "text-right" : ""}`}>
+              <p className={`chat-message-time ${msg.sender === "me" ? "chat-message-time-right" : ""}`}>
                 {msg.time}
               </p>
             </div>
@@ -104,26 +76,18 @@ export default function ChatRoom() {
       </section>
 
       {/* Input Area */}
-      <div className="flex gap-sm" style={{
-        background: "white",
-        borderRadius: 12,
-        padding: 12,
-        border: "1px solid #E6E9E8",
-        boxShadow: "0 -2px 8px rgba(0,0,0,0.04)"
-      }}>
+      <div className="chat-input-area">
         <input
-          className="input-text"
-          style={{ flex: 1, border: "none", background: "transparent" }}
+          className="chat-input"
           placeholder="Type a message... (Enter to send)"
           value={newMessage}
           onChange={e => setNewMessage(e.target.value)}
           onKeyDown={handleKeyDown}
         />
         <button
-          className="btn btn-primary"
+          className="chat-send-btn"
           onClick={handleSend}
           disabled={!newMessage.trim()}
-          style={{ padding: "10px 20px" }}
         >
           Send
         </button>

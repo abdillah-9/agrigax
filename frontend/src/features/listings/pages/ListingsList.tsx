@@ -22,9 +22,7 @@ export default function ListingsList() {
   const [priceSort, setPriceSort] = useState("none");
   const [showFilters, setShowFilters] = useState(false);
 
-  // Determine base path for navigation
   const basePath = location.pathname.includes("/provider") ? "/provider/browse" : "/app/listings";
-
   const categories = [...new Set(allListings.map(l => l.category))];
   const types = [...new Set(allListings.map(l => l.type))];
 
@@ -41,85 +39,113 @@ export default function ListingsList() {
   if (priceSort === "high") filtered.sort((a, b) => b.price - a.price);
 
   return (
-    <main className="p-xl">
-      <div className="services-header">
-        <div>
-          <h1 className="text-2xl fw-bold neutral-dark">Browse Listings</h1>
-          <p className="text-sm mt-sm">Explore available agricultural listings</p>
+    <main className="customer-page">
+      {/* Header Banner */}
+      <div className="listings-header-banner">
+        <div className="listings-header-content">
+          <div>
+            <p className="listings-header-badge">Browse Listings</p>
+            <h1 className="listings-header-title">Discover Services</h1>
+            <p className="listings-header-subtitle">Explore available agricultural listings near you</p>
+          </div>
+          <div className="listings-header-count">
+            <span className="listings-count-number">{filtered.length}</span>
+            <span className="listings-count-label">Available<br />Listings</span>
+          </div>
         </div>
-        <button className="services-filter-btn" onClick={() => setShowFilters(!showFilters)}>
-          {showFilters ? "✕ Close" : "☰ Filters"} {showFilters ? "" : `(${filtered.length})`}
-        </button>
       </div>
 
-      {/* Search & Sort Bar */}
-      <div className="flex gap-md mt-lg items-center" style={{ flexWrap: "wrap" }}>
-        <div className="inv-search-wrap" style={{ flex: 1, minWidth: 250 }}>
+      {/* Search & Filters Bar */}
+      <div className="listings-filters-row">
+        <div className="listings-search-wrap">
           <input
-            className="inv-search"
-            style={{ width: "100%" }}
+            className="listings-search-input"
             placeholder="Search by name, provider, or location..."
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
         </div>
-        <select className="input-select" style={{ width: "auto" }} value={priceSort} onChange={e => setPriceSort(e.target.value)}>
+        <select 
+          className="listings-filter-select" 
+          value={priceSort} 
+          onChange={e => setPriceSort(e.target.value)}
+        >
           <option value="none">Sort by Price</option>
           <option value="low">Lowest First</option>
           <option value="high">Highest First</option>
         </select>
+        <button 
+          className="listings-toggle-btn" 
+          onClick={() => setShowFilters(!showFilters)}
+        >
+          {showFilters ? "✕ Hide Filters" : "☰ Filters"}
+        </button>
       </div>
 
       {/* Filter Panel */}
       {showFilters && (
-        <div className="form-section mt-lg">
-          <div className="flex gap-xl" style={{ flexWrap: "wrap" }}>
-            <div style={{ minWidth: 200 }}>
-              <label className="label">Category</label>
-              <select className="input-select" value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)}>
+        <div className="listings-filter-panel">
+          <div className="listings-filter-grid">
+            <div className="listings-filter-group">
+              <label className="listings-filter-label">Category</label>
+              <select 
+                className="listings-filter-select-full" 
+                value={categoryFilter} 
+                onChange={e => setCategoryFilter(e.target.value)}
+              >
                 <option value="all">All Categories</option>
                 {categories.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
-            <div style={{ minWidth: 200 }}>
-              <label className="label">Type</label>
-              <select className="input-select" value={typeFilter} onChange={e => setTypeFilter(e.target.value)}>
+            <div className="listings-filter-group">
+              <label className="listings-filter-label">Type</label>
+              <select 
+                className="listings-filter-select-full" 
+                value={typeFilter} 
+                onChange={e => setTypeFilter(e.target.value)}
+              >
                 <option value="all">All Types</option>
-                {types.map(t => <option key={t} value={t} style={{ textTransform: "capitalize" }}>{t}</option>)}
+                {types.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             </div>
-            <div style={{ minWidth: 150, display: "flex", alignItems: "flex-end" }}>
-              <button className="btn btn-outline btn-sm" onClick={() => { setCategoryFilter("all"); setTypeFilter("all"); setSearch(""); setPriceSort("none"); }}>
-                Reset All
-              </button>
-            </div>
+            <button 
+              className="listings-reset-btn"
+              onClick={() => { setCategoryFilter("all"); setTypeFilter("all"); setSearch(""); setPriceSort("none"); }}
+            >
+              Reset All Filters
+            </button>
           </div>
         </div>
       )}
 
       {/* Results count */}
-      <p className="text-sm text-muted mt-md">{filtered.length} listing{filtered.length !== 1 ? "s" : ""} found</p>
+      <p className="listings-count-text">
+        {filtered.length} listing{filtered.length !== 1 ? "s" : ""} found
+      </p>
 
       {/* Listings Grid */}
       {filtered.length > 0 ? (
-        <section className="services-grid mt-lg">
+        <section className="services-grid">
           {filtered.map(listing => (
-            <div key={listing.id} className="service-card shadow-md radius-lg">
+            <div key={listing.id} className="service-card">
               <div className="service-image" />
               <div className="service-content">
-                <div className="flex gap-sm mb-sm">
-                  <span className="badge badge-info text-xs">{listing.type}</span>
-                  <span className="badge badge-default text-xs">{listing.category}</span>
+                <div className="service-badges">
+                  <span className="service-badge service-badge-type">{listing.type}</span>
+                  <span className="service-badge service-badge-category">{listing.category}</span>
                 </div>
-                <h3 className="text-lg fw-semibold">{listing.title}</h3>
-                <p className="text-sm mt-sm">{listing.provider}</p>
-                <div className="flex gap-lg mt-sm">
-                  <span className="text-sm">⭐ {listing.rating}</span>
-                  <span className="text-sm text-muted">📍 {listing.location}</span>
+                <h3 className="service-title">{listing.title}</h3>
+                <p className="service-provider">by {listing.provider}</p>
+                <div className="service-meta-row">
+                  <span className="service-rating">⭐ {listing.rating}</span>
+                  <span className="service-location">📍 {listing.location}</span>
                 </div>
                 <div className="service-footer">
                   <span className="service-price">TZS {listing.price.toLocaleString()}</span>
-                  <button className="service-btn" onClick={() => navigate(`${basePath}/${listing.id}`)}>
+                  <button 
+                    className="service-btn" 
+                    onClick={() => navigate(`${basePath}/${listing.id}`)}
+                  >
                     View Details
                   </button>
                 </div>
@@ -128,8 +154,10 @@ export default function ListingsList() {
           ))}
         </section>
       ) : (
-        <div className="table-empty mt-xl">
-          <p>No listings match your search. Try adjusting your filters.</p>
+        <div className="listings-empty">
+          <div className="listings-empty-icon">🔍</div>
+          <h3 className="listings-empty-title">No listings found</h3>
+          <p className="listings-empty-text">Try adjusting your search or filters</p>
         </div>
       )}
     </main>

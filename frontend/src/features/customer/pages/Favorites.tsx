@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HiSearch, HiStar, HiClipboardList, HiLocationMarker, HiTrash, HiArrowRight } from "react-icons/hi";
+import "../styles/customer.css";
 
 const initialFavorites = [
   { id: "1", name: "Kilimo Best Supplies", category: "Farm Equipment", rating: 4.8, totalServices: 24, location: "Morogoro", initials: "KB" },

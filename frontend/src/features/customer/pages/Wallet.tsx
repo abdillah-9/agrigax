@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { HiSearch, HiArrowDown, HiArrowUp, HiX } from "react-icons/hi";
+import "../styles/customer.css";
 
 const transactions = [
   { id: "TXN-001", type: "deposit", amount: 200000, method: "mpesa", date: "2026-05-20", status: "completed" },

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { HiSearch, HiClipboardList, HiHeart, HiArrowRight, HiCalendar } from "react-icons/hi";
 import { FaWallet } from "react-icons/fa6";
+import "../styles/customer.css";
 
 const recentBookings = [
   { id: "BK-001", service: "Tractor Rental", provider: "Kilimo Best", price: "TZS 120,000", status: "completed", date: "2026-05-20" },
@@ -20,6 +21,7 @@ export default function Dashboard() {
 
   return (
     <main className="customer-page">
+      
       {/* Welcome Banner */}
       <div className="dash-welcome">
         <div className="dash-welcome-content">
