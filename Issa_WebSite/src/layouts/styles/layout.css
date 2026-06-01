@@ -1,0 +1,351 @@
+/* =========================
+   MAIN LAYOUT
+========================= */
+
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  flex: 1;
+  padding-top: 80px;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 16px 0;
+  transition: all var(--transition-smooth);
+}
+
+.navbar.scrolled {
+  padding: 10px 0;
+  background: var(--bg-nav-scrolled);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+}
+
+.dark .navbar.scrolled {
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.nav-logo {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-logo);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: color var(--transition-fast);
+}
+
+.nav-logo .logo-dot {
+  width: 10px;
+  height: 10px;
+  background-color: var(--secondary-base);
+  border-radius: 50%;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* =========================
+   NAV LINKS — STYLE E: NEON BRACKETS
+========================= */
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-nav);
+  padding: 8px 12px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-link::before {
+  content: '[';
+  position: absolute;
+  left: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--secondary-base);
+  opacity: 0;
+  font-size: 16px;
+  font-weight: 300;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 8px var(--secondary-base);
+}
+
+.nav-link::after {
+  content: ']';
+  position: absolute;
+  right: -2px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--secondary-base);
+  opacity: 0;
+  font-size: 16px;
+  font-weight: 300;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 8px var(--secondary-base);
+  background: none;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.nav-link:hover {
+  color: var(--text-nav-hover);
+}
+
+.nav-link:hover::before {
+  opacity: 1;
+  left: -8px;
+}
+
+.nav-link:hover::after {
+  opacity: 1;
+  right: -8px;
+}
+
+.nav-link.active {
+  color: var(--secondary-base);
+  font-weight: 600;
+}
+
+.nav-link.active::before,
+.nav-link.active::after {
+  opacity: 1;
+}
+
+.nav-link.active::before {
+  left: -8px;
+}
+
+.nav-link.active::after {
+  right: -8px;
+}
+
+/* =========================
+   NAV ACTIONS
+========================= */
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.theme-toggle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: rgba(128, 128, 128, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all var(--transition-smooth);
+  color: var(--text-nav);
+}
+
+.dark .theme-toggle {
+  color: var(--secondary-base);
+}
+
+.theme-toggle:hover {
+  transform: rotate(15deg) scale(1.1);
+  border-color: var(--secondary-base);
+  color: var(--secondary-base);
+}
+
+/* Mobile menu button */
+.mobile-menu-btn {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(128, 128, 128, 0.1);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.mobile-menu-btn span {
+  width: 20px;
+  height: 2px;
+  background-color: var(--text-nav);
+  border-radius: 2px;
+  transition: all var(--transition-smooth);
+}
+
+.dark .mobile-menu-btn span {
+  background-color: var(--secondary-base);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer {
+  background-color: var(--bg-footer);
+  color: #888;
+  padding: 60px 0 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.footer-brand h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.footer-brand p {
+  color: #777;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.footer-col h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.footer-col a {
+  display: block;
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 10px;
+  transition: color var(--transition-fast);
+}
+
+.footer-col a:hover {
+  color: var(--secondary-base);
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  padding: 20px 24px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #666;
+}
+
+.footer-social {
+  display: flex;
+  gap: 16px;
+}
+
+.footer-social a {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 16px;
+  transition: all var(--transition-smooth);
+}
+
+.footer-social a:hover {
+  background: var(--secondary-base);
+  color: #0B0B0B;
+  transform: translateY(-3px);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 16px;
+    right: 16px;
+    background: var(--bg-nav-mobile);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    padding: 24px;
+    gap: 18px;
+    border-radius: 16px;
+    border: 1px solid var(--border-card);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  }
+
+  .dark .nav-links {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+}
