@@ -154,7 +154,7 @@
   color: #333;
 }
 
-.data-table tr:hover {
+.data-table tbody tr:hover {
   background: rgba(75, 129, 91, 0.04);
 }
 
@@ -381,6 +381,7 @@
   color: #999;
   font-size: 14px;
 }
+
 /* =====================================================
    STATS CARDS
 ===================================================== */
@@ -457,4 +458,450 @@
   border: 2px solid var(--primary-base, #4B815B);
   background: var(--success-light, #DDF3E6);
   color: var(--success-dark, #1F5A38);
+}
+
+/* =====================================================
+   TABLE CARD WRAPPER
+===================================================== */
+.table-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid rgba(75, 129, 91, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+/* =====================================================
+   TABLE TOOLBAR (inside card)
+===================================================== */
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(75, 129, 91, 0.06);
+  background: #FDFFFC;
+}
+
+.table-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.table-toolbar-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0B0B0B;
+}
+
+.table-toolbar-count {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(75, 129, 91, 0.08);
+  color: #325744;
+}
+
+.table-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.table-search-wrap {
+  position: relative;
+}
+
+.table-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #8C7A48;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.table-search-input {
+  padding: 9px 14px 9px 38px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(75, 129, 91, 0.12);
+  background: rgba(241, 247, 243, 0.3);
+  color: #254036;
+  outline: none;
+  font-size: 13px;
+  width: 220px;
+  transition: all 0.3s ease;
+}
+
+.table-search-input:focus {
+  border-color: #4B815B;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 4px rgba(75, 129, 91, 0.06);
+}
+
+.table-search-input::placeholder {
+  color: #8C7A48;
+  font-size: 12px;
+}
+
+.table-filter-select {
+  width: auto;
+  padding: 9px 14px;
+  font-size: 13px;
+}
+
+/* =====================================================
+   SORT ICONS
+===================================================== */
+.sortable-th {
+  cursor: pointer;
+  user-select: none;
+}
+
+.sortable-th:hover {
+  color: #4B815B;
+}
+
+.sort-icon-active {
+  font-size: 14px;
+  color: #4B815B;
+  margin-left: 4px;
+  vertical-align: -2px;
+}
+
+.sort-icon-inactive {
+  font-size: 14px;
+  color: #CCC;
+  margin-left: 4px;
+  vertical-align: -2px;
+}
+
+.sortable-th:hover .sort-icon-inactive {
+  color: #999;
+}
+
+/* =====================================================
+   EARNINGS TABLE — DESKTOP ENHANCEMENTS
+===================================================== */
+
+/* Column widths */
+.data-table-earnings .col-source { width: 38%; }
+.data-table-earnings .col-amount { width: 24%; }
+.data-table-earnings .col-date   { width: 18%; }
+.data-table-earnings .col-status { width: 20%; }
+
+/* Row hover effect */
+.data-table-earnings tbody tr {
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.data-table-earnings tbody tr:hover {
+  background: rgba(75, 129, 91, 0.03);
+  border-left-color: #4B815B;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Cell text styles */
+.td-source-text {
+  font-weight: 500;
+  color: #0B0B0B;
+}
+
+.td-amount-positive {
+  color: #2E7D4F;
+  font-weight: 600;
+}
+
+.td-date-text {
+  font-size: 13px;
+  color: #6A5C36;
+}
+
+/* Empty state inside table */
+.table-empty-cell {
+  text-align: center;
+  padding: 0 !important;
+}
+
+.table-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 20px;
+  color: #8C7A48;
+}
+
+.table-empty-icon {
+  font-size: 36px;
+  opacity: 0.4;
+}
+
+.table-empty-state p {
+  font-size: 14px;
+  color: #6A5C36;
+}
+
+/* =====================================================
+   RESPONSIVE TABLE → CARDS (MOBILE)
+   Clean single source of truth — no conflicts
+===================================================== */
+
+@media (max-width: 768px) {
+  /* Hide thead */
+  .table-responsive thead {
+    display: none;
+  }
+
+  /* Each row = card */
+  .table-responsive tbody tr {
+    display: block;
+    padding: 16px;
+    margin-bottom: 10px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    border: 1px solid rgba(75, 129, 91, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .table-responsive tbody tr:active {
+    transform: scale(0.985);
+  }
+
+  /* Cells = flex rows with label */
+  .table-responsive td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(75, 129, 91, 0.04);
+    font-size: 14px;
+    text-align: right;
+  }
+
+  .table-responsive td:last-child {
+    border-bottom: none;
+  }
+
+  /* Label from data-label */
+  .table-responsive td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6A5C36;
+    text-align: left;
+    flex-shrink: 0;
+    margin-right: 12px;
+  }
+
+  /* Priority cells — always visible */
+  .table-responsive td.td-priority {
+    display: flex;
+    font-size: 16px;
+    font-weight: 600;
+    color: #0B0B0B;
+    padding-top: 0;
+    text-align: left;
+    justify-content: flex-start;
+  }
+
+  .table-responsive td.td-priority::before {
+    display: none;
+  }
+
+  /* Secondary cells — smooth expand/collapse */
+  .table-responsive td.td-secondary {
+    max-height: 0;
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease, padding 0.25s ease;
+  }
+
+  .table-responsive tr.expanded td.td-secondary {
+    max-height: 80px;
+    opacity: 1;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .table-responsive tr.expanded td.td-secondary:last-child {
+    border-bottom: 1px solid rgba(75, 129, 91, 0.04);
+  }
+
+  /* Tap indicator */
+  .table-responsive tr::after {
+    content: "Tap for more details";
+    display: block;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: #4B815B;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(75, 129, 91, 0.12);
+    transition: color 0.2s ease;
+  }
+
+  .table-responsive tr.expanded::after {
+    content: "Show less";
+    color: #8C7A48;
+  }
+
+  /* Reset desktop styles */
+  .data-table-earnings tbody tr:hover {
+    border-left-color: transparent;
+    box-shadow: none;
+    background: #FFFFFF;
+  }
+
+  .data-table-earnings .col-source,
+  .data-table-earnings .col-amount,
+  .data-table-earnings .col-date,
+  .data-table-earnings .col-status {
+    width: auto;
+  }
+
+  /* Toolbar stacks */
+  .table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .table-search-input {
+    width: 100%;
+  }
+
+  .table-search-wrap {
+    width: 100%;
+  }
+
+  .table-toolbar-right {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 480px) {
+  .table-responsive tbody tr {
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+  }
+
+  .table-responsive td {
+    padding: 6px 0;
+    font-size: 13px;
+  }
+
+  .table-responsive td.td-priority {
+    font-size: 15px;
+  }
+
+  .table-toolbar-right {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .table-filter-select {
+    width: 100%;
+  }
+}
+
+/* =====================================================
+   EARNINGS TABLE — TOOLBAR & HEADER FIX
+===================================================== */
+
+/* Override any leftover earnings-specific toolbar */
+.earnings-table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(75, 129, 91, 0.06);
+  background: #FDFFFC;
+}
+
+.earnings-search-wrap {
+  flex: 1;
+  min-width: 200px;
+  max-width: 340px;
+}
+
+.earnings-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Prevent th text from wrapping — keeps headings on one line */
+.data-table-earnings th {
+  white-space: nowrap;
+}
+
+/* Row hover — clean, no layout shift */
+.data-table-earnings tbody tr {
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+  border-left: 3px solid transparent;
+}
+
+.data-table-earnings tbody tr:hover {
+  background: rgba(75, 129, 91, 0.025);
+  border-left-color: #4B815B;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 768px) {
+  .earnings-table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 14px;
+    gap: 8px;
+  }
+
+  .earnings-search-wrap {
+    max-width: 100%;
+  }
+
+  .earnings-toolbar-right {
+    justify-content: space-between;
+  }
+
+  .data-table-earnings tbody tr:hover {
+    border-left-color: transparent;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .earnings-toolbar-right {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .table-filter-select {
+    width: 100%;
+  }
 }

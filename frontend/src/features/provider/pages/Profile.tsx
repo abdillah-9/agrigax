@@ -1,5 +1,13 @@
 import { useState } from "react";
+import {
+  HiPhone,
+  HiTag,
+  HiCalendar,
+  HiCheck,
+} from "react-icons/hi2";
 import "../styles/provider.css";
+import { BsMailbox } from "react-icons/bs";
+import { HiLocationMarker } from "react-icons/hi";
 
 export default function Profile() {
   const [profile, setProfile] = useState({
@@ -19,34 +27,37 @@ export default function Profile() {
   };
 
   return (
-    <main className="p-xl" style={{ maxWidth: 700 }}>
-      <div className="mb-xl">
-        <h1 className="text-2xl fw-bold neutral-dark">Provider Profile</h1>
-        <p className="text-sm text-muted mt-xs">Manage your public business profile</p>
+    <main className="customer-page" style={{ maxWidth: 700 }}>
+      {/* Page Header */}
+      <div className="customer-page-header">
+        <h1 className="customer-page-title">Provider Profile</h1>
+        <p className="customer-page-subtitle">Manage your public business profile</p>
       </div>
 
+      {/* Profile Card */}
       <section className="profile-premium-card">
         {/* Cover */}
-        <div className="profile-cover" />
+        <div className="profile-cover profile-cover-provider" />
 
         {/* Avatar + Name */}
         <div className="profile-avatar-section">
-          <div className="profile-avatar-lg">A</div>
-          <div style={{ paddingBottom: 8 }}>
-            <h2 className="text-xl fw-bold neutral-dark">{profile.businessName}</h2>
-            <p className="text-sm text-muted">{profile.description}</p>
+          <div className="profile-avatar-lg profile-avatar-provider">A</div>
+          <div className="profile-avatar-info">
+            <h2 className="profile-display-name">{profile.businessName}</h2>
+            <p className="profile-member-since">{profile.description}</p>
           </div>
         </div>
 
         {/* Fields */}
         <div className="profile-body">
           <div className="profile-field-premium">
-            <div className="profile-field-icon" style={{ background: "rgba(58,123,213,0.1)", color: "#3A7BD5" }}>📧</div>
+            <div className="profile-field-icon profile-field-icon-blue">
+              <BsMailbox />
+            </div>
             <div className="profile-field-content">
               <p className="profile-field-label">Email</p>
               <input
-                className="input-text"
-                style={{ border: "none", padding: "4px 0", background: "transparent", fontSize: 14 }}
+                className="profile-field-input"
                 value={profile.email}
                 disabled
               />
@@ -54,12 +65,13 @@ export default function Profile() {
           </div>
 
           <div className="profile-field-premium">
-            <div className="profile-field-icon" style={{ background: "rgba(46,125,79,0.1)", color: "#2E7D4F" }}>📞</div>
+            <div className="profile-field-icon profile-field-icon-green">
+              <HiPhone />
+            </div>
             <div className="profile-field-content">
               <p className="profile-field-label">Phone</p>
               <input
-                className="input-text"
-                style={{ border: "none", padding: "4px 0", background: "transparent", fontSize: 14 }}
+                className="profile-field-input"
                 value={profile.phone}
                 onChange={e => setProfile(p => ({ ...p, phone: e.target.value }))}
               />
@@ -67,12 +79,13 @@ export default function Profile() {
           </div>
 
           <div className="profile-field-premium">
-            <div className="profile-field-icon" style={{ background: "rgba(214,69,69,0.1)", color: "#D64545" }}>📍</div>
+            <div className="profile-field-icon profile-field-icon-red">
+              <HiLocationMarker />
+            </div>
             <div className="profile-field-content">
               <p className="profile-field-label">Location</p>
               <input
-                className="input-text"
-                style={{ border: "none", padding: "4px 0", background: "transparent", fontSize: 14 }}
+                className="profile-field-input"
                 value={profile.location}
                 onChange={e => setProfile(p => ({ ...p, location: e.target.value }))}
               />
@@ -80,27 +93,35 @@ export default function Profile() {
           </div>
 
           <div className="profile-field-premium">
-            <div className="profile-field-icon" style={{ background: "rgba(175,154,90,0.1)", color: "#AF9A5A" }}>🏷️</div>
+            <div className="profile-field-icon profile-field-icon-gold">
+              <HiTag />
+            </div>
             <div className="profile-field-content">
               <p className="profile-field-label">Category</p>
-              <span className="badge badge-info" style={{ marginTop: 4 }}>{profile.category}</span>
+              <span className="badge badge-info">{profile.category}</span>
             </div>
           </div>
 
           <div className="profile-field-premium">
-            <div className="profile-field-icon" style={{ background: "rgba(150,150,150,0.1)", color: "#888" }}>📅</div>
+            <div className="profile-field-icon profile-field-icon-gray">
+              <HiCalendar />
+            </div>
             <div className="profile-field-content">
               <p className="profile-field-label">Member Since</p>
-              <span className="text-sm">{profile.joinedDate}</span>
+              <span className="profile-field-value">{profile.joinedDate}</span>
             </div>
           </div>
 
-          {/* Save Button */}
-          <div className="flex items-center gap-md mt-xl">
+          {/* Action Buttons */}
+          <div className="profile-save-wrap">
             <button className="btn-withdraw" onClick={handleSave}>
-              {saved ? "✓ Profile Updated!" : "Update Profile"}
+              {saved ? (
+                <><HiCheck className="dash-btn-icon" /> Profile Updated!</>
+              ) : (
+                "Update Profile"
+              )}
             </button>
-            <button className="btn-report">Change Password</button>
+            <button className="btn-report" style={{ marginLeft: 12 }}>Change Password</button>
           </div>
         </div>
       </section>

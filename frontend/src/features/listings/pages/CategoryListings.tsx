@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+import { HiStar } from "react-icons/hi2";
 import "../styles/listings.css";
 
 const categoryServices = [
@@ -7,24 +9,33 @@ const categoryServices = [
   { id: "4", title: "Plowing Service", provider: "AgriPro", price: "TZS 90,000", rating: 4.5 },
 ];
 
-export default function CategoryServices() {
+export default function CategoryListings() {
+  const navigate = useNavigate();
+
   return (
-    <main className="p-xl">
-      <div className="mb-xl">
-        <h1 className="text-2xl fw-bold neutral-dark">Farm Equipment</h1>
-        <p className="text-sm mt-sm">Browse equipment services in this category</p>
+    <main className="customer-page">
+      <div className="customer-page-header">
+        <h1 className="customer-page-title">Farm Equipment</h1>
+        <p className="customer-page-subtitle">Browse equipment services in this category</p>
       </div>
 
       <section className="services-grid">
         {categoryServices.map(service => (
-          <div key={service.id} className="service-card shadow-md radius-lg">
+          <div key={service.id} className="service-card">
             <div className="service-image" />
             <div className="service-content">
-              <h3 className="text-lg fw-semibold">{service.title}</h3>
-              <p className="text-sm mt-sm">{service.provider} · ⭐ {service.rating}</p>
+              <h3 className="service-title">{service.title}</h3>
+              <p className="service-provider">
+                {service.provider} ·{" "}
+                <span className="service-rating">
+                  <HiStar className="service-rating-icon" /> {service.rating}
+                </span>
+              </p>
               <div className="service-footer">
                 <span className="service-price">{service.price}</span>
-                <button className="service-btn">View Details</button>
+                <button className="service-btn" onClick={() => navigate(`/app/listings/${service.id}`)}>
+                  View Details
+                </button>
               </div>
             </div>
           </div>

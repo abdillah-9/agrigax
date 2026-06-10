@@ -1,4 +1,10 @@
 import { useState } from "react";
+import {
+  HiCalendar,
+  HiClock,
+  HiCheckCircle,
+  HiCheck,
+} from "react-icons/hi2";
 import "../styles/provider.css";
 
 const days = [
@@ -11,7 +17,10 @@ const days = [
   { key: "sunday", label: "Sunday" },
 ];
 
-const timeOptions = ["06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
+const timeOptions = [
+  "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00",
+  "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00",
+];
 
 export default function Availability() {
   const [schedule, setSchedule] = useState<Record<string, { status: string; start: string; end: string }>>({
@@ -32,150 +41,150 @@ export default function Availability() {
     setTimeout(() => setSaved(false), 2000);
   };
 
+  const handleReset = () => {
+    setSchedule({
+      monday: { status: "available", start: "08:00", end: "17:00" },
+      tuesday: { status: "available", start: "08:00", end: "17:00" },
+      wednesday: { status: "available", start: "08:00", end: "17:00" },
+      thursday: { status: "available", start: "08:00", end: "17:00" },
+      friday: { status: "available", start: "08:00", end: "17:00" },
+      saturday: { status: "unavailable", start: "08:00", end: "17:00" },
+      sunday: { status: "unavailable", start: "08:00", end: "17:00" },
+    });
+  };
+
   const availableDays = Object.values(schedule).filter(d => d.status === "available").length;
 
   return (
-    <main className="p-xl">
-      {/* Header */}
-      <div className="mb-xl">
-        <h1 className="text-2xl fw-bold neutral-dark">Availability</h1>
-        <p className="text-sm text-muted mt-xs">Configure your working schedule · {availableDays} days available</p>
+    <main className="customer-page">
+      {/* Page Header */}
+      <div className="customer-page-header">
+        <h1 className="customer-page-title">Availability</h1>
+        <p className="customer-page-subtitle">
+          Configure your working schedule · {availableDays} days available
+        </p>
       </div>
 
-      {/* Quick Status */}
-      <div className="provider-stats-grid mb-xl">
-        <div className="earnings-stat-card earnings-stat-card-green">
-          <div className="flex items-center gap-md">
-            <div className="earnings-stat-icon earnings-stat-icon-green">📅</div>
+      {/* Quick Stats */}
+      <div className="dashboard-grid">
+        <div className="dash-stat-card dash-stat-green">
+          <div className="dash-stat-row">
+            <div className="dash-stat-icon-wrap dash-stat-icon-green">
+              <HiCalendar />
+            </div>
             <div>
-              <p className="earnings-stat-label">Available Days</p>
-              <p className="earnings-stat-value" style={{ color: "#2E7D4F" }}>{availableDays}/7</p>
+              <p className="dash-stat-label">Available Days</p>
+              <p className="dash-stat-value dash-stat-value-green">{availableDays}<span className="dash-stat-unit">/7</span></p>
             </div>
           </div>
         </div>
-        <div className="earnings-stat-card earnings-stat-card-gold">
-          <div className="flex items-center gap-md">
-            <div className="earnings-stat-icon earnings-stat-icon-gold">⏰</div>
+
+        <div className="dash-stat-card dash-stat-gold">
+          <div className="dash-stat-row">
+            <div className="dash-stat-icon-wrap dash-stat-icon-gold">
+              <HiClock />
+            </div>
             <div>
-              <p className="earnings-stat-label">Avg Hours/Day</p>
-              <p className="earnings-stat-value" style={{ color: "#8C7A48" }}>8.5h</p>
+              <p className="dash-stat-label">Avg Hours / Day</p>
+              <p className="dash-stat-value dash-stat-value-gold">8.5<span className="dash-stat-unit">h</span></p>
             </div>
           </div>
         </div>
-        <div className="earnings-stat-card earnings-stat-card-amber">
-          <div className="flex items-center gap-md">
-            <div className="earnings-stat-icon earnings-stat-icon-amber">🟢</div>
+
+        <div className="dash-stat-card dash-stat-amber">
+          <div className="dash-stat-row">
+            <div className="dash-stat-icon-wrap dash-stat-icon-amber">
+              <HiCheckCircle />
+            </div>
             <div>
-              <p className="earnings-stat-label">Current Status</p>
-              <p className="earnings-stat-value" style={{ color: "#9C8B3D", fontSize: 18 }}>Accepting Bookings</p>
+              <p className="dash-stat-label">Current Status</p>
+              <p className="dash-stat-value dash-stat-value-amber availability-status-text">Accepting Bookings</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Schedule Card */}
-      <section style={{
-        background: "white",
-        borderRadius: 16,
-        border: "1px solid #E6E9E8",
-        boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
-        overflow: "hidden"
-      }}>
-        {/* Table Header */}
-        <div style={{
-          display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr",
-          padding: "14px 20px",
-          background: "#F5F7F6",
-          borderBottom: "1px solid #E6E9E8",
-          gap: 12
-        }}>
-          <span className="text-sm fw-semibold">Day</span>
-          <span className="text-sm fw-semibold">Status</span>
-          <span className="text-sm fw-semibold">From</span>
-          <span className="text-sm fw-semibold">To</span>
+      {/* Schedule Table */}
+      <section className="dash-section">
+        <div className="dash-section-header">
+          <div>
+            <h2 className="dash-section-title">Weekly Schedule</h2>
+            <p className="dash-section-subtitle">Set your availability for each day</p>
+          </div>
         </div>
 
-        {/* Days */}
-        {days.map(day => (
-          <div key={day.key} style={{
-            display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr",
-            padding: "12px 20px",
-            borderBottom: "1px solid #F5F7F6",
-            alignItems: "center",
-            gap: 12,
-            transition: "background 0.2s",
-            background: schedule[day.key].status === "available" ? "white" : "rgba(0,0,0,0.01)"
-          }}>
-            <div className="flex items-center gap-sm">
-              <span style={{
-                width: 32, height: 32, borderRadius: 8,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                background: schedule[day.key].status === "available"
-                  ? "rgba(75,129,91,0.1)" : "rgba(0,0,0,0.04)",
-                color: schedule[day.key].status === "available" ? "#4B815B" : "#999",
-                fontWeight: 700, fontSize: 12
-              }}>
-                {day.label.slice(0, 2)}
-              </span>
-              <span className="text-sm fw-medium">{day.label}</span>
-            </div>
-
-            <select
-              className="input-select"
-              style={{ width: "100%", padding: "8px 12px" }}
-              value={schedule[day.key].status}
-              onChange={e => setSchedule(prev => ({
-                ...prev,
-                [day.key]: { ...prev[day.key], status: e.target.value }
-              }))}
-            >
-              <option value="available">Available</option>
-              <option value="unavailable">Unavailable</option>
-            </select>
-
-            <select
-              className="input-select"
-              style={{ width: "100%", padding: "8px 12px" }}
-              value={schedule[day.key].start}
-              disabled={schedule[day.key].status === "unavailable"}
-              onChange={e => setSchedule(prev => ({
-                ...prev,
-                [day.key]: { ...prev[day.key], start: e.target.value }
-              }))}
-            >
-              {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
-            </select>
-
-            <select
-              className="input-select"
-              style={{ width: "100%", padding: "8px 12px" }}
-              value={schedule[day.key].end}
-              disabled={schedule[day.key].status === "unavailable"}
-              onChange={e => setSchedule(prev => ({
-                ...prev,
-                [day.key]: { ...prev[day.key], end: e.target.value }
-              }))}
-            >
-              {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
-            </select>
+        <div className="availability-table-card">
+          {/* Table Header */}
+          <div className="availability-table-header">
+            <span>Day</span>
+            <span>Status</span>
+            <span>From</span>
+            <span>To</span>
           </div>
-        ))}
+
+          {/* Table Rows */}
+          {days.map(day => {
+            const isAvailable = schedule[day.key].status === "available";
+            return (
+              <div key={day.key} className={`availability-table-row ${isAvailable ? "row-active" : "row-inactive"}`}>
+                <div className="availability-day-cell">
+                  <span className={`availability-day-badge ${isAvailable ? "badge-active" : "badge-inactive"}`}>
+                    {day.label.slice(0, 2)}
+                  </span>
+                  <span className="availability-day-label">{day.label}</span>
+                </div>
+
+                <select
+                  className="input-select availability-select"
+                  value={schedule[day.key].status}
+                  onChange={e => setSchedule(prev => ({
+                    ...prev,
+                    [day.key]: { ...prev[day.key], status: e.target.value },
+                  }))}
+                >
+                  <option value="available">Available</option>
+                  <option value="unavailable">Unavailable</option>
+                </select>
+
+                <select
+                  className="input-select availability-select"
+                  value={schedule[day.key].start}
+                  disabled={!isAvailable}
+                  onChange={e => setSchedule(prev => ({
+                    ...prev,
+                    [day.key]: { ...prev[day.key], start: e.target.value },
+                  }))}
+                >
+                  {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+
+                <select
+                  className="input-select availability-select"
+                  value={schedule[day.key].end}
+                  disabled={!isAvailable}
+                  onChange={e => setSchedule(prev => ({
+                    ...prev,
+                    [day.key]: { ...prev[day.key], end: e.target.value },
+                  }))}
+                >
+                  {timeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+            );
+          })}
+        </div>
       </section>
 
-      {/* Save Button */}
-      <div className="flex items-center gap-md mt-xl">
+      {/* Action Buttons */}
+      <div className="availability-actions">
         <button className="btn-withdraw" onClick={handleSave}>
-          {saved ? "✓ Saved!" : "Save Schedule"}
+          {saved ? (
+            <><HiCheck className="dash-btn-icon" /> Saved!</>
+          ) : (
+            "Save Schedule"
+          )}
         </button>
-        <button className="btn-report" onClick={() => setSchedule({
-          monday: { status: "available", start: "08:00", end: "17:00" },
-          tuesday: { status: "available", start: "08:00", end: "17:00" },
-          wednesday: { status: "available", start: "08:00", end: "17:00" },
-          thursday: { status: "available", start: "08:00", end: "17:00" },
-          friday: { status: "available", start: "08:00", end: "17:00" },
-          saturday: { status: "unavailable", start: "08:00", end: "17:00" },
-          sunday: { status: "unavailable", start: "08:00", end: "17:00" },
-        })}>
+        <button className="btn-report" onClick={handleReset}>
           Reset to Default
         </button>
       </div>

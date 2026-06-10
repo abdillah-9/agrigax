@@ -849,3 +849,1418 @@ input:checked + .toggle-slider::before {
   font-size: 14px;
   color: white;
 }
+
+/* =====================================================
+   PROVIDER DASHBOARD — EXTENSIONS
+   (Reuses customer base: dash-stat-card, dash-stat-row,
+    dash-stat-icon-wrap, dash-stat-label, dash-stat-value,
+    dash-booking-card, dash-booking-avatar, dash-section, etc.)
+===================================================== */
+
+/* Provider welcome — darker gradient for distinction */
+.dash-welcome-provider {
+  background: linear-gradient(135deg, #0B0B0B 0%, #1a2a1f 40%, #254036 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dash-welcome-provider .dash-welcome-name {
+  background: linear-gradient(135deg, #FFFFFF 0%, #DDEBE1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Trend row inside stat cards */
+.dash-stat-trend-row {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(75, 129, 91, 0.08);
+}
+
+.dash-stat-trend {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dash-stat-trend-up {
+  background: #DDF3E6;
+  color: #1F5A38;
+}
+
+.dash-stat-trend-neutral {
+  background: #E3EEFB;
+  color: #25579E;
+}
+
+.dash-stat-trend-warning {
+  background: #FAF4DD;
+  color: #9C8B3D;
+}
+
+.dash-trend-icon {
+  font-size: 13px;
+}
+
+/* =====================================================
+   PROVIDER REVENUE SPARKLINE CARD
+===================================================== */
+
+.provider-revenue-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid rgba(75, 129, 91, 0.08);
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+}
+
+.provider-revenue-total {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.provider-revenue-currency {
+  font-size: 14px;
+  font-weight: 500;
+  color: #8C7A48;
+}
+
+.provider-revenue-amount {
+  font-size: 36px;
+  font-weight: 700;
+  color: #325744;
+  letter-spacing: -1px;
+}
+
+.provider-revenue-period {
+  font-size: 12px;
+  color: #6A5C36;
+  margin-left: 4px;
+}
+
+/* Mini bar chart */
+.provider-bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  height: 120px;
+  padding-top: 8px;
+}
+
+.provider-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.provider-bar-fill {
+  width: 100%;
+  max-width: 44px;
+  background: linear-gradient(180deg, #4B815B 0%, #2E7D4F 100%);
+  border-radius: 6px 6px 0 0;
+  min-height: 4px;
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+.provider-bar-fill:hover {
+  background: linear-gradient(180deg, #5A9A6E 0%, #3A8E5A 100%);
+  filter: brightness(1.1);
+}
+
+.provider-bar-tooltip {
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: #0B0B0B;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.provider-bar-fill:hover .provider-bar-tooltip {
+  opacity: 1;
+}
+
+.provider-bar-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6A5C36;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* =====================================================
+   BADGE EXTENSIONS
+===================================================== */
+
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.badge-success {
+  background: #DDF3E6;
+  color: #1F5A38;
+}
+
+.badge-warning {
+  background: #FAF4DD;
+  color: #9C8B3D;
+}
+
+.badge-info {
+  background: #E3EEFB;
+  color: #25579E;
+}
+
+/* =====================================================
+   RESPONSIVE — PROVIDER DASHBOARD
+===================================================== */
+
+@media (max-width: 768px) {
+  .provider-bar-chart {
+    height: 90px;
+    gap: 6px;
+  }
+
+  .provider-bar-fill {
+    max-width: 32px;
+  }
+
+  .provider-revenue-amount {
+    font-size: 28px;
+  }
+
+  .provider-revenue-card {
+    padding: 16px;
+  }
+
+  .dash-stat-trend-row {
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .provider-bar-chart {
+    height: 70px;
+    gap: 4px;
+  }
+
+  .provider-bar-fill {
+    max-width: 24px;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .provider-bar-label {
+    font-size: 9px;
+  }
+
+  .provider-revenue-amount {
+    font-size: 24px;
+  }
+
+  .dash-stat-card {
+    padding: 16px;
+  }
+
+  .dash-stat-value {
+    font-size: 24px;
+  }
+}
+
+/* =====================================================
+   EARNINGS — EXTENSIONS
+===================================================== */
+
+/* Amber stat card variant */
+.dash-stat-card.dash-stat-amber {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(212, 198, 133, 0.15);
+}
+
+.dash-stat-card.dash-stat-amber::after {
+  background: #D4C685;
+}
+
+.dash-stat-icon-amber {
+  background: rgba(212, 198, 133, 0.15);
+  color: #9C8B3D;
+}
+
+.dash-stat-value-amber {
+  color: #9C8B3D;
+}
+
+/* Earnings action card */
+.earnings-action-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(75, 129, 91, 0.08);
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  margin-top: 24px;
+}
+
+.earnings-action-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.earnings-action-icon-wrap {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #4B815B 0%, #2E7D4F 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(75, 129, 91, 0.25);
+}
+
+.earnings-action-icon-svg {
+  font-size: 22px;
+  color: #FFFFFF;
+}
+
+.earnings-action-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #0B0B0B;
+}
+
+.earnings-action-subtitle {
+  font-size: 12px;
+  color: #6A5C36;
+  margin-top: 2px;
+}
+
+.earnings-action-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Filter row */
+.earnings-filter-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Sort icons */
+.sortable-th {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sortable-th:hover {
+  color: #4B815B;
+}
+
+.sort-icon-active {
+  font-size: 14px;
+  color: #4B815B;
+}
+
+.sort-icon-inactive {
+  font-size: 14px;
+  color: #CCC;
+}
+
+.sortable-th:hover .sort-icon-inactive {
+  color: #999;
+}
+
+/* Provider modal (withdraw) */
+.provider-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.provider-modal {
+  background: #FFF;
+  border-radius: 20px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.provider-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 0;
+}
+
+.provider-modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.provider-modal-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #FFF;
+}
+
+.provider-modal-icon-withdraw {
+  background: linear-gradient(135deg, #4B815B, #2E7D4F);
+}
+
+.provider-modal-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0B0B0B;
+}
+
+.provider-modal-subtitle {
+  font-size: 13px;
+  color: #6A5C36;
+  margin-top: 2px;
+}
+
+.provider-modal-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #6A5C36;
+  transition: all 0.2s ease;
+}
+
+.provider-modal-close:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.provider-modal-body {
+  padding: 20px 24px;
+}
+
+.provider-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.provider-modal-footer {
+  padding: 16px 24px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* =====================================================
+   ANALYTICS — EXTENSIONS
+===================================================== */
+
+/* Chart card */
+.analytics-chart-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid rgba(75, 129, 91, 0.08);
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+}
+
+.analytics-chart-card-blue {
+  border-color: rgba(58, 123, 213, 0.08);
+}
+
+/* Bar color variants */
+.bar-mini-green {
+  background: linear-gradient(180deg, #4B815B 0%, #8CBF9A 100%);
+}
+
+.bar-mini-blue {
+  background: linear-gradient(180deg, #3A7BD5 0%, #8BB5E8 100%);
+}
+
+/* Bar label colors */
+.bar-label-green {
+  color: #4B815B;
+}
+
+.bar-label-blue {
+  color: #3A7BD5;
+}
+
+/* Rating cell */
+.rating-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.rating-star {
+  font-size: 16px;
+  color: #D4C685;
+}
+
+/* =====================================================
+   PROFILE — EXTENSIONS
+===================================================== */
+
+/* Provider profile cover */
+.profile-cover-provider {
+  background: linear-gradient(135deg, #4B815B 0%, #2E7D4F 50%, #1F5A38 100%);
+  position: relative;
+}
+
+.profile-cover-provider::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Provider avatar */
+.profile-avatar-provider {
+  background: linear-gradient(135deg, #AF9A5A 0%, #D4C685 100%);
+  border-radius: 20px;
+  border: 4px solid #FFF;
+  box-shadow: 0 4px 16px rgba(175, 154, 90, 0.3);
+}
+
+/* Profile icon color variants */
+.profile-field-icon-blue  { background: rgba(58, 123, 213, 0.1); color: #3A7BD5; }
+.profile-field-icon-green { background: rgba(46, 125, 79, 0.1); color: #2E7D4F; }
+.profile-field-icon-red   { background: rgba(214, 69, 69, 0.08); color: #D64545; }
+.profile-field-icon-gold  { background: rgba(175, 154, 90, 0.1); color: #8C7A48; }
+.profile-field-icon-gray  { background: rgba(150, 150, 150, 0.1); color: #888; }
+
+/* =====================================================
+   RESPONSIVE — EARNINGS, ANALYTICS, PROFILE
+===================================================== */
+
+@media (max-width: 768px) {
+  .earnings-action-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .earnings-action-buttons {
+    width: 100%;
+  }
+
+  .earnings-action-buttons .btn-withdraw,
+  .earnings-action-buttons .btn-report {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .earnings-filter-row {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .earnings-filter-row .customer-search-wrap {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .earnings-filter-row .customer-search-input {
+    width: 100% !important;
+  }
+
+  .provider-modal {
+    margin: 12px;
+    border-radius: 16px;
+  }
+
+  .analytics-chart-card {
+    padding: 16px;
+  }
+
+  .bar-chart-mini {
+    height: 80px;
+  }
+
+  .profile-avatar-section {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile-avatar-info {
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .provider-modal-header {
+    padding: 16px 16px 0;
+  }
+
+  .provider-modal-body {
+    padding: 16px;
+  }
+
+  .provider-modal-footer {
+    padding: 12px 16px 16px;
+    flex-direction: column;
+  }
+
+  .provider-modal-footer button {
+    width: 100%;
+  }
+
+  .bar-chart-mini {
+    height: 60px;
+    gap: 6px;
+  }
+
+  .bar-label {
+    font-size: 10px;
+  }
+
+  .profile-avatar-lg {
+    width: 72px;
+    height: 72px;
+    font-size: 24px;
+  }
+}
+
+/* =====================================================
+   SETTINGS — EXTENSIONS
+===================================================== */
+
+/* Settings card (shared with customer) */
+.settings-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  border: 1px solid rgba(75, 129, 91, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-item-premium {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.settings-item-premium:hover {
+  background: rgba(75, 129, 91, 0.02);
+  border-color: rgba(75, 129, 91, 0.08);
+}
+
+.settings-item-icon {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.settings-item-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.settings-item-content {
+  flex: 1;
+}
+
+.settings-item-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0B0B0B;
+}
+
+.settings-item-desc {
+  font-size: 12px;
+  color: #6A5C36;
+  margin-top: 2px;
+}
+
+/* Settings icon colors */
+.settings-icon-blue      { background: rgba(58, 123, 213, 0.1); color: #3A7BD5; }
+.settings-icon-green     { background: rgba(46, 125, 79, 0.1); color: #2E7D4F; }
+.settings-icon-gold      { background: rgba(214, 198, 133, 0.15); color: #9C8B3D; }
+.settings-icon-secondary { background: rgba(175, 154, 90, 0.1); color: #8C7A48; }
+.settings-icon-red       { background: rgba(214, 69, 69, 0.08); color: #D64545; }
+
+.settings-save-wrap {
+  margin-top: 24px;
+}
+
+/* Danger zone */
+.danger-zone {
+  margin-top: 32px;
+  padding: 20px 24px;
+  border-radius: 16px;
+  border: 1.5px solid #FBE3E3;
+  background: #FFFFFF;
+}
+
+.danger-zone-title {
+  font-weight: 600;
+  color: #D64545;
+  font-size: 16px;
+}
+
+.danger-zone-desc {
+  font-size: 14px;
+  color: #6A5C36;
+  margin-top: 4px;
+}
+
+.danger-zone-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.danger-btn-outline {
+  color: #D64545 !important;
+  border-color: #FBE3E3 !important;
+}
+
+.danger-btn-outline:hover {
+  background: #FEF2F2 !important;
+}
+
+/* =====================================================
+   AVAILABILITY — EXTENSIONS
+===================================================== */
+
+/* Stat unit (e.g. /7, h) */
+.dash-stat-unit {
+  font-size: 16px;
+  font-weight: 500;
+  opacity: 0.6;
+}
+
+.availability-status-text {
+  font-size: 18px !important;
+}
+
+/* Availability table card */
+.availability-table-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid rgba(75, 129, 91, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+/* Table header */
+.availability-table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 14px 20px;
+  background: #F5F7F6;
+  border-bottom: 1px solid #E6E9E8;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #325744;
+}
+
+/* Table row */
+.availability-table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 12px 20px;
+  border-bottom: 1px solid #F5F7F6;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.2s ease;
+}
+
+.availability-table-row:last-child {
+  border-bottom: none;
+}
+
+.availability-table-row.row-active {
+  background: #FFFFFF;
+}
+
+.availability-table-row.row-inactive {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+/* Day cell */
+.availability-day-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.availability-day-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.availability-day-badge.badge-active {
+  background: rgba(75, 129, 91, 0.1);
+  color: #4B815B;
+}
+
+.availability-day-badge.badge-inactive {
+  background: rgba(0, 0, 0, 0.04);
+  color: #999;
+}
+
+.availability-day-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0B0B0B;
+}
+
+/* Select inputs in table */
+.availability-select {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+/* Action buttons row */
+.availability-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+/* =====================================================
+   TOGGLE SWITCH (already defined, keeping for reference)
+===================================================== */
+
+.toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  min-width: 48px;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #E6E9E8;
+  border-radius: 28px;
+  transition: all 0.3s ease;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input:checked + .toggle-slider {
+  background: linear-gradient(135deg, #4B815B, #2E7D4F);
+}
+
+input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+/* =====================================================
+   RESPONSIVE — SETTINGS & AVAILABILITY
+===================================================== */
+
+@media (max-width: 768px) {
+  .settings-item-premium {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .settings-item-content {
+    min-width: 140px;
+  }
+
+  .danger-zone-actions {
+    flex-direction: column;
+  }
+
+  .danger-zone-actions .dash-action-btn {
+    width: 100%;
+  }
+
+  .availability-table-header,
+  .availability-table-row {
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    padding: 10px 12px;
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .availability-select {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .availability-day-label {
+    font-size: 13px;
+  }
+
+  .availability-day-badge {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+    border-radius: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-item-premium {
+    flex-wrap: wrap;
+    padding: 12px;
+  }
+
+  .availability-table-header,
+  .availability-table-row {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    padding: 8px 10px;
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  .availability-day-cell {
+    gap: 0;
+  }
+
+  .availability-select {
+    padding: 6px 4px;
+    font-size: 11px;
+  }
+
+  .availability-actions {
+    flex-direction: column;
+  }
+
+  .availability-actions .btn-withdraw,
+  .availability-actions .btn-report {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+/* =====================================================
+   SETTINGS — EXTENSIONS
+===================================================== */
+
+/* Settings card (shared with customer) */
+.settings-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  border: 1px solid rgba(75, 129, 91, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings-item-premium {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.settings-item-premium:hover {
+  background: rgba(75, 129, 91, 0.02);
+  border-color: rgba(75, 129, 91, 0.08);
+}
+
+.settings-item-icon {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.settings-item-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.settings-item-content {
+  flex: 1;
+}
+
+.settings-item-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0B0B0B;
+}
+
+.settings-item-desc {
+  font-size: 12px;
+  color: #6A5C36;
+  margin-top: 2px;
+}
+
+/* Settings icon colors */
+.settings-icon-blue      { background: rgba(58, 123, 213, 0.1); color: #3A7BD5; }
+.settings-icon-green     { background: rgba(46, 125, 79, 0.1); color: #2E7D4F; }
+.settings-icon-gold      { background: rgba(214, 198, 133, 0.15); color: #9C8B3D; }
+.settings-icon-secondary { background: rgba(175, 154, 90, 0.1); color: #8C7A48; }
+.settings-icon-red       { background: rgba(214, 69, 69, 0.08); color: #D64545; }
+
+.settings-save-wrap {
+  margin-top: 24px;
+}
+
+/* Danger zone */
+.danger-zone {
+  margin-top: 32px;
+  padding: 20px 24px;
+  border-radius: 16px;
+  border: 1.5px solid #FBE3E3;
+  background: #FFFFFF;
+}
+
+.danger-zone-title {
+  font-weight: 600;
+  color: #D64545;
+  font-size: 16px;
+}
+
+.danger-zone-desc {
+  font-size: 14px;
+  color: #6A5C36;
+  margin-top: 4px;
+}
+
+.danger-zone-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.danger-btn-outline {
+  color: #D64545 !important;
+  border-color: #FBE3E3 !important;
+}
+
+.danger-btn-outline:hover {
+  background: #FEF2F2 !important;
+}
+
+/* =====================================================
+   AVAILABILITY — EXTENSIONS
+===================================================== */
+
+/* Stat unit (e.g. /7, h) */
+.dash-stat-unit {
+  font-size: 16px;
+  font-weight: 500;
+  opacity: 0.6;
+}
+
+.availability-status-text {
+  font-size: 18px !important;
+}
+
+/* Availability table card */
+.availability-table-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid rgba(75, 129, 91, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+/* Table header */
+.availability-table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 14px 20px;
+  background: #F5F7F6;
+  border-bottom: 1px solid #E6E9E8;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #325744;
+}
+
+/* Table row */
+.availability-table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  padding: 12px 20px;
+  border-bottom: 1px solid #F5F7F6;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.2s ease;
+}
+
+.availability-table-row:last-child {
+  border-bottom: none;
+}
+
+.availability-table-row.row-active {
+  background: #FFFFFF;
+}
+
+.availability-table-row.row-inactive {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+/* Day cell */
+.availability-day-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.availability-day-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.availability-day-badge.badge-active {
+  background: rgba(75, 129, 91, 0.1);
+  color: #4B815B;
+}
+
+.availability-day-badge.badge-inactive {
+  background: rgba(0, 0, 0, 0.04);
+  color: #999;
+}
+
+.availability-day-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0B0B0B;
+}
+
+/* Select inputs in table */
+.availability-select {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+/* Action buttons row */
+.availability-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+/* =====================================================
+   TOGGLE SWITCH (already defined, keeping for reference)
+===================================================== */
+
+.toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  min-width: 48px;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #E6E9E8;
+  border-radius: 28px;
+  transition: all 0.3s ease;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input:checked + .toggle-slider {
+  background: linear-gradient(135deg, #4B815B, #2E7D4F);
+}
+
+input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+/* =====================================================
+   RESPONSIVE — SETTINGS & AVAILABILITY
+===================================================== */
+
+@media (max-width: 768px) {
+  .settings-item-premium {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .settings-item-content {
+    min-width: 140px;
+  }
+
+  .danger-zone-actions {
+    flex-direction: column;
+  }
+
+  .danger-zone-actions .dash-action-btn {
+    width: 100%;
+  }
+
+  .availability-table-header,
+  .availability-table-row {
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    padding: 10px 12px;
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .availability-select {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .availability-day-label {
+    font-size: 13px;
+  }
+
+  .availability-day-badge {
+    width: 28px;
+    height: 28px;
+    font-size: 10px;
+    border-radius: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-item-premium {
+    flex-wrap: wrap;
+    padding: 12px;
+  }
+
+  .availability-table-header,
+  .availability-table-row {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    padding: 8px 10px;
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  .availability-day-cell {
+    gap: 10px;
+  }
+
+  .availability-select {
+    padding: 6px 4px;
+    font-size: 11px;
+  }
+
+  .availability-actions {
+    flex-direction: column;
+  }
+
+  .availability-actions .btn-withdraw,
+  .availability-actions .btn-report {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+/* =====================================================
+   AVAILABILITY TABLE — MOBILE CARDS
+===================================================== */
+
+@media (max-width: 768px) {
+  /* Hide the grid header on mobile */
+  .availability-table-header {
+    display: none;
+  }
+
+  /* Each row becomes a card */
+  .availability-table-row {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    padding: 16px !important;
+    margin-bottom: 10px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    border: 1px solid rgba(75, 129, 91, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  }
+
+  .availability-table-row:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Day cell — prominent at top */
+  .availability-day-cell {
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(75, 129, 91, 0.08);
+  }
+
+  .availability-day-badge {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+
+  .availability-day-label {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  /* Select fields — full width with labels */
+  .availability-select {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  /* Add pseudo labels for each select */
+  .availability-table-row select:nth-of-type(1) {
+    order: 1;
+  }
+
+  .availability-table-row select:nth-of-type(1)::before {
+    content: "Status";
+  }
+
+  /* Wrap selects in a cleaner layout */
+  .availability-table-row {
+    display: flex !important;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .availability-table-row {
+    padding: 12px !important;
+    gap: 8px !important;
+  }
+
+  .availability-day-badge {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .availability-day-label {
+    font-size: 15px;
+  }
+}

@@ -1,5 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  HiPlus,
+  HiStar,
+  HiPencilSquare,
+  HiTrash,
+  HiExclamationTriangle,
+  HiXMark,
+  HiEye,
+  HiFunnel,
+  HiCheckCircle,
+  HiMinusCircle,
+} from "react-icons/hi2";
 import "../styles/listings.css";
 
 const myListings = [
@@ -23,74 +35,194 @@ export default function MyListings() {
     setShowDeleteConfirm(null);
   };
 
+  const activeCount = myListings.filter(l => l.status === "active").length;
+  const inactiveCount = myListings.filter(l => l.status === "inactive").length;
+
   return (
-    <main className="p-xl">
-      <div className="services-header">
-        <div>
-          <h1 className="text-2xl fw-bold neutral-dark">My Listings</h1>
-          <p className="text-sm mt-sm">Manage your listings</p>
+    <main className="customer-page">
+      {/* Page Header */}
+      <div className="dash-welcome my-listings-banner">
+        <div className="dash-welcome-content">
+          <div className="dash-welcome-text">
+            <p className="dash-welcome-greeting">Provider Dashboard</p>
+            <h1 className="dash-welcome-name">My Listings</h1>
+            <p className="dash-welcome-subtitle">
+              Manage your {myListings.length} listings · {activeCount} active, {inactiveCount} inactive
+            </p>
+          </div>
+          <button
+            className="dash-action-btn dash-action-btn-primary"
+            onClick={() => navigate("/provider/listings/create")}
+          >
+            <HiPlus className="dash-btn-icon" />
+            <span>Create Listing</span>
+          </button>
         </div>
-        <button className="create-service-btn" onClick={() => navigate("/provider/listings/create")}>
-          + Create Listing
-        </button>
       </div>
 
-      <div className="flex gap-sm mt-lg">
-        {["all", "active", "inactive"].map(f => (
+      {/* Stats Row */}
+      <div className="dashboard-grid">
+        <div className="dash-stat-card dash-stat-green">
+          <div className="dash-stat-row">
+            <div className="dash-stat-icon-wrap dash-stat-icon-green">
+              <HiCheckCircle />
+            </div>
+            <div>
+              <p className="dash-stat-label">Active Listings</p>
+              <p className="dash-stat-value dash-stat-value-green">{activeCount}</p>
+            </div>
+          </div>
+        </div>
+        <div className="dash-stat-card dash-stat-blue">
+          <div className="dash-stat-row">
+            <div className="dash-stat-icon-wrap dash-stat-icon-blue">
+              <HiEye />
+            </div>
+            <div>
+              <p className="dash-stat-label">Total Bookings</p>
+              <p className="dash-stat-value dash-stat-value-blue">
+                {myListings.reduce((sum, l) => sum + l.bookings, 0)}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="dash-stat-card dash-stat-gold">
+          <div className="dash-stat-row">
+            <div className="dash-stat-icon-wrap dash-stat-icon-gold">
+              <HiStar />
+            </div>
+            <div>
+              <p className="dash-stat-label">Avg Rating</p>
+              <p className="dash-stat-value dash-stat-value-gold">
+                {(myListings.reduce((sum, l) => sum + l.rating, 0) / myListings.length).toFixed(1)}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="my-listings-tabs">
+        {[
+          { key: "all", label: "All", count: myListings.length },
+          { key: "active", label: "Active", count: activeCount },
+          { key: "inactive", label: "Inactive", count: inactiveCount },
+        ].map(tab => (
           <button
-            key={f}
-            className={`tab-btn ${statusFilter === f ? "tab-btn-active" : ""}`}
-            onClick={() => setStatusFilter(f)}
-            style={{ textTransform: "capitalize" }}
+            key={tab.key}
+            className={`my-listings-tab ${statusFilter === tab.key ? "tab-active" : ""}`}
+            onClick={() => setStatusFilter(tab.key)}
           >
-            {f}
+            <span>{tab.label}</span>
+            <span className="tab-count">{tab.count}</span>
           </button>
         ))}
       </div>
 
-      <section className="provider-services-list mt-lg">
+      {/* Listings Cards */}
+      <section className="my-listings-grid">
         {filtered.map(listing => (
-          <div key={listing.id} className="provider-service-card shadow-sm radius-lg">
-            <div>
-              <h3 className="fw-semibold">{listing.title}</h3>
-              <p className="text-sm mt-sm">
-                {listing.category} · TZS {listing.price.toLocaleString()} · {listing.bookings} bookings
-              </p>
-              <p className="text-sm mt-sm">⭐ {listing.rating}</p>
+          <div key={listing.id} className="my-listing-card">
+            {/* Card Image Placeholder */}
+            <div className="my-listing-image">
+              <div className="my-listing-image-overlay">
+                <span className={`my-listing-status-badge ${listing.status === "active" ? "status-active" : "status-inactive"}`}>
+                  {listing.status === "active" ? (
+                    <><HiCheckCircle className="status-icon" /> Active</>
+                  ) : (
+                    <><HiMinusCircle className="status-icon" /> Inactive</>
+                  )}
+                </span>
+              </div>
             </div>
-            <div>
-              <span className={`badge ${listing.status === "active" ? "badge-success" : "badge-default"} mb-sm`} style={{ display: "inline-block" }}>
-                {listing.status}
-              </span>
-              <div className="provider-service-actions mt-sm">
-                <button className="edit-btn" onClick={() => navigate(`/provider/listings/edit/${listing.id}`)}>Edit</button>
-                <button className="delete-btn" onClick={() => setShowDeleteConfirm(listing.id)}>Delete</button>
+
+            {/* Card Body */}
+            <div className="my-listing-body">
+              <div className="my-listing-info">
+                <h3 className="my-listing-title">{listing.title}</h3>
+                <span className="my-listing-category">{listing.category}</span>
+              </div>
+
+              <div className="my-listing-stats">
+                <div className="my-listing-stat">
+                  <span className="my-listing-price">TZS {listing.price.toLocaleString()}</span>
+                </div>
+                <div className="my-listing-stat">
+                  <HiStar className="stat-star" />
+                  <span>{listing.rating}</span>
+                </div>
+                <div className="my-listing-stat">
+                  <span className="stat-label">{listing.bookings} bookings</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="my-listing-actions">
+                <button
+                  className="my-listing-btn my-listing-btn-edit"
+                  onClick={() => navigate(`/provider/listings/edit/${listing.id}`)}
+                >
+                  <HiPencilSquare />
+                  Edit
+                </button>
+                <button
+                  className="my-listing-btn my-listing-btn-view"
+                  onClick={() => navigate(`/app/listings/${listing.id}`)}
+                >
+                  <HiEye />
+                  View
+                </button>
+                <button
+                  className="my-listing-btn my-listing-btn-delete"
+                  onClick={() => setShowDeleteConfirm(listing.id)}
+                >
+                  <HiTrash />
+                  Delete
+                </button>
               </div>
             </div>
           </div>
         ))}
+
+        {filtered.length === 0 && (
+          <div className="listings-empty">
+            <div className="listings-empty-icon">
+              <HiFunnel />
+            </div>
+            <h3 className="listings-empty-title">No listings found</h3>
+            <p className="listings-empty-text">Try changing your filter</p>
+          </div>
+        )}
       </section>
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
-        <div className="inv-modal-backdrop" onClick={() => setShowDeleteConfirm(null)}>
-          <div className="inv-modal" onClick={e => e.stopPropagation()}>
-            <div className="inv-modal-header">
-              <div className="inv-modal-header-left">
-                <span className="inv-modal-icon">⚠️</span>
+        <div className="provider-modal-backdrop" onClick={() => setShowDeleteConfirm(null)}>
+          <div className="provider-modal" onClick={e => e.stopPropagation()}>
+            <div className="provider-modal-header">
+              <div className="provider-modal-header-left">
+                <div className="provider-modal-icon-wrap provider-modal-icon-danger">
+                  <HiExclamationTriangle />
+                </div>
                 <div>
-                  <div className="inv-modal-title">Delete Listing</div>
-                  <div className="inv-modal-subtitle">This action cannot be undone</div>
+                  <h3 className="provider-modal-title">Delete Listing</h3>
+                  <p className="provider-modal-subtitle">This action cannot be undone</p>
                 </div>
               </div>
-              <button className="inv-modal-close" onClick={() => setShowDeleteConfirm(null)}>×</button>
+              <button className="provider-modal-close" onClick={() => setShowDeleteConfirm(null)}>
+                <HiXMark />
+              </button>
             </div>
-            <div className="inv-modal-body">
-              <p>Are you sure you want to delete this listing? All associated bookings will be cancelled.</p>
+            <div className="provider-modal-body">
+              <p className="delete-confirm-text">
+                Are you sure you want to delete this listing? All associated bookings will be cancelled and data will be permanently removed.
+              </p>
             </div>
-            <div className="inv-modal-footer">
-              <button className="inv-btn-cancel" onClick={() => setShowDeleteConfirm(null)}>Cancel</button>
-              <button className="inv-btn-submit" style={{ background: "#D64545" }} onClick={() => handleDelete(showDeleteConfirm)}>Delete</button>
+            <div className="provider-modal-footer">
+              <button className="btn-report" onClick={() => setShowDeleteConfirm(null)}>Cancel</button>
+              <button className="btn-delete-confirm" onClick={() => handleDelete(showDeleteConfirm)}>
+                <HiTrash className="dash-btn-icon" /> Delete Permanently
+              </button>
             </div>
           </div>
         </div>

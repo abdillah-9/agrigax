@@ -1,5 +1,13 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import {
+  HiMagnifyingGlass,
+  HiStar,
+  HiMapPin,
+  HiFunnel,
+  HiXMark,
+  HiAdjustmentsHorizontal,
+} from "react-icons/hi2";
 import "../styles/listings.css";
 
 const allListings = [
@@ -58,27 +66,32 @@ export default function ListingsList() {
       {/* Search & Filters Bar */}
       <div className="listings-filters-row">
         <div className="listings-search-wrap">
+          <HiMagnifyingGlass className="listings-search-icon" />
           <input
-            className="listings-search-input"
+            className="listings-search-input listings-search-input-icon"
             placeholder="Search by name, provider, or location..."
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
         </div>
-        <select 
-          className="listings-filter-select" 
-          value={priceSort} 
+        <select
+          className="listings-filter-select"
+          value={priceSort}
           onChange={e => setPriceSort(e.target.value)}
         >
           <option value="none">Sort by Price</option>
           <option value="low">Lowest First</option>
           <option value="high">Highest First</option>
         </select>
-        <button 
-          className="listings-toggle-btn" 
+        <button
+          className="listings-toggle-btn"
           onClick={() => setShowFilters(!showFilters)}
         >
-          {showFilters ? "✕ Hide Filters" : "☰ Filters"}
+          {showFilters ? (
+            <><HiXMark className="listings-toggle-icon" /> Hide Filters</>
+          ) : (
+            <><HiAdjustmentsHorizontal className="listings-toggle-icon" /> Filters</>
+          )}
         </button>
       </div>
 
@@ -88,9 +101,9 @@ export default function ListingsList() {
           <div className="listings-filter-grid">
             <div className="listings-filter-group">
               <label className="listings-filter-label">Category</label>
-              <select 
-                className="listings-filter-select-full" 
-                value={categoryFilter} 
+              <select
+                className="listings-filter-select-full"
+                value={categoryFilter}
                 onChange={e => setCategoryFilter(e.target.value)}
               >
                 <option value="all">All Categories</option>
@@ -99,16 +112,16 @@ export default function ListingsList() {
             </div>
             <div className="listings-filter-group">
               <label className="listings-filter-label">Type</label>
-              <select 
-                className="listings-filter-select-full" 
-                value={typeFilter} 
+              <select
+                className="listings-filter-select-full"
+                value={typeFilter}
                 onChange={e => setTypeFilter(e.target.value)}
               >
                 <option value="all">All Types</option>
                 {types.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             </div>
-            <button 
+            <button
               className="listings-reset-btn"
               onClick={() => { setCategoryFilter("all"); setTypeFilter("all"); setSearch(""); setPriceSort("none"); }}
             >
@@ -137,13 +150,17 @@ export default function ListingsList() {
                 <h3 className="service-title">{listing.title}</h3>
                 <p className="service-provider">by {listing.provider}</p>
                 <div className="service-meta-row">
-                  <span className="service-rating">⭐ {listing.rating}</span>
-                  <span className="service-location">📍 {listing.location}</span>
+                  <span className="service-rating">
+                    <HiStar className="service-rating-icon" /> {listing.rating}
+                  </span>
+                  <span className="service-location">
+                    <HiMapPin className="service-location-icon" /> {listing.location}
+                  </span>
                 </div>
                 <div className="service-footer">
                   <span className="service-price">TZS {listing.price.toLocaleString()}</span>
-                  <button 
-                    className="service-btn" 
+                  <button
+                    className="service-btn"
                     onClick={() => navigate(`${basePath}/${listing.id}`)}
                   >
                     View Details
@@ -155,7 +172,9 @@ export default function ListingsList() {
         </section>
       ) : (
         <div className="listings-empty">
-          <div className="listings-empty-icon">🔍</div>
+          <div className="listings-empty-icon">
+            <HiMagnifyingGlass />
+          </div>
           <h3 className="listings-empty-title">No listings found</h3>
           <p className="listings-empty-text">Try adjusting your search or filters</p>
         </div>

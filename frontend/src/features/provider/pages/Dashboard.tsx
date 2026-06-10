@@ -1,143 +1,253 @@
 import { useNavigate } from "react-router-dom";
+import {
+  HiCurrencyDollar,
+  HiClipboardList,
+  HiClock,
+  HiPlus,
+  HiArrowRight,
+  HiCollection,
+  HiCalendar,
+  HiChartBar,
+  HiTrendingUp,
+} from "react-icons/hi";
 import "../styles/provider.css";
 
 const recentBookings = [
-  { id: "BK-001", customer: "Juma M.", initials: "JM", service: "Tractor Rental", amount: "TZS 120,000", status: "pending", date: "2026-05-20" },
-  { id: "BK-002", customer: "Fatima J.", initials: "FJ", service: "Seeds Supply", amount: "TZS 85,000", status: "accepted", date: "2026-05-20" },
-  { id: "BK-003", customer: "David S.", initials: "DS", service: "Irrigation Setup", amount: "TZS 320,000", status: "completed", date: "2026-05-19" },
-  { id: "BK-004", customer: "Grace M.", initials: "GM", service: "Soil Testing", amount: "TZS 45,000", status: "pending", date: "2026-05-18" },
+  {
+    id: "BK-001",
+    customer: "Juma M.",
+    initials: "JM",
+    service: "Tractor Rental",
+    amount: "TZS 120,000",
+    status: "pending",
+    date: "2026-05-20",
+  },
+  {
+    id: "BK-002",
+    customer: "Fatima J.",
+    initials: "FJ",
+    service: "Seeds Supply",
+    amount: "TZS 85,000",
+    status: "accepted",
+    date: "2026-05-20",
+  },
+  {
+    id: "BK-003",
+    customer: "David S.",
+    initials: "DS",
+    service: "Irrigation Setup",
+    amount: "TZS 320,000",
+    status: "completed",
+    date: "2026-05-19",
+  },
+  {
+    id: "BK-004",
+    customer: "Grace M.",
+    initials: "GM",
+    service: "Soil Testing",
+    amount: "TZS 45,000",
+    status: "pending",
+    date: "2026-05-18",
+  },
 ];
 
 const quickLinks = [
-  { icon: "📋", label: "My Listings", path: "/provider/listings", primary: false },
-  { icon: "📅", label: "Bookings", path: "/provider/bookings", primary: false },
-  { icon: "💰", label: "Earnings", path: "/provider/earnings", primary: false },
-  { icon: "📊", label: "Analytics", path: "/provider/analytics", primary: false },
+  { icon: HiCollection, label: "My Listings", path: "/provider/listings" },
+  { icon: HiCalendar, label: "Bookings", path: "/provider/bookings" },
+  { icon: HiCurrencyDollar, label: "Earnings", path: "/provider/earnings" },
+  { icon: HiChartBar, label: "Analytics", path: "/provider/analytics" },
+];
+
+const revenueBars = [
+  { day: "Mon", value: 45, height: 45 },
+  { day: "Tue", value: 62, height: 62 },
+  { day: "Wed", value: 38, height: 38 },
+  { day: "Thu", value: 78, height: 78 },
+  { day: "Fri", value: 55, height: 55 },
+  { day: "Sat", value: 90, height: 90 },
+  { day: "Sun", value: 70, height: 70 },
 ];
 
 export default function Dashboard() {
   const navigate = useNavigate();
 
-  const getStatusStyle = (status: string) => {
-    switch (status) {
-      case "pending": return { bg: "#FAF4DD", color: "#9C8B3D", dot: "#D4C685" };
-      case "accepted": return { bg: "#E3EEFB", color: "#25579E", dot: "#3A7BD5" };
-      case "completed": return { bg: "#DDF3E6", color: "#1F5A38", dot: "#2E7D4F" };
-      default: return { bg: "#F5F7F6", color: "#666", dot: "#999" };
-    }
-  };
-
   return (
-    <main className="p-xl">
-      {/* Welcome Banner */}
-      <div className="dash-welcome mb-xl">
-        <div className="dash-welcome-content flex justify-between items-center flex-wrap gap-lg">
-          <div>
-            <p className="dash-welcome-greeting mb-sm">Provider Dashboard</p>
-            <h1 className="text-2xl fw-bold dash-welcome-name">Welcome back, Agro Solutions</h1>
-            <p className="text-sm mt-sm" style={{ color: "rgba(255,255,255,0.4)" }}>
+    <main className="customer-page">
+      {/* ============ WELCOME BANNER ============ */}
+      <div className="dash-welcome dash-welcome-provider">
+        <div className="dash-welcome-content">
+          <div className="dash-welcome-text">
+            <p className="dash-welcome-greeting">Provider Dashboard</p>
+            <h1 className="dash-welcome-name">Welcome back, Agro Solutions</h1>
+            <p className="dash-welcome-subtitle">
               Here's what's happening with your business today
             </p>
           </div>
           <button
-            className="dash-action-btn primary"
+            className="dash-action-btn dash-action-btn-primary"
             onClick={() => navigate("/provider/listings/create")}
           >
-            + New Listing
+            <HiPlus className="dash-btn-icon" />
+            <span>New Listing</span>
           </button>
         </div>
       </div>
 
-      {/* Stats Row */}
-      <div className="provider-stats-grid">
-        <div className="dash-stat-card green">
-          <div className="flex items-center gap-md mb-md">
-            <div className="dash-stat-icon-wrap" style={{ background: "rgba(75,129,91,0.1)" }}>💰</div>
+      {/* ============ STATS ROW ============ */}
+      <div className="dashboard-grid">
+        {/* Total Earnings */}
+        <div className="dash-stat-card dash-stat-green">
+          <div className="dash-stat-row">
+            <div className="dash-stat-icon-wrap dash-stat-icon-green">
+              <HiCurrencyDollar />
+            </div>
             <div>
-              <p className="text-xs text-muted">Total Earnings</p>
-              <p className="dash-stat-value" style={{ color: "#2E7D4F" }}>TZS 3.4M</p>
+              <p className="dash-stat-label">Total Earnings</p>
+              <p className="dash-stat-value dash-stat-value-green">TZS 3.4M</p>
             </div>
           </div>
-          <span className="dash-stat-trend" style={{ background: "#DDF3E6", color: "#1F5A38" }}>↑ 18% vs last month</span>
+          <div className="dash-stat-trend-row">
+            <span className="dash-stat-trend dash-stat-trend-up">
+              <HiTrendingUp className="dash-trend-icon" /> 18% vs last month
+            </span>
+          </div>
         </div>
 
-        <div className="dash-stat-card blue">
-          <div className="flex items-center gap-md mb-md">
-            <div className="dash-stat-icon-wrap" style={{ background: "rgba(58,123,213,0.1)" }}>📋</div>
+        {/* Active Listings */}
+        <div className="dash-stat-card dash-stat-blue">
+          <div className="dash-stat-row">
+            <div className="dash-stat-icon-wrap dash-stat-icon-blue">
+              <HiClipboardList />
+            </div>
             <div>
-              <p className="text-xs text-muted">Active Listings</p>
-              <p className="dash-stat-value" style={{ color: "#25579E" }}>12</p>
+              <p className="dash-stat-label">Active Listings</p>
+              <p className="dash-stat-value dash-stat-value-blue">12</p>
             </div>
           </div>
-          <span className="dash-stat-trend" style={{ background: "#E3EEFB", color: "#25579E" }}>2 pending approval</span>
+          <div className="dash-stat-trend-row">
+            <span className="dash-stat-trend dash-stat-trend-neutral">
+              2 pending approval
+            </span>
+          </div>
         </div>
 
-        <div className="dash-stat-card gold">
-          <div className="flex items-center gap-md mb-md">
-            <div className="dash-stat-icon-wrap" style={{ background: "rgba(175,154,90,0.1)" }}>⏳</div>
+        {/* Pending Bookings */}
+        <div className="dash-stat-card dash-stat-gold">
+          <div className="dash-stat-row">
+            <div className="dash-stat-icon-wrap dash-stat-icon-gold">
+              <HiClock />
+            </div>
             <div>
-              <p className="text-xs text-muted">Pending Bookings</p>
-              <p className="dash-stat-value" style={{ color: "#8C7A48" }}>8</p>
+              <p className="dash-stat-label">Pending Bookings</p>
+              <p className="dash-stat-value dash-stat-value-gold">8</p>
             </div>
           </div>
-          <span className="dash-stat-trend" style={{ background: "#FAF4DD", color: "#9C8B3D" }}>3 need action</span>
+          <div className="dash-stat-trend-row">
+            <span className="dash-stat-trend dash-stat-trend-warning">
+              3 need action
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Quick Links */}
-      <div className="dash-quick-actions mt-xl">
-        {quickLinks.map(link => (
+      {/* ============ QUICK LINKS ============ */}
+      <div className="dash-quick-actions">
+        {quickLinks.map((link) => (
           <button
             key={link.path}
-            className={`dash-action-btn ${link.primary ? "primary" : ""}`}
+            className="dash-quick-link-btn"
             onClick={() => navigate(link.path)}
           >
-            {link.icon} {link.label}
+            <link.icon className="dash-quick-link-icon" />
+            <span>{link.label}</span>
           </button>
         ))}
       </div>
 
-      {/* Recent Bookings */}
-      <section className="mt-xl">
-        <div className="flex justify-between items-center mb-lg">
+      {/* ============ REVENUE SPARKLINE (Provider Exclusive) ============ */}
+      <section className="dash-section">
+        <div className="dash-section-header">
           <div>
-            <h2 className="text-lg fw-bold neutral-dark">Recent Booking Requests</h2>
-            <p className="text-xs text-muted mt-xs">{recentBookings.length} new bookings</p>
+            <h2 className="dash-section-title">Weekly Revenue</h2>
+            <p className="dash-section-subtitle">Last 7 days performance</p>
           </div>
-          <button className="dash-action-btn" onClick={() => navigate("/provider/bookings")}>
-            View All →
+          <button
+            className="dash-action-btn"
+            onClick={() => navigate("/provider/analytics")}
+          >
+            <span>Full Analytics</span>
+            <HiArrowRight className="dash-btn-icon" />
           </button>
         </div>
-
-        <div className="flex flex-col gap-sm">
-          {recentBookings.map(booking => {
-            const status = getStatusStyle(booking.status);
-            return (
-              <div key={booking.id} className="dash-booking-card">
-                <div className="dash-booking-avatar" style={{
-                  background: `linear-gradient(135deg, ${status.color}, ${status.dot})`
-                }}>
-                  {booking.initials}
+        <div className="provider-revenue-card">
+          <div className="provider-revenue-total">
+            <span className="provider-revenue-currency">TZS</span>
+            <span className="provider-revenue-amount">842,000</span>
+            <span className="provider-revenue-period">this week</span>
+          </div>
+          <div className="provider-bar-chart">
+            {revenueBars.map((bar) => (
+              <div key={bar.day} className="provider-bar-col">
+                <div
+                  className="provider-bar-fill"
+                  style={{ height: `${bar.height}%` }}
+                >
+                  <span className="provider-bar-tooltip">TZS {bar.value}K</span>
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="flex justify-between items-center">
-                    <h4 className="text-sm fw-semibold">{booking.customer}</h4>
-                    <span style={{
-                      fontSize: 11, fontWeight: 600, padding: "4px 10px",
-                      borderRadius: 20, background: status.bg, color: status.color
-                    }}>
-                      {booking.status}
-                    </span>
-                  </div>
-                  <p className="text-sm text-muted mt-xs">{booking.service}</p>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <p className="text-sm fw-semibold">{booking.amount}</p>
-                  <p className="text-xs text-muted mt-xs">{booking.date}</p>
-                </div>
+                <span className="provider-bar-label">{bar.day}</span>
               </div>
-            );
-          })}
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ RECENT BOOKINGS ============ */}
+      <section className="dash-section">
+        <div className="dash-section-header">
+          <div>
+            <h2 className="dash-section-title">Recent Booking Requests</h2>
+            <p className="dash-section-subtitle">
+              {recentBookings.length} new bookings
+            </p>
+          </div>
+          <button
+            className="dash-action-btn"
+            onClick={() => navigate("/provider/bookings")}
+          >
+            <span>View All</span>
+            <HiArrowRight className="dash-btn-icon" />
+          </button>
+        </div>
+        <div className="dash-booking-list">
+          {recentBookings.map((b) => (
+            <div key={b.id} className="dash-booking-card">
+              <div
+                className={`dash-booking-avatar dash-booking-avatar-${b.status}`}
+              >
+                {b.initials}
+              </div>
+              <div className="dash-booking-info">
+                <h4 className="dash-booking-service">{b.customer}</h4>
+                <p className="dash-booking-meta">
+                  {b.service} · {b.date}
+                </p>
+              </div>
+              <div className="dash-booking-right">
+                <p className="dash-booking-price">{b.amount}</p>
+                <span
+                  className={`badge badge-${
+                    b.status === "completed"
+                      ? "success"
+                      : b.status === "pending"
+                      ? "warning"
+                      : "info"
+                  }`}
+                >
+                  {b.status}
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </main>
