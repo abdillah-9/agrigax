@@ -7,6 +7,7 @@ export const AUTH = {
   LOGOUT: "/auth/logout",
   REFRESH: "/auth/refresh",
   VERIFY_OTP: "/auth/verify-otp",
+  RESEND_OTP: "/auth/resend-otp",
   FORGOT_PASSWORD: "/auth/forgot-password",
   RESET_PASSWORD: "/auth/reset-password",
   ME: "/auth/me",
@@ -68,6 +69,14 @@ export const FAVORITES = {
 };
 
 // =====================================================
+// REVIEWS
+// =====================================================
+export const REVIEWS = {
+  BASE: "/reviews",
+  BY_ID: (id: string) => `/reviews/${id}`,
+};
+
+// =====================================================
 // NOTIFICATIONS
 // =====================================================
 export const NOTIFICATIONS = {
@@ -81,6 +90,7 @@ export const NOTIFICATIONS = {
 // =====================================================
 export const MESSAGES = {
   CONVERSATIONS: "/messages/conversations",
+  CREATE: "/messages/conversations",
   BY_ID: (id: string) => `/messages/${id}`,
   SEND: (id: string) => `/messages/${id}/send`,
 };
@@ -96,8 +106,10 @@ export const ADMIN = {
   APPROVE_LISTING: (id: string) => `/admin/listings/${id}/approve`,
   REJECT_LISTING: (id: string) => `/admin/listings/${id}/reject`,
   CATEGORIES: "/admin/categories",
+  CATEGORY_BY_ID: (id: string) => `/admin/categories/${id}`,
   FEATURED: "/admin/featured",
   DISPUTES: "/admin/disputes",
+  RESOLVE_DISPUTE: (id: string) => `/admin/disputes/${id}/resolve`,
   REVIEWS: "/admin/reviews",
   REPORTED_REVIEWS: "/admin/reported-reviews",
   ANNOUNCEMENTS: "/admin/announcements",

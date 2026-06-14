@@ -1,40 +1,115 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { type FormEvent, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { HiArrowLeft, HiPencilSquare, HiCheck } from "react-icons/hi2";
+import { useCategories } from "../../../hooks/useCategories";
+import { useListings } from "../../../hooks/useListings";
+import type { Category, Listing } from "../../../types/api.types";
 import "../styles/listings.css";
 
 export default function EditListing() {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const { fetchMyListings, updateListing, loading, error } = useListings();
+  const { fetchCategories, loading: categoriesLoading } = useCategories();
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [form, setForm] = useState({
-    title: "Tractor Rental",
-    description: "Professional tractor rental service for all farm sizes.",
-    type: "equipment",
-    category: "equipment",
-    price: "120000",
-    location: "Dar es Salaam",
+    title: "",
+    description: "",
+    type: "service",
+    categoryId: "",
+    price: "",
+    location: "",
     isAvailable: true,
   });
 
+  useEffect(() => {
+    fetchCategories().then(setCategories);
+  }, [fetchCategories]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    async function loadListing() {
+      setInitialLoading(true);
+      const items = await fetchMyListings();
+      const listing = items.find((item: Listing) => item.id === id);
+
+      if (listing) {
+        setForm({
+          title: listing.title,
+          description: listing.description,
+          type: listing.type,
+          categoryId: listing.categoryId || "",
+          price: String(listing.price),
+          location: listing.location,
+          isAvailable: listing.isAvailable,
+        });
+      }
+
+      setInitialLoading(false);
+    }
+
+    loadListing();
+  }, [id, fetchMyListings]);
+
   const handleChange = (field: string, value: string | boolean) => {
-    setForm(prev => ({ ...prev, [field]: value }));
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    console.log("Updated listing:", form);
-    alert("Listing updated successfully!");
+    if (!id) return;
+
+    const categoryId = Number(form.categoryId);
+    if (!categoryId) return;
+
+    const result = await updateListing(id, {
+      title: form.title.trim(),
+      description: form.description.trim(),
+      type: form.type,
+      categoryId,
+      price: Number(form.price),
+      location: form.location.trim(),
+      isAvailable: form.isAvailable,
+    });
+
+    if (!result) return;
+
     navigate("/provider/listings");
-  };
+  }
+
+  if (initialLoading) {
+    return (
+      <main className="customer-page" style={{ maxWidth: 720 }}>
+        <p className="listings-count-text">Loading listing...</p>
+      </main>
+    );
+  }
+
+  if (!form.title && !loading) {
+    return (
+      <main className="customer-page" style={{ maxWidth: 720 }}>
+        <button className="back-nav-btn" onClick={() => navigate("/provider/listings")}>
+          <HiArrowLeft />
+          Back to My Listings
+        </button>
+        <div className="listings-empty">
+          <h3 className="listings-empty-title">Listing not found</h3>
+          <p className="listings-empty-text">This listing may have been deleted.</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="customer-page" style={{ maxWidth: 720 }}>
-      {/* Back Button */}
       <button className="back-nav-btn" onClick={() => navigate("/provider/listings")}>
         <HiArrowLeft />
         Back to My Listings
       </button>
 
-      {/* Form Card */}
       <section className="listing-form-card">
         <div className="listing-form-header">
           <div className="listing-form-header-icon listing-form-header-icon-edit">
@@ -46,16 +121,28 @@ export default function EditListing() {
           </div>
         </div>
 
+        {error && <p className="listing-form-subtitle" style={{ color: "#b42318" }}>{error}</p>}
+
         <form className="listing-form" onSubmit={handleSubmit}>
           <div className="listing-form-grid">
             <div className="listing-form-field listing-form-field-full">
               <label className="label label-required">Listing Title</label>
-              <input className="input-text" type="text" value={form.title} onChange={e => handleChange("title", e.target.value)} required />
+              <input
+                className="input-text"
+                type="text"
+                value={form.title}
+                onChange={(e) => handleChange("title", e.target.value)}
+                required
+              />
             </div>
 
             <div className="listing-form-field">
               <label className="label label-required">Type</label>
-              <select className="input-select" value={form.type} onChange={e => handleChange("type", e.target.value)}>
+              <select
+                className="input-select"
+                value={form.type}
+                onChange={(e) => handleChange("type", e.target.value)}
+              >
                 <option value="service">Service</option>
                 <option value="product">Product</option>
                 <option value="equipment">Equipment</option>
@@ -66,46 +153,81 @@ export default function EditListing() {
 
             <div className="listing-form-field">
               <label className="label label-required">Category</label>
-              <select className="input-select" value={form.category} onChange={e => handleChange("category", e.target.value)} required>
-                <option value="">Select category</option>
-                <option value="farm-inputs">Farm Inputs</option>
-                <option value="equipment">Equipment</option>
-                <option value="labor">Labor</option>
-                <option value="livestock">Livestock</option>
-                <option value="technology">Technology</option>
-                <option value="transport">Transport</option>
+              <select
+                className="input-select"
+                value={form.categoryId}
+                onChange={(e) => handleChange("categoryId", e.target.value)}
+                required
+                disabled={categoriesLoading}
+              >
+                <option value="">
+                  {categoriesLoading ? "Loading categories..." : "Select category"}
+                </option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div className="listing-form-field">
               <label className="label label-required">Price (TZS)</label>
-              <input className="input-text" type="number" value={form.price} onChange={e => handleChange("price", e.target.value)} required />
+              <input
+                className="input-text"
+                type="number"
+                min="0"
+                step="0.01"
+                value={form.price}
+                onChange={(e) => handleChange("price", e.target.value)}
+                required
+              />
             </div>
 
             <div className="listing-form-field">
               <label className="label label-required">Location</label>
-              <input className="input-text" type="text" value={form.location} onChange={e => handleChange("location", e.target.value)} />
+              <input
+                className="input-text"
+                type="text"
+                value={form.location}
+                onChange={(e) => handleChange("location", e.target.value)}
+                required
+              />
             </div>
 
             <div className="listing-form-field listing-form-field-full">
               <label className="label label-required">Description</label>
-              <textarea className="input-textarea" rows={4} value={form.description} onChange={e => handleChange("description", e.target.value)} />
+              <textarea
+                className="input-textarea"
+                rows={4}
+                value={form.description}
+                onChange={(e) => handleChange("description", e.target.value)}
+                required
+              />
             </div>
           </div>
 
           <div className="listing-form-checkbox">
             <label className="checkbox-label">
-              <input className="input-checkbox" type="checkbox" checked={form.isAvailable} onChange={e => handleChange("isAvailable", e.target.checked)} />
+              <input
+                className="input-checkbox"
+                type="checkbox"
+                checked={form.isAvailable}
+                onChange={(e) => handleChange("isAvailable", e.target.checked)}
+              />
               <span className="checkbox-custom" />
               Available for booking
             </label>
           </div>
 
           <div className="listing-form-actions">
-            <button type="submit" className="btn-withdraw">
-              <HiCheck className="dash-btn-icon" /> Update Listing
+            <button type="submit" className="btn-withdraw" disabled={loading || categoriesLoading}>
+              <HiCheck className="dash-btn-icon" />
+              {loading ? "Saving..." : "Update Listing"}
             </button>
-            <button type="button" className="btn-report" onClick={() => navigate("/provider/listings")}>Cancel</button>
+            <button type="button" className="btn-report" onClick={() => navigate("/provider/listings")}>
+              Cancel
+            </button>
           </div>
         </form>
       </section>

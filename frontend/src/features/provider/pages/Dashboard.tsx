@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   HiCurrencyDollar,
@@ -8,48 +9,28 @@ import {
   HiCollection,
   HiCalendar,
   HiChartBar,
-  HiTrendingUp,
 } from "react-icons/hi";
+import { useAuthContext } from "../../../contexts/AuthContext";
+import { useBookings } from "../../../hooks/useBookings";
+import { useListings } from "../../../hooks/useListings";
+import { usePayments } from "../../../hooks/usePayments";
+import {
+  bookingCardInitials,
+  dashboardBadgeClass,
+  formatCompactCurrency,
+  providerDashboardStats,
+  sortBookingsNewest,
+  weeklyRevenueFromBookings,
+} from "../../../api/dashboardHelpers";
+import {
+  clearBookingLookupCache,
+  enrichBookings,
+  formatBookingAmount,
+  formatBookingDate,
+} from "../../../api/bookingHelpers";
+import { displayName } from "../../../utils/userDisplay";
+import type { EnrichedBooking, Listing, Wallet } from "../../../types/api.types";
 import "../styles/provider.css";
-
-const recentBookings = [
-  {
-    id: "BK-001",
-    customer: "Juma M.",
-    initials: "JM",
-    service: "Tractor Rental",
-    amount: "TZS 120,000",
-    status: "pending",
-    date: "2026-05-20",
-  },
-  {
-    id: "BK-002",
-    customer: "Fatima J.",
-    initials: "FJ",
-    service: "Seeds Supply",
-    amount: "TZS 85,000",
-    status: "accepted",
-    date: "2026-05-20",
-  },
-  {
-    id: "BK-003",
-    customer: "David S.",
-    initials: "DS",
-    service: "Irrigation Setup",
-    amount: "TZS 320,000",
-    status: "completed",
-    date: "2026-05-19",
-  },
-  {
-    id: "BK-004",
-    customer: "Grace M.",
-    initials: "GM",
-    service: "Soil Testing",
-    amount: "TZS 45,000",
-    status: "pending",
-    date: "2026-05-18",
-  },
-];
 
 const quickLinks = [
   { icon: HiCollection, label: "My Listings", path: "/provider/listings" },
@@ -58,29 +39,62 @@ const quickLinks = [
   { icon: HiChartBar, label: "Analytics", path: "/provider/analytics" },
 ];
 
-const revenueBars = [
-  { day: "Mon", value: 45, height: 45 },
-  { day: "Tue", value: 62, height: 62 },
-  { day: "Wed", value: 38, height: 38 },
-  { day: "Thu", value: 78, height: 78 },
-  { day: "Fri", value: 55, height: 55 },
-  { day: "Sat", value: 90, height: 90 },
-  { day: "Sun", value: 70, height: 70 },
-];
-
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { user } = useAuthContext();
+  const { fetchProviderBookings, loading: bookingsLoading, error: bookingsError } = useBookings();
+  const { fetchMyListings, error: listingsError } = useListings();
+  const { fetchWallet, error: walletError } = usePayments();
+
+  const [bookings, setBookings] = useState<EnrichedBooking[]>([]);
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [wallet, setWallet] = useState<Wallet | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const loadDashboard = useCallback(async () => {
+    setLoading(true);
+    clearBookingLookupCache();
+
+    const [bookingRows, listingRows, walletData] = await Promise.all([
+      fetchProviderBookings(),
+      fetchMyListings(),
+      fetchWallet(),
+    ]);
+
+    setBookings(await enrichBookings(bookingRows));
+    setListings(listingRows);
+    setWallet(walletData);
+    setLoading(false);
+  }, [fetchProviderBookings, fetchMyListings, fetchWallet]);
+
+  useEffect(() => {
+    loadDashboard();
+  }, [loadDashboard]);
+
+  const stats = useMemo(
+    () => providerDashboardStats(bookings, listings, wallet),
+    [bookings, listings, wallet]
+  );
+
+  const recentBookings = useMemo(
+    () => sortBookingsNewest(bookings).slice(0, 5),
+    [bookings]
+  );
+
+  const weeklyRevenue = useMemo(() => weeklyRevenueFromBookings(bookings), [bookings]);
+
+  const error = bookingsError || listingsError || walletError;
+  const name = displayName(user);
 
   return (
     <main className="customer-page">
-      {/* ============ WELCOME BANNER ============ */}
       <div className="dash-welcome dash-welcome-provider">
         <div className="dash-welcome-content">
           <div className="dash-welcome-text">
             <p className="dash-welcome-greeting">Provider Dashboard</p>
-            <h1 className="dash-welcome-name">Welcome back, Agro Solutions</h1>
+            <h1 className="dash-welcome-name">Welcome back, {name}</h1>
             <p className="dash-welcome-subtitle">
-              Here's what's happening with your business today
+              Here&apos;s what&apos;s happening with your business today
             </p>
           </div>
           <button
@@ -93,27 +107,34 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ============ STATS ROW ============ */}
+      {error && (
+        <p className="dash-welcome-subtitle" style={{ color: "#b42318", padding: "0 4px" }}>
+          {error}
+        </p>
+      )}
+
       <div className="dashboard-grid">
-        {/* Total Earnings */}
         <div className="dash-stat-card dash-stat-green">
           <div className="dash-stat-row">
             <div className="dash-stat-icon-wrap dash-stat-icon-green">
               <HiCurrencyDollar />
             </div>
             <div>
-              <p className="dash-stat-label">Total Earnings</p>
-              <p className="dash-stat-value dash-stat-value-green">TZS 3.4M</p>
+              <p className="dash-stat-label">Wallet Balance</p>
+              <p className="dash-stat-value dash-stat-value-green">
+                {loading ? "—" : formatCompactCurrency(stats.walletBalance, stats.walletCurrency)}
+              </p>
             </div>
           </div>
           <div className="dash-stat-trend-row">
-            <span className="dash-stat-trend dash-stat-trend-up">
-              <HiTrendingUp className="dash-trend-icon" /> 18% vs last month
+            <span className="dash-stat-trend dash-stat-trend-neutral">
+              {loading
+                ? "Loading..."
+                : `${formatCompactCurrency(stats.completedTotal, stats.walletCurrency)} from completed bookings`}
             </span>
           </div>
         </div>
 
-        {/* Active Listings */}
         <div className="dash-stat-card dash-stat-blue">
           <div className="dash-stat-row">
             <div className="dash-stat-icon-wrap dash-stat-icon-blue">
@@ -121,17 +142,22 @@ export default function Dashboard() {
             </div>
             <div>
               <p className="dash-stat-label">Active Listings</p>
-              <p className="dash-stat-value dash-stat-value-blue">12</p>
+              <p className="dash-stat-value dash-stat-value-blue">
+                {loading ? "—" : stats.activeListings}
+              </p>
             </div>
           </div>
           <div className="dash-stat-trend-row">
             <span className="dash-stat-trend dash-stat-trend-neutral">
-              2 pending approval
+              {loading
+                ? "Loading..."
+                : stats.pendingApproval > 0
+                  ? `${stats.pendingApproval} pending approval`
+                  : `${listings.length} total listing${listings.length !== 1 ? "s" : ""}`}
             </span>
           </div>
         </div>
 
-        {/* Pending Bookings */}
         <div className="dash-stat-card dash-stat-gold">
           <div className="dash-stat-row">
             <div className="dash-stat-icon-wrap dash-stat-icon-gold">
@@ -139,18 +165,19 @@ export default function Dashboard() {
             </div>
             <div>
               <p className="dash-stat-label">Pending Bookings</p>
-              <p className="dash-stat-value dash-stat-value-gold">8</p>
+              <p className="dash-stat-value dash-stat-value-gold">
+                {loading || bookingsLoading ? "—" : stats.pendingBookings}
+              </p>
             </div>
           </div>
           <div className="dash-stat-trend-row">
             <span className="dash-stat-trend dash-stat-trend-warning">
-              3 need action
+              {loading ? "Loading..." : `${bookings.length} total booking${bookings.length !== 1 ? "s" : ""}`}
             </span>
           </div>
         </div>
       </div>
 
-      {/* ============ QUICK LINKS ============ */}
       <div className="dash-quick-actions">
         {quickLinks.map((link) => (
           <button
@@ -164,35 +191,32 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* ============ REVENUE SPARKLINE (Provider Exclusive) ============ */}
       <section className="dash-section">
         <div className="dash-section-header">
           <div>
             <h2 className="dash-section-title">Weekly Revenue</h2>
-            <p className="dash-section-subtitle">Last 7 days performance</p>
+            <p className="dash-section-subtitle">Completed bookings in the last 7 days</p>
           </div>
-          <button
-            className="dash-action-btn"
-            onClick={() => navigate("/provider/analytics")}
-          >
-            <span>Full Analytics</span>
+          <button className="dash-action-btn" onClick={() => navigate("/provider/earnings")}>
+            <span>View Earnings</span>
             <HiArrowRight className="dash-btn-icon" />
           </button>
         </div>
         <div className="provider-revenue-card">
           <div className="provider-revenue-total">
-            <span className="provider-revenue-currency">TZS</span>
-            <span className="provider-revenue-amount">842,000</span>
+            <span className="provider-revenue-currency">{stats.walletCurrency}</span>
+            <span className="provider-revenue-amount">
+              {loading ? "—" : weeklyRevenue.total.toLocaleString()}
+            </span>
             <span className="provider-revenue-period">this week</span>
           </div>
           <div className="provider-bar-chart">
-            {revenueBars.map((bar) => (
-              <div key={bar.day} className="provider-bar-col">
-                <div
-                  className="provider-bar-fill"
-                  style={{ height: `${bar.height}%` }}
-                >
-                  <span className="provider-bar-tooltip">TZS {bar.value}K</span>
+            {weeklyRevenue.bars.map((bar, index) => (
+              <div key={`${bar.day}-${index}`} className="provider-bar-col">
+                <div className="provider-bar-fill" style={{ height: `${bar.height}%` }}>
+                  <span className="provider-bar-tooltip">
+                    {bar.value > 0 ? formatCompactCurrency(bar.value, stats.walletCurrency) : "—"}
+                  </span>
                 </div>
                 <span className="provider-bar-label">{bar.day}</span>
               </div>
@@ -201,53 +225,45 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* ============ RECENT BOOKINGS ============ */}
       <section className="dash-section">
         <div className="dash-section-header">
           <div>
             <h2 className="dash-section-title">Recent Booking Requests</h2>
             <p className="dash-section-subtitle">
-              {recentBookings.length} new bookings
+              {loading ? "Loading..." : `${recentBookings.length} recent booking${recentBookings.length !== 1 ? "s" : ""}`}
             </p>
           </div>
-          <button
-            className="dash-action-btn"
-            onClick={() => navigate("/provider/bookings")}
-          >
+          <button className="dash-action-btn" onClick={() => navigate("/provider/bookings")}>
             <span>View All</span>
             <HiArrowRight className="dash-btn-icon" />
           </button>
         </div>
         <div className="dash-booking-list">
-          {recentBookings.map((b) => (
-            <div key={b.id} className="dash-booking-card">
-              <div
-                className={`dash-booking-avatar dash-booking-avatar-${b.status}`}
-              >
-                {b.initials}
+          {loading && recentBookings.length === 0 ? (
+            <p className="dash-section-subtitle">Loading bookings...</p>
+          ) : recentBookings.length === 0 ? (
+            <p className="dash-section-subtitle">No booking requests yet.</p>
+          ) : (
+            recentBookings.map((b) => (
+              <div key={b.id} className="dash-booking-card">
+                <div className={`dash-booking-avatar dash-booking-avatar-${b.status}`}>
+                  {bookingCardInitials(b.customerName)}
+                </div>
+                <div className="dash-booking-info">
+                  <h4 className="dash-booking-service">{b.customerName}</h4>
+                  <p className="dash-booking-meta">
+                    {b.serviceTitle} · {formatBookingDate(b.scheduledAt)}
+                  </p>
+                </div>
+                <div className="dash-booking-right">
+                  <p className="dash-booking-price">{formatBookingAmount(b.price)}</p>
+                  <span className={`badge badge-${dashboardBadgeClass(b.status)}`}>
+                    {b.status}
+                  </span>
+                </div>
               </div>
-              <div className="dash-booking-info">
-                <h4 className="dash-booking-service">{b.customer}</h4>
-                <p className="dash-booking-meta">
-                  {b.service} · {b.date}
-                </p>
-              </div>
-              <div className="dash-booking-right">
-                <p className="dash-booking-price">{b.amount}</p>
-                <span
-                  className={`badge badge-${
-                    b.status === "completed"
-                      ? "success"
-                      : b.status === "pending"
-                      ? "warning"
-                      : "info"
-                  }`}
-                >
-                  {b.status}
-                </span>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
     </main>

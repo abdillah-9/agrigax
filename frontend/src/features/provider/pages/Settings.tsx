@@ -7,9 +7,11 @@ import {
   HiSun,
   HiCheck,
 } from "react-icons/hi2";
+import { useUsers } from "../../../hooks/useUsers";
 import "../styles/provider.css";
 
 export default function Settings() {
+  const { updateSettings, loading, error } = useUsers();
   const [settings, setSettings] = useState({
     bookingNotifications: true,
     emailUpdates: false,
@@ -18,15 +20,26 @@ export default function Settings() {
     vacationMode: false,
   });
   const [saved, setSaved] = useState(false);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
 
   const toggle = (key: keyof typeof settings) => {
     setSettings(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
+  async function handleSave() {
+    setInfoMessage(null);
+    const result = await updateSettings(settings as Parameters<typeof updateSettings>[0]);
+
+    if (result) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+      return;
+    }
+
+    setInfoMessage(
+      error || "Settings could not be saved. User preferences sync is limited in V1."
+    );
+  }
 
   const items = [
     {
@@ -73,7 +86,14 @@ export default function Settings() {
         <p className="customer-page-subtitle">Manage your provider account preferences</p>
       </div>
 
-      {/* Settings Items */}
+      <p className="profile-member-since" style={{ marginBottom: 16 }}>
+        Preference toggles are shown for UI preview. Backend user settings sync is not fully available in V1.
+      </p>
+
+      {(error || infoMessage) && (
+        <p className="listings-count-text" style={{ color: "#b42318" }}>{infoMessage || error}</p>
+      )}
+
       <section className="settings-card">
         {items.map(item => (
           <div key={item.key} className="settings-item-premium">
@@ -96,25 +116,16 @@ export default function Settings() {
         ))}
       </section>
 
-      {/* Save */}
       <div className="settings-save-wrap">
-        <button className="btn-withdraw" onClick={handleSave}>
+        <button className="btn-withdraw" onClick={handleSave} disabled={loading}>
           {saved ? (
             <><HiCheck className="dash-btn-icon" /> Settings Saved!</>
+          ) : loading ? (
+            "Saving..."
           ) : (
             "Save Settings"
           )}
         </button>
-      </div>
-
-      {/* Danger Zone */}
-      <div className="danger-zone">
-        <h3 className="danger-zone-title">Danger Zone</h3>
-        <p className="danger-zone-desc">Irreversible actions for your account</p>
-        <div className="danger-zone-actions">
-          <button className="dash-action-btn danger-btn-outline">Deactivate Account</button>
-          <button className="dash-action-btn danger-btn-outline">Delete Account</button>
-        </div>
       </div>
     </main>
   );

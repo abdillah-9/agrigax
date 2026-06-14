@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import {
   HiCurrencyDollar,
   HiBuildingOffice,
@@ -10,63 +10,121 @@ import {
   HiXMark,
   HiMagnifyingGlass,
 } from "react-icons/hi2";
+import { usePayments } from "../../../hooks/usePayments";
+import { useBookings } from "../../../hooks/useBookings";
+import { useAuthContext } from "../../../contexts/AuthContext";
+import { enrichBookings } from "../../../api/bookingHelpers";
+import {
+  formatTransactionDate,
+  formatWalletAmount,
+  transactionDisplayType,
+  transactionSignedAmount,
+  V1_WALLET_NOTICE,
+  walletStats,
+} from "../../../api/walletHelpers";
+import type { EnrichedBooking, Wallet, WalletTransaction } from "../../../types/api.types";
 import "../styles/provider.css";
 
-const earningHistory = [
-  { id: "ERN-001", source: "Tractor Rental - BK-001", amount: 120000, date: "2026-05-20", status: "paid" },
-  { id: "ERN-002", source: "Seeds Supply - BK-002", amount: 85000, date: "2026-05-19", status: "pending" },
-  { id: "ERN-003", source: "Irrigation Setup - BK-003", amount: 320000, date: "2026-05-18", status: "paid" },
-  { id: "ERN-004", source: "Soil Testing - BK-004", amount: 45000, date: "2026-05-17", status: "paid" },
-  { id: "ERN-005", source: "Harvesting - BK-005", amount: 200000, date: "2026-05-16", status: "pending" },
-  { id: "ERN-006", source: "Fertilizer Supply - BK-006", amount: 65000, date: "2026-05-15", status: "paid" },
-  { id: "ERN-007", source: "Dairy Cows - BK-007", amount: 1200000, date: "2026-05-14", status: "paid" },
-];
-
 export default function Earnings() {
+  const { user } = useAuthContext();
+  const { fetchWallet, fetchTransactions, withdraw, loading, error } = usePayments();
+  const { fetchProviderBookings } = useBookings();
+
+  const [wallet, setWallet] = useState<Wallet | null>(null);
+  const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
+  const [bookings, setBookings] = useState<EnrichedBooking[]>([]);
   const [showWithdraw, setShowWithdraw] = useState(false);
   const [withdrawForm, setWithdrawForm] = useState({ amount: "", method: "mpesa", phone: "" });
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
   const [sortField, setSortField] = useState<"date" | "amount" | "source">("date");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
-  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const [submitting, setSubmitting] = useState(false);
 
-  const totalEarnings = earningHistory.reduce((sum, e) => sum + e.amount, 0);
-  const pendingEarnings = earningHistory.filter(e => e.status === "pending").reduce((sum, e) => sum + e.amount, 0);
-  const paidEarnings = earningHistory.filter(e => e.status === "paid").reduce((sum, e) => sum + e.amount, 0);
+  const loadData = useCallback(async () => {
+    const [walletData, txData, bookingRows] = await Promise.all([
+      fetchWallet(),
+      fetchTransactions(),
+      fetchProviderBookings(),
+    ]);
 
-  const filtered = earningHistory.filter(e => {
-    const matchSearch = e.source.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === "all" || e.status === statusFilter;
-    return matchSearch && matchStatus;
-  });
+    if (walletData) setWallet(walletData);
+    setTransactions(txData);
+    setBookings(await enrichBookings(bookingRows));
+  }, [fetchWallet, fetchTransactions, fetchProviderBookings]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  useEffect(() => {
+    if (user?.phone) {
+      setWithdrawForm((p) => ({ ...p, phone: p.phone || user.phone }));
+    }
+  }, [user?.phone]);
+
+  const currency = wallet?.currency || "TZS";
+  const balance = wallet?.balance ?? 0;
+  const stats = useMemo(() => walletStats(transactions), [transactions]);
+
+  const completedBookingTotal = useMemo(
+    () => bookings.filter((b) => b.status === "completed").reduce((sum, b) => sum + b.price, 0),
+    [bookings]
+  );
+
+  const pendingBookingTotal = useMemo(
+    () => bookings.filter((b) => b.status === "accepted").reduce((sum, b) => sum + b.price, 0),
+    [bookings]
+  );
+
+  const filtered = useMemo(() => {
+    return transactions.filter((t) => {
+      const q = search.toLowerCase();
+      const matchSearch =
+        t.id.toLowerCase().includes(q) ||
+        (t.description || "").toLowerCase().includes(q) ||
+        (t.reference || "").toLowerCase().includes(q);
+      const matchType = typeFilter === "all" || t.type === typeFilter;
+      return matchSearch && matchType;
+    });
+  }, [transactions, search, typeFilter]);
+
+  const sorted = useMemo(() => {
+    const items = [...filtered];
+    return items.sort((a, b) => {
+      if (sortField === "amount") {
+        return sortDir === "asc" ? a.amount - b.amount : b.amount - a.amount;
+      }
+      const valA = sortField === "date" ? a.createdAt : a.description || "";
+      const valB = sortField === "date" ? b.createdAt : b.description || "";
+      return sortDir === "asc" ? valA.localeCompare(valB) : valB.localeCompare(valA);
+    });
+  }, [filtered, sortField, sortDir]);
 
   const handleSort = (field: "date" | "amount" | "source") => {
     if (sortField === field) {
-      setSortDir(prev => prev === "asc" ? "desc" : "asc");
+      setSortDir((prev) => (prev === "asc" ? "desc" : "asc"));
     } else {
       setSortField(field);
       setSortDir("desc");
     }
   };
 
-  const sorted = [...filtered].sort((a, b) => {
-    if (sortField === "amount") {
-      return sortDir === "asc" ? a.amount - b.amount : b.amount - a.amount;
-    }
-    const valA = String(a[sortField]);
-    const valB = String(b[sortField]);
-    return sortDir === "asc" ? valA.localeCompare(valB) : valB.localeCompare(valA);
-  });
-
-  const toggleRow = (id: string) => {
-    setExpandedRows(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
+  async function handleWithdraw(e: FormEvent) {
+    e.preventDefault();
+    setSubmitting(true);
+    const result = await withdraw({
+      amount: Number(withdrawForm.amount),
+      method: withdrawForm.method,
+      phone: withdrawForm.phone.trim(),
     });
-  };
+    setSubmitting(false);
+    if (!result) return;
+
+    setShowWithdraw(false);
+    setWithdrawForm((p) => ({ ...p, amount: "" }));
+    await loadData();
+  }
 
   const SortIcon = ({ field }: { field: string }) => {
     if (sortField !== field) return <HiArrowsUpDown className="sort-icon-inactive" />;
@@ -75,13 +133,14 @@ export default function Earnings() {
 
   return (
     <main className="customer-page">
-      {/* Page Header */}
       <div className="customer-page-header">
         <h1 className="customer-page-title">Earnings</h1>
-        <p className="customer-page-subtitle">Track your revenue and payouts · May 2026</p>
+        <p className="customer-page-subtitle">Wallet balance and payout history</p>
       </div>
 
-      {/* Stats Row */}
+      <p className="profile-member-since" style={{ marginBottom: 16 }}>{V1_WALLET_NOTICE}</p>
+      {error && <p className="listings-count-text" style={{ color: "#b42318" }}>{error}</p>}
+
       <div className="dashboard-grid">
         <div className="dash-stat-card dash-stat-green">
           <div className="dash-stat-row">
@@ -89,12 +148,16 @@ export default function Earnings() {
               <HiCurrencyDollar />
             </div>
             <div>
-              <p className="dash-stat-label">Total Earnings</p>
-              <p className="dash-stat-value dash-stat-value-green">TZS {totalEarnings.toLocaleString()}</p>
+              <p className="dash-stat-label">Total Credited</p>
+              <p className="dash-stat-value dash-stat-value-green">
+                {formatWalletAmount(stats.totalDeposits, currency)}
+              </p>
             </div>
           </div>
           <div className="dash-stat-trend-row">
-            <span className="dash-stat-trend dash-stat-trend-up">↑ 18% vs last month</span>
+            <span className="dash-stat-trend dash-stat-trend-neutral">
+              Completed bookings ref: {formatWalletAmount(completedBookingTotal, currency)}
+            </span>
           </div>
         </div>
 
@@ -105,7 +168,9 @@ export default function Earnings() {
             </div>
             <div>
               <p className="dash-stat-label">Available Balance</p>
-              <p className="dash-stat-value dash-stat-value-gold">TZS {paidEarnings.toLocaleString()}</p>
+              <p className="dash-stat-value dash-stat-value-gold">
+                {loading && !wallet ? "Loading..." : formatWalletAmount(balance, currency)}
+              </p>
             </div>
           </div>
           <div className="dash-stat-trend-row">
@@ -119,19 +184,20 @@ export default function Earnings() {
               <HiClock />
             </div>
             <div>
-              <p className="dash-stat-label">Pending Clearance</p>
-              <p className="dash-stat-value dash-stat-value-amber">TZS {pendingEarnings.toLocaleString()}</p>
+              <p className="dash-stat-label">Accepted Bookings (unsettled)</p>
+              <p className="dash-stat-value dash-stat-value-amber">
+                {formatWalletAmount(pendingBookingTotal, currency)}
+              </p>
             </div>
           </div>
           <div className="dash-stat-trend-row">
             <span className="dash-stat-trend dash-stat-trend-warning">
-              {earningHistory.filter(e => e.status === "pending").length} payments
+              {bookings.filter((b) => b.status === "accepted").length} active bookings
             </span>
           </div>
         </div>
       </div>
 
-      {/* Action Card */}
       <div className="earnings-action-card">
         <div className="earnings-action-left">
           <div className="earnings-action-icon-wrap">
@@ -139,19 +205,17 @@ export default function Earnings() {
           </div>
           <div>
             <p className="earnings-action-title">Ready to withdraw?</p>
-            <p className="earnings-action-subtitle">Transfer via M-Pesa, Tigo Pesa, Airtel Money or Bank</p>
+            <p className="earnings-action-subtitle">Withdraw from your wallet balance (simulated in V1)</p>
           </div>
         </div>
         <div className="earnings-action-buttons">
           <button className="btn-withdraw" onClick={() => setShowWithdraw(true)}>Withdraw Funds</button>
-          <button className="btn-report">Download Report</button>
         </div>
       </div>
 
-      {/* Withdraw Modal */}
       {showWithdraw && (
         <div className="provider-modal-backdrop" onClick={() => setShowWithdraw(false)}>
-          <div className="provider-modal" onClick={e => e.stopPropagation()}>
+          <div className="provider-modal" onClick={(e) => e.stopPropagation()}>
             <div className="provider-modal-header">
               <div className="provider-modal-header-left">
                 <div className="provider-modal-icon-wrap provider-modal-icon-withdraw">
@@ -159,54 +223,76 @@ export default function Earnings() {
                 </div>
                 <div>
                   <h3 className="provider-modal-title">Withdraw Earnings</h3>
-                  <p className="provider-modal-subtitle">Available: TZS {paidEarnings.toLocaleString()}</p>
+                  <p className="provider-modal-subtitle">Available: {formatWalletAmount(balance, currency)}</p>
                 </div>
               </div>
               <button className="provider-modal-close" onClick={() => setShowWithdraw(false)}>
                 <HiXMark />
               </button>
             </div>
-            <div className="provider-modal-body">
-              <div className="provider-form-grid">
-                <div>
-                  <label className="label label-required">Amount (TZS)</label>
-                  <input className="input-text" type="number" placeholder="Enter amount" value={withdrawForm.amount} onChange={e => setWithdrawForm(p => ({ ...p, amount: e.target.value }))} />
-                </div>
-                <div>
-                  <label className="label label-required">Withdraw To</label>
-                  <select className="input-select" value={withdrawForm.method} onChange={e => setWithdrawForm(p => ({ ...p, method: e.target.value }))}>
-                    <option value="mpesa">M-Pesa</option>
-                    <option value="tigopesa">Tigo Pesa</option>
-                    <option value="airtelmoney">Airtel Money</option>
-                    <option value="bank">Bank Account</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="label label-required">Phone / Account Number</label>
-                  <input className="input-text" type="text" placeholder="Enter number" value={withdrawForm.phone} onChange={e => setWithdrawForm(p => ({ ...p, phone: e.target.value }))} />
+            <form onSubmit={handleWithdraw}>
+              <div className="provider-modal-body">
+                <div className="provider-form-grid">
+                  <div>
+                    <label className="label label-required">Amount (TZS)</label>
+                    <input
+                      className="input-text"
+                      type="number"
+                      min="1"
+                      step="0.01"
+                      max={balance}
+                      placeholder="Enter amount"
+                      value={withdrawForm.amount}
+                      onChange={(e) => setWithdrawForm((p) => ({ ...p, amount: e.target.value }))}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="label label-required">Withdraw To</label>
+                    <select
+                      className="input-select"
+                      value={withdrawForm.method}
+                      onChange={(e) => setWithdrawForm((p) => ({ ...p, method: e.target.value }))}
+                    >
+                      <option value="mpesa">M-Pesa</option>
+                      <option value="tigopesa">Tigo Pesa</option>
+                      <option value="airtelmoney">Airtel Money</option>
+                      <option value="bank">Bank Account</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="label label-required">Phone / Account Number</label>
+                    <input
+                      className="input-text"
+                      type="text"
+                      placeholder="Enter number"
+                      value={withdrawForm.phone}
+                      onChange={(e) => setWithdrawForm((p) => ({ ...p, phone: e.target.value }))}
+                      required
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="provider-modal-footer">
-              <button className="btn-report" onClick={() => setShowWithdraw(false)}>Cancel</button>
-              <button className="btn-withdraw" onClick={() => { alert("Withdrawal request submitted!"); setShowWithdraw(false); }}>Confirm Withdrawal</button>
-            </div>
+              <div className="provider-modal-footer">
+                <button type="button" className="btn-report" onClick={() => setShowWithdraw(false)}>Cancel</button>
+                <button type="submit" className="btn-withdraw" disabled={submitting}>
+                  {submitting ? "Processing..." : "Confirm Withdrawal"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
 
-      {/* Transaction History */}
       <section className="dash-section">
         <div className="dash-section-header">
           <div>
-            <h2 className="dash-section-title">Transaction History</h2>
-            <p className="dash-section-subtitle">{sorted.length} transactions · Total: TZS {totalEarnings.toLocaleString()}</p>
+            <h2 className="dash-section-title">Wallet Transactions</h2>
+            <p className="dash-section-subtitle">{sorted.length} transactions</p>
           </div>
         </div>
 
-        {/* Table Card */}
         <div className="table-card">
-          {/* Unified Toolbar — adapts on mobile via CSS */}
           <div className="earnings-table-toolbar">
             <div className="table-search-wrap earnings-search-wrap">
               <HiMagnifyingGlass className="table-search-icon" />
@@ -214,78 +300,67 @@ export default function Earnings() {
                 className="table-search-input"
                 placeholder="Search transactions..."
                 value={search}
-                onChange={e => setSearch(e.target.value)}
+                onChange={(e) => setSearch(e.target.value)}
               />
             </div>
             <div className="earnings-toolbar-right">
               <span className="table-toolbar-count">{sorted.length} records</span>
-              <select className="input-select table-filter-select" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
-                <option value="all">All Status</option>
-                <option value="paid">Paid</option>
-                <option value="pending">Pending</option>
+              <select
+                className="input-select table-filter-select"
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+              >
+                <option value="all">All Types</option>
+                <option value="credit">Credits</option>
+                <option value="debit">Debits</option>
               </select>
             </div>
           </div>
 
-          {/* Responsive Table */}
           <div className="table-responsive">
             <table className="data-table data-table-earnings">
               <thead>
                 <tr>
-                  {/* <th className="sortable-th col-source" onClick={() => handleSort("source")}>
-                    <span>Source2</span><SortIcon field="source" />
-                  </th>
-                  <th className="sortable-th col-amount" onClick={() => handleSort("amount")}>
-                    <span>Amount</span><SortIcon field="amount" />
-                  </th>
-                  <th className="sortable-th col-date" onClick={() => handleSort("date")}>
-                    <span>Date</span><SortIcon field="date" />
-                  </th> */}
                   <th className="col-status" onClick={() => handleSort("source")}>
-                      <span>Source2</span><SortIcon field="source" />
+                    <span>Description</span><SortIcon field="source" />
                   </th>
                   <th className="col-status" onClick={() => handleSort("amount")}>
-                      <span>Amount</span><SortIcon field="amount" />
+                    <span>Amount</span><SortIcon field="amount" />
                   </th>
-                  <th className="col-status"  onClick={() => handleSort("date")}>
+                  <th className="col-status" onClick={() => handleSort("date")}>
                     <span>Date</span><SortIcon field="date" />
                   </th>
                   <th className="col-status">
-                    <span>Status</span>
+                    <span>Type</span>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {sorted.map(e => (
-                  <tr
-                    key={e.id}
-                    className={expandedRows.has(e.id) ? "expanded" : ""}
-                    onClick={() => toggleRow(e.id)}
-                  >
-                    <td className="td-priority" data-label="Source">
-                      <span className="td-source-text">{e.source}</span>
-                    </td>
-                    <td className="td-priority td-amount-positive" data-label="Amount">
-                      + TZS {e.amount.toLocaleString()}
-                    </td>
-                    <td className="td-secondary" data-label="Date">
-                      <span className="td-date-text">{e.date}</span>
-                    </td>
-                    <td className="td-secondary" data-label="Status">
-                      {e.status === "paid" ? (
-                        <span className="badge badge-success">Paid</span>
-                      ) : (
-                        <span className="badge badge-warning">Pending</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-                {sorted.length === 0 && (
+                {sorted.map((t) => {
+                  const signed = transactionSignedAmount(t);
+                  return (
+                    <tr key={t.id}>
+                      <td className="td-priority" data-label="Description">
+                        <span className="td-source-text">{t.description || "Wallet transaction"}</span>
+                      </td>
+                      <td className={`td-priority ${signed >= 0 ? "td-amount-positive" : ""}`} data-label="Amount">
+                        {signed >= 0 ? "+" : "−"} {formatWalletAmount(Math.abs(signed), currency)}
+                      </td>
+                      <td className="td-secondary" data-label="Date">
+                        <span className="td-date-text">{formatTransactionDate(t.createdAt)}</span>
+                      </td>
+                      <td className="td-secondary" data-label="Type">
+                        <span className="badge badge-info">{transactionDisplayType(t.type)}</span>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {!loading && sorted.length === 0 && (
                   <tr>
                     <td colSpan={4} className="table-empty-cell">
                       <div className="table-empty-state">
                         <HiMagnifyingGlass className="table-empty-icon" />
-                        <p>No transactions found</p>
+                        <p>No wallet transactions yet</p>
                       </div>
                     </td>
                   </tr>

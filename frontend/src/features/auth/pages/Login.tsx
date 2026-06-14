@@ -1,21 +1,34 @@
-// LoginLuxury.tsx
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
-import { FiUser, FiStar } from "react-icons/fi";
+import { useAuth } from "../../../hooks/useAuth";
 import "../styles/auth.css";
+
+function homeForRole(role: string) {
+  if (role === "provider") return "/provider";
+  if (role === "admin") return "/admin";
+  return "/app";
+}
 
 export default function LoginLuxury() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const { login, loading, error } = useAuth();
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    if (email.includes("provider")) {
-      navigate("/provider");
-    } else {
-      navigate("/app");
+
+    const result = await login({ identifier, password });
+    if (!result?.user) return;
+
+    if (!result.user.isVerified) {
+      navigate("/verify-otp", {
+        state: { phone: result.user.phone, purpose: "registration" },
+      });
+      return;
     }
+
+    navigate(homeForRole(result.user.role));
   }
 
   return (
@@ -23,7 +36,7 @@ export default function LoginLuxury() {
       <div className="luxury-bg-pattern"></div>
       <div className="luxury-bg-orb luxury-orb-1"></div>
       <div className="luxury-bg-orb luxury-orb-2"></div>
-      
+
       <section className="luxury-card">
         <div className="luxury-card-grid">
           <div className="luxury-visual">
@@ -34,7 +47,7 @@ export default function LoginLuxury() {
                 </div>
                 <div className="luxury-icon-ring"></div>
               </div>
-              
+
               <div className="luxury-brand-block">
                 <h1 className="luxury-brand-name">AGRIGAX</h1>
                 <div className="luxury-brand-line"></div>
@@ -43,8 +56,7 @@ export default function LoginLuxury() {
                 </p>
               </div>
             </div>
-            
-            {/* Geometric shapes - slightly visible */}
+
             <div className="luxury-shapes">
               <div className="luxury-shape luxury-shape-1"></div>
               <div className="luxury-shape luxury-shape-2"></div>
@@ -56,20 +68,24 @@ export default function LoginLuxury() {
             <div className="luxury-form-wrapper">
               <div className="luxury-form-head">
                 <h2 className="luxury-form-title">Welcome back</h2>
-                <p className="luxury-form-desc">Sign in to your account</p>
+                <p className="luxury-form-desc">Sign in with username, phone, or email</p>
               </div>
+
+              {error && <p className="luxury-form-desc" style={{ color: "#b42318" }}>{error}</p>}
 
               <form onSubmit={handleLogin} className="luxury-form">
                 <div className="luxury-input-wrapper">
                   <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    type="text"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
                     className="luxury-input"
-                    id="email"
+                    id="identifier"
                     required
                   />
-                  <label htmlFor="email" className="luxury-input-label">Email address</label>
+                  <label htmlFor="identifier" className="luxury-input-label">
+                    Username, phone, or email
+                  </label>
                   <div className="luxury-input-border"></div>
                 </div>
 
@@ -86,31 +102,17 @@ export default function LoginLuxury() {
                   <div className="luxury-input-border"></div>
                 </div>
 
-                <button type="submit" className="luxury-btn">
-                  <span className="luxury-btn-text">Sign In</span>
+                <button type="submit" className="luxury-btn" disabled={loading}>
+                  <span className="luxury-btn-text">{loading ? "Signing in..." : "Sign In"}</span>
                   <span className="luxury-btn-icon">→</span>
                 </button>
               </form>
 
-              <div className="luxury-alt-section">
-                <div className="luxury-alt-buttons">
-                  <button
-                    className="luxury-alt-btn"
-                    onClick={() => navigate("/app")}
-                  >
-                    <FiUser className="luxury-alt-btn-icon" />
-                    <span>Customer</span>
-                  </button>
-                  
-                  <button
-                    className="luxury-alt-btn luxury-alt-btn-gold"
-                    onClick={() => navigate("/provider")}
-                  >
-                    <FiStar className="luxury-alt-btn-icon" />
-                    <span>Provider</span>
-                  </button>
-                </div>
-              </div>
+              <p className="luxury-footer-text">
+                <Link to="/forgot-password" className="luxury-footer-link">
+                  Forgot password?
+                </Link>
+              </p>
 
               <p className="luxury-footer-text">
                 Don't have an account?{" "}

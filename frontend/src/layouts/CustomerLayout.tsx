@@ -2,13 +2,20 @@ import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import TopNav from "./components/TopNav";
+import VerifyAccountBanner from "../components/VerifyAccountBanner";
+import { useAuthContext } from "../contexts/AuthContext";
 import { customerMenu } from "./components/menu/customerMenu";
+import { displayName, roleLabel } from "../utils/userDisplay";
 import "./styles/layout.css";
 
 export default function CustomerLayout() {
+  const { user } = useAuthContext();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  const userName = displayName(user);
+  const userRole = user ? roleLabel(user.role) : "Customer";
 
   useEffect(() => {
     const handleResize = () => {
@@ -25,7 +32,6 @@ export default function CustomerLayout() {
     <div className="flex h-full">
       <div className="layout-bg-overlay" />
       
-      {/* Mobile overlay */}
       {isMobile && (
         <div 
           className={`sidebar-mobile-overlay ${mobileSidebarOpen ? 'active' : ''}`}
@@ -36,8 +42,10 @@ export default function CustomerLayout() {
       <Sidebar 
         menu={customerMenu} 
         userType="customer"
-        userName="John Doe"
-        userRole="Customer"
+        userName={userName}
+        userRole={userRole}
+        isVerified={user?.isVerified ?? false}
+        userPhone={user?.phone || ""}
         isCollapsed={sidebarCollapsed}
         isMobile={isMobile}
         mobileOpen={mobileSidebarOpen}
@@ -47,8 +55,8 @@ export default function CustomerLayout() {
       <div className="flex flex-col w-full" style={{ position: 'relative', zIndex: 1 }}>
         <TopNav 
           userType="customer"
-          userName="John Doe"
-          userRole="Customer"
+          userName={userName}
+          userRole={userRole}
           onToggleSidebar={() => {
             if (isMobile) {
               setMobileSidebarOpen(!mobileSidebarOpen);
@@ -61,6 +69,7 @@ export default function CustomerLayout() {
 
         <main className="main-content-premium p-lg h-full" style={{height:'80vh', overflow:'auto'}}>
           <div style={{ position: 'relative', zIndex: 1 }}>
+            {user && <VerifyAccountBanner user={user} />}
             <Outlet />
           </div>
         </main>

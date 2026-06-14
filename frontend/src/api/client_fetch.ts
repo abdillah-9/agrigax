@@ -1,4 +1,6 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import { AUTH } from "./endpoints";
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -7,6 +9,7 @@ interface RequestOptions {
   body?: unknown;
   params?: Record<string, string>;
   isFormData?: boolean;
+  _retry?: boolean;
 }
 
 function buildUrl(path: string, params?: Record<string, string>): string {
@@ -31,15 +34,10 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     headers["Content-Type"] = "application/json";
   }
 
-  const token = localStorage.getItem("access_token");
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-
   const fetchOptions: RequestInit = {
     method,
     headers,
-    credentials: "include", // ← Sends/receives httpOnly cookies
+    credentials: "include",
   };
 
   if (body) {
@@ -48,8 +46,27 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 
   const response = await fetch(url, fetchOptions);
 
+  if (
+    response.status === 401 &&
+    !options._retry &&
+    !path.includes(AUTH.REFRESH) &&
+    !path.includes(AUTH.LOGIN)
+  ) {
+    const refreshResponse = await fetch(buildUrl(AUTH.REFRESH), {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (refreshResponse.ok) {
+      return request<T>(path, { ...options, _retry: true });
+    }
+
+    window.location.href = "/login";
+    throw new Error("Session expired. Please login again.");
+  }
+
   if (response.status === 401) {
-    localStorage.removeItem("access_token");
     window.location.href = "/login";
     throw new Error("Session expired. Please login again.");
   }

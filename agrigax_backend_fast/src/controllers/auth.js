@@ -1,126 +1,146 @@
-const { signIn, signUp, signOut, userSessionCheck, quickUserSessionCheck } = require("../services/auth");
+const {
+  login,
+  register,
+  logout,
+  refreshSession,
+  getMe,
+  forgotPassword,
+  resendOtp,
+  verifyOtp,
+  resetPassword,
+} = require("../services/auth");
+const { setAuthCookies, clearAuthCookies, setResetCookie, clearResetCookie, ACCESS_COOKIE, REFRESH_COOKIE, RESET_COOKIE } = require("../utils/cookies");
+const { attachDevOtp } = require("../utils/devOtp");
+const { formatUser, sendSuccess } = require("../utils/response");
 
-module.exports.signIn = async(req, res, next)=>{
-    const {email, password} = req.body;
+const mapRegisterBody = (body) => ({
+  username: body.username,
+  full_name: body.fullName || body.full_name,
+  phone: body.phone,
+  email: body.email || null,
+  password: body.password,
+  active_role: body.role || body.active_role || "customer",
+});
 
-    try{
-        const {id, access_token_hash, refresh_token_hash} = await signIn({email, password});
+module.exports.login = async (req, res, next) => {
+  try {
+    const { user, access_token_hash, refresh_token_hash } = await login(req.body);
 
-        res.cookie('access_token_hash',access_token_hash,{
-            maxAge:1000 * 60 * 60 * 15,
-            sameSite:'lax',
-            httpOnly: false,
-            secured: true,
-        });
+    setAuthCookies(res, { access_token_hash, refresh_token_hash });
 
-        res.cookie('refresh_token_hash',refresh_token_hash,{
-            maxAge:1000 * 60 * 60 * 24 * 7,
-            sameSite:'lax',
-            httpOnly: false,
-            secured: true,
-        });
-
-        return res.json({message:"You have successfully signed-In", id}).statusCode(200);
-        next();
-    }
-
-    catch(e){
-        throw e
-    }
-}
-
-module.exports.signUp  = async(req, res, next)=>{
-    const {    full_name, phone, email,password_hash, avatar, active_role, is_verified, is_suspended} = req.body;
-
-    try{
-        const {id, access_token_hash, refresh_token_hash} = await signUp(full_name, phone, email,password_hash, avatar, active_role, is_verified, is_suspended);   
-
-        res.cookie('access_token_hash',access_token_hash,{
-            maxAge:1000 * 60 * 60 * 15,
-            samesite:'lax',
-            httponly: false,
-            secured: true,
-        });
-
-        res.cookie('refresh_token_hash',refresh_token_hash,{
-            maxAge:1000 * 60 * 60 * 24 * 7,
-            samesite:'lax',
-            httponly: false,
-            secured: true,
-        });
-
-        return res.json({message:"You have successfully created new account...", id}).statusCode(200);
-    }
-    catch(e){
-        throw e;
-    }
+    return sendSuccess(res, { user: formatUser(user) }, "You have successfully signed in");
+  } catch (e) {
+    next(e);
+  }
 };
 
-module.exports.signOut = async(req, res, next)=>{
+module.exports.register = async (req, res, next) => {
+  try {
+    const { user, access_token_hash, refresh_token_hash, requiresVerification, devOtp } = await register(
+      mapRegisterBody(req.body)
+    );
 
-    const {access_token_hash, refresh_token_hash} = req.cookies;
+    setAuthCookies(res, { access_token_hash, refresh_token_hash });
 
-    try{
-        await signOut({access_token_hash,refresh_token_hash});
-
-        res.cookie('access_token_hash',access_token_hash,{
-            maxAge:1,
-            samesite:'lax',
-            httponly: false,
-            secured: true,
-        });
-
-        res.cookie('refresh_token_hash',refresh_token_hash,{
-            maxAge:1,
-            samesite:'lax',
-            httponly: false,
-            secured: true,
-        });
-
-        return res.json({message:"You have successful signed out"}).statusCode(200);
-    }
-    catch(e){
-        throw e;
-    }
-
+    return sendSuccess(
+      res,
+      attachDevOtp({ user: formatUser(user), requiresVerification }, devOtp),
+      "Account created successfully. Please verify your OTP."
+    );
+  } catch (e) {
+    next(e);
+  }
 };
 
-module.exports.userSessionCheck = async(req, res, next)=>{
+module.exports.logout = async (req, res, next) => {
+  try {
+    await logout({
+      access_token_hash: req.cookies?.[ACCESS_COOKIE],
+      refresh_token_hash: req.cookies?.[REFRESH_COOKIE],
+    });
 
-    const {id, access_token_hash, refresh_token_hash} = req.cookies;
+    clearAuthCookies(res);
+    clearResetCookie(res);
 
-    try{
-        const {access_token_hash, refresh_token_hash} = await userSessionCheck({access_token_hash, refresh_token_hash});
-
-        res.cookie('access_token_hash',access_token_hash,{
-            maxAge:1,
-            samesite:'lax',
-            httponly: false,
-            secured: true,
-        });
-
-        res.cookie('refresh_token_hash',refresh_token_hash,{
-            maxAge:1,
-            samesite:'lax',
-            httponly: false,
-            secured: true,
-        });      
-
-        return res.json({message:"User session is valid", id}).statusCode(200);
-    }
-    catch(e){
-        throw e;
-    }
+    return sendSuccess(res, null, "You have successfully signed out");
+  } catch (e) {
+    next(e);
+  }
 };
 
-module.exports.quickUserSessionCheck = async(req, res, next)=>{
-    const {access_token_hash} = req.cookies;
+module.exports.refresh = async (req, res, next) => {
+  try {
+    const { user, access_token_hash, refresh_token_hash } = await refreshSession({
+      access_token_hash: req.cookies?.[ACCESS_COOKIE],
+      refresh_token_hash: req.cookies?.[REFRESH_COOKIE],
+    });
 
-    try{
-        await quickUserSessionCheck({access_token_hash});
-        //next();
+    setAuthCookies(res, { access_token_hash, refresh_token_hash });
+
+    return sendSuccess(res, { user: formatUser(user) }, "Session refreshed");
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.me = async (req, res, next) => {
+  try {
+    const user = await getMe(req.user.id);
+    return sendSuccess(res, { user: formatUser(user) }, "Authenticated user fetched");
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.forgotPassword = async (req, res, next) => {
+  try {
+    const result = await forgotPassword(req.body);
+    return sendSuccess(res, attachDevOtp(null, result.devOtp), result.message);
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.resendOtp = async (req, res, next) => {
+  try {
+    const purpose = req.body.purpose || "registration";
+    const result = await resendOtp({ ...req.body, purpose });
+    return sendSuccess(res, attachDevOtp(null, result.devOtp), result.message);
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.verifyOtp = async (req, res, next) => {
+  try {
+    const purpose = req.body.purpose || "registration";
+    const result = await verifyOtp({ ...req.body, purpose });
+
+    if (purpose === "registration") {
+      return sendSuccess(res, { user: formatUser(result.user) }, "Account verified successfully");
     }
-    catch(e){
-        throw e;
-    }
-}
+
+    setResetCookie(res, result.resetToken);
+    clearAuthCookies(res);
+
+    return sendSuccess(res, null, "OTP verified. You can now reset your password.");
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.resetPassword = async (req, res, next) => {
+  try {
+    const { user, access_token_hash, refresh_token_hash } = await resetPassword({
+      password: req.body.password,
+      resetToken: req.cookies?.[RESET_COOKIE],
+    });
+
+    clearResetCookie(res);
+    setAuthCookies(res, { access_token_hash, refresh_token_hash });
+
+    return sendSuccess(res, { user: formatUser(user) }, "Password reset successfully");
+  } catch (e) {
+    next(e);
+  }
+};

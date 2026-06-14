@@ -1,79 +1,92 @@
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   HiMagnifyingGlass,
   HiCheck,
   HiXMark,
   HiEye,
-  HiPhone,
   HiClipboardDocumentList,
   HiCalendar,
   HiMapPin,
   HiCurrencyDollar,
 } from "react-icons/hi2";
+import { useBookings } from "../../../hooks/useBookings";
+import {
+  clearBookingLookupCache,
+  enrichBookings,
+  formatBookingAmount,
+  formatBookingDate,
+  providerStatusClass,
+} from "../../../api/bookingHelpers";
+import type { EnrichedBooking } from "../../../types/api.types";
 import "../styles/bookings.css";
 
-const initialBookings = [
-  { id: "BK-001", customer: "Abdillah Suleiman", service: "Tractor Rental", date: "2026-05-20", location: "Morogoro", amount: "TZS 120,000", status: "pending" },
-  { id: "BK-006", customer: "Zainab Ally", service: "Irrigation Setup", date: "2026-05-22", location: "Dar es Salaam", amount: "TZS 350,000", status: "pending" },
-  { id: "BK-007", customer: "Peter Tembo", service: "Tractor Rental", date: "2026-05-18", location: "Dodoma", amount: "TZS 120,000", status: "accepted" },
-  { id: "BK-008", customer: "Grace Mushi", service: "Harvesting", date: "2026-05-15", location: "Mwanza", amount: "TZS 200,000", status: "completed" },
-  { id: "BK-009", customer: "Juma Mwakyoma", service: "Fertilizer Supply", date: "2026-05-25", location: "Mbeya", amount: "TZS 65,000", status: "cancelled" },
-  { id: "BK-010", customer: "Fatima Jabir", service: "Soil Testing", date: "2026-05-21", location: "Arusha", amount: "TZS 45,000", status: "accepted" },
-];
-
 export default function ProviderBookings() {
-  const [bookings, setBookings] = useState(initialBookings);
-  const [selectedBooking, setSelectedBooking] = useState<typeof initialBookings[0] | null>(null);
+  const {
+    fetchProviderBookings,
+    acceptBooking,
+    rejectBooking,
+    completeBooking,
+    loading,
+    error,
+  } = useBookings();
+
+  const [bookings, setBookings] = useState<EnrichedBooking[]>([]);
+  const [selectedBooking, setSelectedBooking] = useState<EnrichedBooking | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("newest");
+  const [actionLoading, setActionLoading] = useState(false);
 
-  const filtered = bookings.filter(b => {
-    const matchSearch = b.customer.toLowerCase().includes(search.toLowerCase()) ||
-                        b.service.toLowerCase().includes(search.toLowerCase()) ||
-                        b.location.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === "all" || b.status === statusFilter;
-    return matchSearch && matchStatus;
-  });
+  const loadBookings = useCallback(async () => {
+    clearBookingLookupCache();
+    const rows = await fetchProviderBookings();
+    const enriched = await enrichBookings(rows);
+    setBookings(enriched);
+  }, [fetchProviderBookings]);
 
-  if (sortOrder === "newest") filtered.sort((a, b) => b.date.localeCompare(a.date));
-  if (sortOrder === "oldest") filtered.sort((a, b) => a.date.localeCompare(b.date));
-  if (sortOrder === "highest") filtered.sort((a, b) => parseInt(b.amount.replace(/\D/g, "")) - parseInt(a.amount.replace(/\D/g, "")));
-  if (sortOrder === "lowest") filtered.sort((a, b) => parseInt(a.amount.replace(/\D/g, "")) - parseInt(b.amount.replace(/\D/g, "")));
+  useEffect(() => {
+    loadBookings();
+  }, [loadBookings]);
 
-  const pendingCount = bookings.filter(b => b.status === "pending").length;
-  const acceptedCount = bookings.filter(b => b.status === "accepted").length;
-  const completedCount = bookings.filter(b => b.status === "completed").length;
+  const filtered = useMemo(() => {
+    let items = bookings.filter((b) => {
+      const q = search.toLowerCase();
+      const matchSearch =
+        b.customerName.toLowerCase().includes(q) ||
+        b.serviceTitle.toLowerCase().includes(q) ||
+        b.location.toLowerCase().includes(q);
+      const matchStatus = statusFilter === "all" || b.status === statusFilter;
+      return matchSearch && matchStatus;
+    });
 
-  const handleAccept = (id: string) => {
-    setBookings(prev => prev.map(b => b.id === id ? { ...b, status: "accepted" } : b));
-    alert("Booking accepted! Customer will be notified.");
-  };
-
-  const handleReject = (id: string) => {
-    setBookings(prev => prev.map(b => b.id === id ? { ...b, status: "cancelled" } : b));
-    alert("Booking rejected.");
-  };
-
-  const handleViewDetails = (booking: typeof initialBookings[0]) => {
-    setSelectedBooking(booking);
-    setShowDetails(true);
-  };
-
-  const getStatusClass = (status: string) => {
-    switch (status) {
-      case "pending": return "booking-status-pending";
-      case "accepted": return "booking-status-accepted";
-      case "completed": return "booking-status-completed";
-      case "cancelled": return "booking-status-cancelled";
-      default: return "";
+    if (sortOrder === "newest") {
+      items = [...items].sort((a, b) => (b.scheduledAt || b.createdAt).localeCompare(a.scheduledAt || a.createdAt));
     }
-  };
+    if (sortOrder === "oldest") {
+      items = [...items].sort((a, b) => (a.scheduledAt || a.createdAt).localeCompare(b.scheduledAt || b.createdAt));
+    }
+    if (sortOrder === "highest") items = [...items].sort((a, b) => b.price - a.price);
+    if (sortOrder === "lowest") items = [...items].sort((a, b) => a.price - b.price);
+
+    return items;
+  }, [bookings, search, statusFilter, sortOrder]);
+
+  async function runAction(action: (id: string) => Promise<unknown>, id: string) {
+    setActionLoading(true);
+    const result = await action(id);
+    setActionLoading(false);
+    if (!result) return;
+    await loadBookings();
+    setShowDetails(false);
+  }
+
+  const pendingCount = bookings.filter((b) => b.status === "pending").length;
+  const acceptedCount = bookings.filter((b) => b.status === "accepted").length;
+  const completedCount = bookings.filter((b) => b.status === "completed").length;
 
   return (
     <main className="customer-page">
-      {/* Header Banner */}
       <div className="bookings-header-banner">
         <div className="bookings-header-content">
           <div>
@@ -100,7 +113,8 @@ export default function ProviderBookings() {
         </div>
       </div>
 
-      {/* Search & Filters */}
+      {error && <p className="bookings-count-text" style={{ color: "#b42318" }}>{error}</p>}
+
       <div className="bookings-filters-row">
         <div className="bookings-search-wrap">
           <HiMagnifyingGlass className="listings-search-icon" />
@@ -109,17 +123,18 @@ export default function ProviderBookings() {
             style={{ paddingLeft: 42 }}
             placeholder="Search by customer, service, or location..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <select className="bookings-filter-select" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+        <select className="bookings-filter-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
           <option value="all">All Status</option>
           <option value="pending">Pending</option>
           <option value="accepted">Accepted</option>
           <option value="completed">Completed</option>
+          <option value="rejected">Rejected</option>
           <option value="cancelled">Cancelled</option>
         </select>
-        <select className="bookings-filter-select" value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
+        <select className="bookings-filter-select" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
           <option value="newest">Newest First</option>
           <option value="oldest">Oldest First</option>
           <option value="highest">Highest Amount</option>
@@ -127,23 +142,26 @@ export default function ProviderBookings() {
         </select>
       </div>
 
-      <p className="bookings-count-text">{filtered.length} booking{filtered.length !== 1 ? "s" : ""} found</p>
+      <p className="bookings-count-text">
+        {loading && bookings.length === 0
+          ? "Loading bookings..."
+          : `${filtered.length} booking${filtered.length !== 1 ? "s" : ""} found`}
+      </p>
 
-      {/* Bookings List */}
       <section className="bookings-list">
-        {filtered.map(booking => (
+        {filtered.map((booking) => (
           <div key={booking.id} className="booking-card">
             <div className="booking-top">
               <div className="booking-top-left">
                 <div className={`booking-avatar booking-avatar-${booking.status}`}>
-                  {booking.customer.split(" ").map(n => n[0]).join("").slice(0, 2)}
+                  {booking.customerName.split(" ").map((n) => n[0]).join("").slice(0, 2)}
                 </div>
                 <div>
-                  <h3 className="booking-service-name">{booking.service}</h3>
-                  <p className="booking-customer-name">Requested by {booking.customer}</p>
+                  <h3 className="booking-service-name">{booking.serviceTitle}</h3>
+                  <p className="booking-customer-name">Requested by {booking.customerName}</p>
                 </div>
               </div>
-              <span className={`booking-status ${getStatusClass(booking.status)}`}>
+              <span className={`booking-status ${providerStatusClass(booking.status)}`}>
                 {booking.status}
               </span>
             </div>
@@ -152,7 +170,7 @@ export default function ProviderBookings() {
               <div className="booking-detail-item">
                 <HiCalendar className="booking-detail-icon" />
                 <span className="fw-semibold">Date:</span>
-                <span>{booking.date}</span>
+                <span>{formatBookingDate(booking.scheduledAt)}</span>
               </div>
               <div className="booking-detail-item">
                 <HiMapPin className="booking-detail-icon" />
@@ -162,51 +180,64 @@ export default function ProviderBookings() {
               <div className="booking-detail-item">
                 <HiCurrencyDollar className="booking-detail-icon" />
                 <span className="fw-semibold">Amount:</span>
-                <span className="booking-amount">{booking.amount}</span>
+                <span className="booking-amount">{formatBookingAmount(booking.price)}</span>
               </div>
             </div>
 
-            {/* Action Buttons */}
             {booking.status === "pending" && (
               <div className="booking-actions">
-                <button className="booking-btn-accept" onClick={() => handleAccept(booking.id)}>
+                <button
+                  className="booking-btn-accept"
+                  disabled={actionLoading}
+                  onClick={() => runAction(acceptBooking, booking.id)}
+                >
                   <HiCheck className="booking-btn-icon" /> Accept
                 </button>
-                <button className="booking-btn-reject" onClick={() => handleReject(booking.id)}>
+                <button
+                  className="booking-btn-reject"
+                  disabled={actionLoading}
+                  onClick={() => runAction(rejectBooking, booking.id)}
+                >
                   <HiXMark className="booking-btn-icon" /> Reject
                 </button>
               </div>
             )}
-            {(booking.status === "accepted" || booking.status === "completed") && (
+
+            {booking.status === "accepted" && (
               <div className="booking-actions">
-                <button className="booking-btn-view" onClick={() => handleViewDetails(booking)}>
-                  <HiEye className="booking-btn-icon" /> View Details
+                <button
+                  className="booking-btn-accept"
+                  disabled={actionLoading}
+                  onClick={() => runAction(completeBooking, booking.id)}
+                >
+                  <HiCheck className="booking-btn-icon" /> Mark Complete
                 </button>
-                <button className="booking-btn-contact" onClick={() => alert(`Contacting ${booking.customer}...`)}>
-                  <HiPhone className="booking-btn-icon" /> Contact Customer
+                <button className="booking-btn-view" onClick={() => { setSelectedBooking(booking); setShowDetails(true); }}>
+                  <HiEye className="booking-btn-icon" /> View Details
                 </button>
               </div>
             )}
-            {booking.status === "cancelled" && (
+
+            {(booking.status === "completed" || booking.status === "cancelled" || booking.status === "rejected") && (
               <div className="booking-actions">
-                <button className="booking-btn-view" onClick={() => handleViewDetails(booking)}>
+                <button className="booking-btn-view" onClick={() => { setSelectedBooking(booking); setShowDetails(true); }}>
                   <HiEye className="booking-btn-icon" /> View Details
                 </button>
               </div>
             )}
           </div>
         ))}
-        {filtered.length === 0 && (
+
+        {!loading && filtered.length === 0 && (
           <div className="table-empty">
             <p>No bookings match your filters.</p>
           </div>
         )}
       </section>
 
-      {/* Details Modal */}
       {showDetails && selectedBooking && (
         <div className="provider-modal-backdrop" onClick={() => setShowDetails(false)}>
-          <div className="provider-modal" onClick={e => e.stopPropagation()}>
+          <div className="provider-modal" onClick={(e) => e.stopPropagation()}>
             <div className="provider-modal-header">
               <div className="provider-modal-header-left">
                 <div className="provider-modal-icon-wrap provider-modal-icon-booking">
@@ -214,7 +245,7 @@ export default function ProviderBookings() {
                 </div>
                 <div>
                   <h3 className="provider-modal-title">Booking Details</h3>
-                  <p className="provider-modal-subtitle">{selectedBooking.id}</p>
+                  <p className="provider-modal-subtitle">#{selectedBooking.id}</p>
                 </div>
               </div>
               <button className="provider-modal-close" onClick={() => setShowDetails(false)}>
@@ -225,15 +256,15 @@ export default function ProviderBookings() {
               <div className="booking-details-modal">
                 <div className="booking-detail-modal-row">
                   <span className="fw-semibold">Service:</span>
-                  <span>{selectedBooking.service}</span>
+                  <span>{selectedBooking.serviceTitle}</span>
                 </div>
                 <div className="booking-detail-modal-row">
                   <span className="fw-semibold">Customer:</span>
-                  <span>{selectedBooking.customer}</span>
+                  <span>{selectedBooking.customerName}</span>
                 </div>
                 <div className="booking-detail-modal-row">
                   <span className="fw-semibold">Date:</span>
-                  <span>{selectedBooking.date}</span>
+                  <span>{formatBookingDate(selectedBooking.scheduledAt)}</span>
                 </div>
                 <div className="booking-detail-modal-row">
                   <span className="fw-semibold">Location:</span>
@@ -241,11 +272,17 @@ export default function ProviderBookings() {
                 </div>
                 <div className="booking-detail-modal-row">
                   <span className="fw-semibold">Amount:</span>
-                  <span className="booking-amount">{selectedBooking.amount}</span>
+                  <span className="booking-amount">{formatBookingAmount(selectedBooking.price)}</span>
                 </div>
+                {selectedBooking.notes && (
+                  <div className="booking-detail-modal-row">
+                    <span className="fw-semibold">Notes:</span>
+                    <span>{selectedBooking.notes}</span>
+                  </div>
+                )}
                 <div className="booking-detail-modal-row">
                   <span className="fw-semibold">Status:</span>
-                  <span className={`booking-status ${getStatusClass(selectedBooking.status)}`}>
+                  <span className={`booking-status ${providerStatusClass(selectedBooking.status)}`}>
                     {selectedBooking.status}
                   </span>
                 </div>
@@ -255,13 +292,30 @@ export default function ProviderBookings() {
               <button className="btn-report" onClick={() => setShowDetails(false)}>Close</button>
               {selectedBooking.status === "pending" && (
                 <>
-                  <button className="booking-btn-reject" onClick={() => { handleReject(selectedBooking.id); setShowDetails(false); }}>
+                  <button
+                    className="booking-btn-reject"
+                    disabled={actionLoading}
+                    onClick={() => runAction(rejectBooking, selectedBooking.id)}
+                  >
                     <HiXMark className="booking-btn-icon" /> Reject
                   </button>
-                  <button className="booking-btn-accept" onClick={() => { handleAccept(selectedBooking.id); setShowDetails(false); }}>
+                  <button
+                    className="booking-btn-accept"
+                    disabled={actionLoading}
+                    onClick={() => runAction(acceptBooking, selectedBooking.id)}
+                  >
                     <HiCheck className="booking-btn-icon" /> Accept
                   </button>
                 </>
+              )}
+              {selectedBooking.status === "accepted" && (
+                <button
+                  className="booking-btn-accept"
+                  disabled={actionLoading}
+                  onClick={() => runAction(completeBooking, selectedBooking.id)}
+                >
+                  <HiCheck className="booking-btn-icon" /> Mark Complete
+                </button>
               )}
             </div>
           </div>

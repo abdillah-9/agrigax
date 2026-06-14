@@ -1,20 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useUsers } from "../../../hooks/useUsers";
+import { useAuthContext } from "../../../contexts/AuthContext";
+import { roleLabel, userInitials } from "../../../utils/userDisplay";
 
 export default function Profile() {
-  const [profile, setProfile] = useState({
-    fullName: "Admin User",
-    email: "admin@agrigax.co.tz",
-    phone: "+255 700 000 000",
-    role: "Super Admin",
-    lastLogin: "2026-05-20 08:30 AM",
-    accountCreated: "2026-01-01",
-  });
+  const { user, setUser } = useAuthContext();
+  const { fetchProfile, updateProfile, loading, error } = useUsers();
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState<string | null>(null);
+  const [username, setUsername] = useState("");
+  const [saved, setSaved] = useState(false);
 
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
+  useEffect(() => {
+    fetchProfile().then((profile) => {
+      if (!profile) return;
+      setFullName(profile.fullName);
+      setPhone(profile.phone);
+      setEmail(profile.email);
+      setUsername(profile.username);
+    });
+  }, [fetchProfile]);
+
+  async function handleSave() {
+    const updated = await updateProfile({ fullName: fullName.trim(), phone: phone.trim() });
+    if (!updated) return;
+
+    setUser(updated);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  }
+
+  const displayName = fullName || username || "Admin";
 
   return (
     <div>
@@ -22,6 +40,8 @@ export default function Profile() {
         <h1 className="page-title">Admin Profile</h1>
         <p className="page-subtitle">Manage your account information</p>
       </div>
+
+      {error && <p style={{ color: "#b42318", marginBottom: 12 }}>{error}</p>}
 
       <div className="form-section">
         <div className="form-section-title">
@@ -38,92 +58,57 @@ export default function Profile() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 32,
+            fontSize: 28,
             fontWeight: 700,
             marginBottom: 12
           }}>
-            AU
+            {userInitials(displayName)}
           </div>
-          <button className="btn btn-outline btn-sm">Change Avatar</button>
         </div>
         <div className="form-grid">
+          <div>
+            <label className="label">Username</label>
+            <input className="input-text" type="text" value={username} disabled />
+          </div>
           <div>
             <label className="label">Full Name</label>
             <input
               className="input-text"
               type="text"
-              value={profile.fullName}
-              onChange={(e) => setProfile(prev => ({ ...prev, fullName: e.target.value }))}
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
             />
           </div>
           <div>
             <label className="label">Email</label>
-            <input
-              className="input-text"
-              type="email"
-              value={profile.email}
-              disabled
-            />
+            <input className="input-text" type="email" value={email || ""} disabled />
           </div>
           <div>
             <label className="label">Phone</label>
             <input
               className="input-text"
               type="tel"
-              value={profile.phone}
-              onChange={(e) => setProfile(prev => ({ ...prev, phone: e.target.value }))}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
             />
           </div>
           <div>
             <label className="label">Role</label>
-            <input className="input-text" type="text" value={profile.role} disabled />
-          </div>
-        </div>
-        <div className="inv-auto-badge" style={{ marginTop: 16 }}>
-          <span className="inv-auto-badge-dot" />
-          Last login: {profile.lastLogin}
-        </div>
-        <div className="form-actions">
-          <button className="btn btn-primary">Update Profile</button>
-        </div>
-      </div>
-
-      <div className="form-section">
-        <div className="form-section-title">
-          <span className="form-section-title-text">Change Password</span>
-          <span className="form-section-line" />
-        </div>
-        <div className="form-grid">
-          <div>
-            <label className="label label-required">Current Password</label>
             <input
               className="input-text"
-              type="password"
-              value={passwordForm.currentPassword}
-              onChange={(e) => setPasswordForm(prev => ({ ...prev, currentPassword: e.target.value }))}
-            />
-          </div>
-          <div>
-            <label className="label label-required">New Password</label>
-            <input
-              className="input-text"
-              type="password"
-              value={passwordForm.newPassword}
-              onChange={(e) => setPasswordForm(prev => ({ ...prev, newPassword: e.target.value }))}
-            />
-          </div>
-          <div>
-            <label className="label label-required">Confirm New Password</label>
-            <input
-              className="input-text"
-              type="password"
-              value={passwordForm.confirmPassword}
-              onChange={(e) => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
+              type="text"
+              value={user ? roleLabel(user.role) : "Administrator"}
+              disabled
             />
           </div>
         </div>
         <div className="form-actions">
-          <button className="btn btn-primary">Change Password</button>
+          <button className="btn btn-primary" onClick={handleSave} disabled={loading}>
+            {saved ? "Profile Updated!" : loading ? "Saving..." : "Update Profile"}
+          </button>
+          <Link to="/forgot-password" className="btn btn-outline" style={{ marginLeft: 12 }}>
+            Change Password
+          </Link>
         </div>
       </div>
     </div>

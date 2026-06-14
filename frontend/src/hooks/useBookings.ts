@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import apiClient from "../api/client";
 import { BOOKINGS } from "../api/endpoints";
-import type { CreateBookingPayload } from "../types/api.types";
+import { toBookingCreateBody } from "../api/mappers";
+import type { ApiResponse, Booking, CreateBookingPayload } from "../types/api.types";
 
 export function useBookings() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchMyBookings = async () => {
+  const fetchMyBookings = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
-      const { data } = await apiClient.get(BOOKINGS.MY);
+      const { data } = await apiClient.get<ApiResponse<Booking[]>>(BOOKINGS.MY);
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to fetch bookings");
@@ -18,12 +20,13 @@ export function useBookings() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchProviderBookings = async () => {
+  const fetchProviderBookings = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
-      const { data } = await apiClient.get(BOOKINGS.PROVIDER);
+      const { data } = await apiClient.get<ApiResponse<Booking[]>>(BOOKINGS.PROVIDER);
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to fetch bookings");
@@ -31,12 +34,30 @@ export function useBookings() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const createBooking = async (payload: CreateBookingPayload) => {
+  const fetchBookingById = useCallback(async (id: string) => {
     setLoading(true);
+    setError(null);
     try {
-      const { data } = await apiClient.post(BOOKINGS.BASE, payload);
+      const { data } = await apiClient.get<ApiResponse<Booking>>(BOOKINGS.BY_ID(id));
+      return data.data;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Booking not found");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const createBooking = useCallback(async (payload: CreateBookingPayload) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await apiClient.post<ApiResponse<Booking>>(
+        BOOKINGS.BASE,
+        toBookingCreateBody(payload)
+      );
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to create booking");
@@ -44,12 +65,13 @@ export function useBookings() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const acceptBooking = async (id: string) => {
+  const acceptBooking = useCallback(async (id: string) => {
     setLoading(true);
+    setError(null);
     try {
-      const { data } = await apiClient.put(BOOKINGS.ACCEPT(id));
+      const { data } = await apiClient.put<ApiResponse<Booking>>(BOOKINGS.ACCEPT(id));
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to accept booking");
@@ -57,12 +79,13 @@ export function useBookings() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const rejectBooking = async (id: string) => {
+  const rejectBooking = useCallback(async (id: string) => {
     setLoading(true);
+    setError(null);
     try {
-      const { data } = await apiClient.put(BOOKINGS.REJECT(id));
+      const { data } = await apiClient.put<ApiResponse<Booking>>(BOOKINGS.REJECT(id));
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to reject booking");
@@ -70,12 +93,27 @@ export function useBookings() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const cancelBooking = async (id: string) => {
+  const completeBooking = useCallback(async (id: string) => {
     setLoading(true);
+    setError(null);
     try {
-      const { data } = await apiClient.put(BOOKINGS.CANCEL(id));
+      const { data } = await apiClient.put<ApiResponse<Booking>>(BOOKINGS.COMPLETE(id));
+      return data.data;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to complete booking");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const cancelBooking = useCallback(async (id: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await apiClient.put<ApiResponse<Booking>>(BOOKINGS.CANCEL(id));
       return data.data;
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to cancel booking");
@@ -83,7 +121,18 @@ export function useBookings() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  return { fetchMyBookings, fetchProviderBookings, createBooking, acceptBooking, rejectBooking, cancelBooking, loading, error };
+  return {
+    fetchMyBookings,
+    fetchProviderBookings,
+    fetchBookingById,
+    createBooking,
+    acceptBooking,
+    rejectBooking,
+    completeBooking,
+    cancelBooking,
+    loading,
+    error,
+  };
 }

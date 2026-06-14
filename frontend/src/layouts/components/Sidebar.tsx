@@ -1,5 +1,5 @@
 import { useState, useEffect, type JSX } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import type { MenuItem } from "./menu/types";
 import { 
   HiHome, HiChartBar, HiUsers, HiCog, HiChevronDown,
@@ -8,30 +8,36 @@ import {
   HiCalendar, HiUser, HiBell, HiPhotograph, HiShieldCheck,
   HiEye, HiDocumentText, HiExclamation, HiSpeakerphone,
   HiTag, HiStar, HiFlag, HiServer, HiKey, HiBan, HiTemplate,
-  HiQuestionMarkCircle, HiChat, HiX
+  HiQuestionMarkCircle, HiChat, HiX, HiLockClosed
 } from "react-icons/hi";
+import { userInitials } from "../../utils/userDisplay";
 
 type Props = {
   menu: MenuItem[];
   userType?: 'admin' | 'customer' | 'provider';
   userName?: string;
   userRole?: string;
+  isVerified?: boolean;
+  userPhone?: string;
   isCollapsed?: boolean;
-  isMobile?: boolean;        // NEW: mobile state
-  mobileOpen?: boolean;      // NEW: mobile sidebar open state
-  onMobileClose?: () => void; // NEW: close callback for mobile
+  isMobile?: boolean;
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
 };
 
 export default function Sidebar({ 
   menu, 
   userType = 'customer', 
-  userName = 'John Doe', 
-  userRole = 'User', 
+  userName = 'User', 
+  userRole = 'User',
+  isVerified = true,
+  userPhone = "",
   isCollapsed = false,
   isMobile = false,
   mobileOpen = false,
   onMobileClose
 }: Props) {
+  const navigate = useNavigate();
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const location = useLocation();
 
@@ -46,7 +52,7 @@ export default function Sidebar({
         }
       }
     });
-  }, [location.pathname]);
+  }, [location.pathname, menu]);
 
   const toggleExpand = (label: string) => {
     setExpandedItems(prev => 
@@ -54,10 +60,24 @@ export default function Sidebar({
     );
   };
 
-  // Close sidebar on mobile when a nav link is clicked
   const handleNavClick = () => {
     if (isMobile && onMobileClose) {
       onMobileClose();
+    }
+  };
+
+  const handleItemClick = (item: MenuItem) => {
+    if (item.requiresVerified && !isVerified) {
+      navigate("/verify-otp", {
+        state: { phone: userPhone, purpose: "registration" },
+      });
+      handleNavClick();
+      return;
+    }
+
+    if (item.path) {
+      navigate(item.path);
+      handleNavClick();
     }
   };
 
@@ -129,21 +149,59 @@ export default function Sidebar({
     return false;
   };
 
-  const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  const renderNavItem = (item: MenuItem) => {
+    const locked = item.requiresVerified && !isVerified;
+
+    if (locked) {
+      return (
+        <button
+          type="button"
+          onClick={() => handleItemClick(item)}
+          className={`nav-item-premium ${(isCollapsed && !isMobile) ? 'justify-center' : ''} nav-item-inactive`}
+          title="Verify your account to access this section"
+        >
+          <span className="nav-icon-default">{getIcon(item.label)}</span>
+          {(!isCollapsed || isMobile) && (
+            <>
+              <span className="text-xs fw-medium nav-label">{item.label}</span>
+              <HiLockClosed className="text-sm" style={{ opacity: 0.6 }} />
+            </>
+          )}
+        </button>
+      );
+    }
+
+    return (
+      <NavLink
+        to={item.path || "#"}
+        end
+        onClick={handleNavClick}
+        className={({ isActive: active }) =>
+          `nav-item-premium ${(isCollapsed && !isMobile) ? 'justify-center' : ''} ${active ? 'nav-item-active' : 'nav-item-inactive'}`
+        }
+      >
+        <span className={isActive(item.path) ? 'nav-icon-active' : 'nav-icon-default'}>
+          {getIcon(item.label)}
+        </span>
+        {(!isCollapsed || isMobile) && (
+          <>
+            <span className="text-xs fw-medium nav-label">{item.label}</span>
+            {isActive(item.path) && <div className="nav-active-dot" />}
+          </>
+        )}
+      </NavLink>
+    );
   };
 
-  // Determine sidebar class based on state
   let sidebarClass = 'sidebar-width-normal';
   if (isMobile) {
-    sidebarClass = ''; // Mobile handles its own positioning
+    sidebarClass = '';
   } else if (isCollapsed) {
     sidebarClass = 'sidebar-width-collapsed';
   }
 
   return (
     <aside className={`sidebar-premium ${sidebarClass} text-white ${isMobile ? (mobileOpen ? 'mobile-open' : '') : ''}`}>
-      {/* Brand Section */}
       <div className={`p-lg flex items-center gap-md ${isCollapsed && !isMobile ? 'justify-center' : ''}`} 
            style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
         <div className="brand-logo-premium">
@@ -156,7 +214,6 @@ export default function Sidebar({
             <p className="text-xs user-type-badge fw-medium mt-xs">{userType}</p>
           </div>
         )}
-        {/* Mobile close button */}
         {isMobile && (
           <button 
             onClick={onMobileClose}
@@ -176,33 +233,11 @@ export default function Sidebar({
         )}
       </div>
 
-      {/* Navigation */}
       <nav className="flex flex-col gap-xs p-sm" style={{ flex: 1, overflowY: 'auto' }}>
         {menu.map((item, index) => (
           <div key={index}>
-            {/* Single item without children */}
-            {item.path && !item.children && (
-              <NavLink
-                to={item.path}
-                end
-                onClick={handleNavClick}
-                className={({ isActive: active }) =>
-                  `nav-item-premium ${(isCollapsed && !isMobile) ? 'justify-center' : ''} ${active ? 'nav-item-active' : 'nav-item-inactive'}`
-                }
-              >
-                <span className={isActive(item.path) ? 'nav-icon-active' : 'nav-icon-default'}>
-                  {getIcon(item.label)}
-                </span>
-                {(!isCollapsed || isMobile) && (
-                  <>
-                    <span className="text-xs fw-medium nav-label">{item.label}</span>
-                    {isActive(item.path) && <div className="nav-active-dot" />}
-                  </>
-                )}
-              </NavLink>
-            )}
+            {item.path && !item.children && renderNavItem(item)}
 
-            {/* Menu item with children */}
             {item.children && (
               <div>
                 <div 
@@ -233,20 +268,35 @@ export default function Sidebar({
                     <div style={{ paddingLeft: 36 }}>
                       <div className="flex flex-col gap-xs">
                         {item.children.map((child, i) => (
-                          <NavLink 
-                            key={i} 
-                            to={child.path || "#"} 
-                            end
-                            onClick={handleNavClick}
-                            className={({ isActive: active }) =>
-                              `submenu-item ${active ? 'submenu-item-active' : ''}`
-                            }
-                          >
-                            <div className="flex items-center gap-sm">
-                              <div className={`submenu-dot ${isActive(child.path) ? 'submenu-dot-active' : ''}`} />
-                              <span className="text-xs">{child.label}</span>
-                            </div>
-                          </NavLink>
+                          child.requiresVerified && !isVerified ? (
+                            <button
+                              key={i}
+                              type="button"
+                              className="submenu-item"
+                              onClick={() => handleItemClick(child)}
+                            >
+                              <div className="flex items-center gap-sm">
+                                <div className="submenu-dot" />
+                                <span className="text-xs">{child.label}</span>
+                                <HiLockClosed className="text-xs" style={{ opacity: 0.6 }} />
+                              </div>
+                            </button>
+                          ) : (
+                            <NavLink 
+                              key={i} 
+                              to={child.path || "#"} 
+                              end
+                              onClick={handleNavClick}
+                              className={({ isActive: active }) =>
+                                `submenu-item ${active ? 'submenu-item-active' : ''}`
+                              }
+                            >
+                              <div className="flex items-center gap-sm">
+                                <div className={`submenu-dot ${isActive(child.path) ? 'submenu-dot-active' : ''}`} />
+                                <span className="text-xs">{child.label}</span>
+                              </div>
+                            </NavLink>
+                          )
                         ))}
                       </div>
                     </div>
@@ -258,18 +308,17 @@ export default function Sidebar({
         ))}
       </nav>
 
-      {/* User Footer */}
       <div className="user-footer-premium p-md">
         {(isCollapsed && !isMobile) ? (
           <div className="flex justify-center">
             <div className={`avatar-premium avatar-${userType}`}>
-              {getInitials(userName)}
+              {userInitials(userName)}
             </div>
           </div>
         ) : (
           <div className="flex items-center gap-sm">
             <div className={`avatar-premium avatar-${userType}`}>
-              {getInitials(userName)}
+              {userInitials(userName)}
               <div className="avatar-online-dot" />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>

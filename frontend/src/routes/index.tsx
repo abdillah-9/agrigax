@@ -10,43 +10,27 @@ import ProtectedRoutes from "./protectedRoutes";
 export default function RouteIndex() {
   return (
     <Routes>
+      <Route path="/app/*" element={
+        <ProtectedRoutes allowedRoles={["customer"]}>
+          <CustomerRoutes />
+        </ProtectedRoutes>
+      } />
 
-      {/* AUTH */}
+      <Route path="/provider/*" element={
+        <ProtectedRoutes allowedRoles={["provider"]}>
+          <ProviderRoutes />
+        </ProtectedRoutes>
+      } />
+
+      <Route path="/admin/*" element={
+        <ProtectedRoutes allowedRoles={["admin"]}>
+          <AdminRoutes />
+        </ProtectedRoutes>
+      } />
+
       <Route path="/*" element={<AuthRoutes />} />
 
-      {/* CUSTOMER */}
-      <Route
-        path="/app/*"
-        element={
-          <ProtectedRoutes allowedRoles={["customer"]}>
-            <CustomerRoutes />
-          </ProtectedRoutes>
-        }
-      />
-
-      {/* PROVIDER */}
-      <Route
-        path="/provider/*"
-        element={
-          <ProtectedRoutes allowedRoles={["provider"]}>
-            <ProviderRoutes />
-          </ProtectedRoutes>
-        }
-      />
-
-      {/* ADMIN */}
-      <Route
-        path="/admin/*"
-        element={
-          <ProtectedRoutes allowedRoles={["admin"]}>
-            <AdminRoutes />
-          </ProtectedRoutes>
-        }
-      />
-
-      {/* fallback */}
-      <Route path="*" element={<Navigate to="/login" />} />
-
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }

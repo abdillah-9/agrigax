@@ -1,29 +1,53 @@
 import axios from "axios";
+import { AUTH } from "./endpoints";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+
+const PUBLIC_AUTH_PATHS = [
+  AUTH.LOGIN,
+  AUTH.REGISTER,
+  AUTH.FORGOT_PASSWORD,
+  AUTH.RESEND_OTP,
+  AUTH.VERIFY_OTP,
+  AUTH.RESET_PASSWORD,
+  AUTH.REFRESH,
+];
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 15000,
-  withCredentials: true, // ← Sends cookies, receives cookies
+  withCredentials: true,
   headers: { "Content-Type": "application/json" },
 });
 
-// Attach access token to every request (for Authorization header)
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("access_token");
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
+const isPublicAuthRequest = (url?: string) => {
+  if (!url) return false;
+  return PUBLIC_AUTH_PATHS.some((path) => url.includes(path));
+};
 
-// On 401, token refresh failed on backend → logout
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem("access_token");
-      window.location.href = "/login";
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest._retry &&
+      !isPublicAuthRequest(originalRequest.url)
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        await api.post(AUTH.REFRESH);
+        return api(originalRequest);
+      } catch {
+        if (!window.location.pathname.startsWith("/login")) {
+          window.location.href = "/login";
+        }
+      }
     }
+
     return Promise.reject(error);
   }
 );

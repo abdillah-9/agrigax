@@ -35,7 +35,6 @@ export default function Analytics() {
   const [topSortDir, setTopSortDir] = useState<"asc" | "desc">("desc");
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
 
-  const totalRevenue = monthlyStats.reduce((s, m) => s + m.revenue, 0);
   const totalBookings = monthlyStats.reduce((s, m) => s + m.bookings, 0);
   const totalCustomers = monthlyStats[monthlyStats.length - 1].customers;
   const avgRating = (monthlyStats.reduce((s, m) => s + m.rating, 0) / monthlyStats.length).toFixed(1);

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   HiBell,
   HiSearch,
@@ -13,6 +14,9 @@ import {
   HiX,
   HiDotsVertical
 } from "react-icons/hi";
+import { useAuth } from "../../hooks/useAuth";
+import { useNotifications } from "../../hooks/useNotifications";
+import { profilePath, settingsPath, userInitials } from "../../utils/userDisplay";
 
 type Props = {
   onToggleSidebar?: () => void;
@@ -26,41 +30,52 @@ export default function TopNav({
   onToggleSidebar,
   isSidebarCollapsed = false,
   userType = 'customer',
-  userName = 'John Doe',
+  userName = 'User',
   userRole = 'User'
 }: Props) {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+  const { fetchNotifications } = useNotifications();
 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const profileRef = useRef<HTMLDivElement>(null);
-  const notificationRef = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLInputElement>(null);
 
-  const notifications = [
-    { id: 1, title: 'New booking request', time: '2 min ago', type: 'booking', read: false },
-    { id: 2, title: 'Payment received', time: '1 hour ago', type: 'payment', read: false },
-    { id: 3, title: 'System update completed', time: '3 hours ago', type: 'system', read: true },
-  ];
+  const notificationsPath =
+    userType === "admin"
+      ? "/admin/notifications"
+      : userType === "provider"
+        ? "/provider/notifications"
+        : "/app/notifications";
 
-  console.log(showNotifications);
-  console.log(userRole);
+  useEffect(() => {
+    let active = true;
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+    async function loadUnreadCount() {
+      const rows = await fetchNotifications();
+      if (active) {
+        setUnreadCount(rows.filter((n) => !n.isRead).length);
+      }
+    }
+
+    loadUnreadCount();
+    return () => {
+      active = false;
+    };
+  }, [fetchNotifications]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setShowProfileMenu(false);
-      }
-      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
-        setShowNotifications(false);
       }
       if (moreRef.current && !moreRef.current.contains(event.target as Node)) {
         setShowMoreMenu(false);
@@ -71,10 +86,23 @@ export default function TopNav({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const goToProfile = () => {
+    setShowProfileMenu(false);
+    navigate(profilePath(userType));
+  };
+
+  const goToSettings = () => {
+    setShowProfileMenu(false);
+    navigate(settingsPath(userType));
+  };
+
+  const handleLogout = async () => {
+    setShowProfileMenu(false);
+    await logout();
+  };
+
   return (
     <header className="topnav-premium flex items-center px-xl">
-
-      {/* MOBILE SEARCH OVERLAY */}
       {showMobileSearch && (
         <div className="mobile-search-overlay">
           <div className="flex items-center gap-sm w-full" style={{ padding: '0 16px' }}>
@@ -94,19 +122,11 @@ export default function TopNav({
       )}
 
       <div className="flex justify-between items-center w-full">
-
-        {/* LEFT SIDE */}
         <div className="flex items-center gap-md left-side">
-
-          {/* Sidebar Toggle */}
-          <button
-            className="icon-btn-premium"
-            onClick={onToggleSidebar}
-          >
+          <button className="icon-btn-premium" onClick={onToggleSidebar}>
             {isSidebarCollapsed ? <HiMenu /> : <HiMenuAlt2 />}
           </button>
 
-          {/* Title */}
           <div className="page-info-container">
             <h3 className="page-title-premium text-lg fw-bold agrigax-split">
               <span className="agri-part">
@@ -126,10 +146,7 @@ export default function TopNav({
           </div>
         </div>
 
-        {/* RIGHT SIDE */}
         <div className="flex items-center gap-sm topnav-actions">
-
-          {/* DESKTOP SEARCH */}
           <div className="desktop-search">
             <HiSearch className="search-icon" />
             <input
@@ -143,7 +160,6 @@ export default function TopNav({
             />
           </div>
 
-          {/* MOBILE SEARCH BUTTON */}
           <button
             className="icon-btn-premium mobile-only mobile-allowed-icon"
             onClick={() => setShowMobileSearch(true)}
@@ -151,12 +167,15 @@ export default function TopNav({
             <HiSearch />
           </button>
 
-          {/* DESKTOP ACTIONS */}
           <div className="flex items-center gap-sm">
-
-            {/* Bell */}
-            <button className="icon-btn-premium desktop-only mobile-un-allowed-icon">
+            <button
+              className="icon-btn-premium desktop-only mobile-un-allowed-icon relative"
+              onClick={() => navigate(notificationsPath)}
+            >
               <HiBell />
+              {unreadCount > 0 && (
+                <span className="notification-badge">{unreadCount}</span>
+              )}
             </button>
 
             <button
@@ -165,21 +184,18 @@ export default function TopNav({
             >
               {isDarkMode ? <HiSun /> : <HiMoon />}
             </button>
-
           </div>
-          {/* MORE MENU (⋯) */}
-          <div ref={moreRef} className="relative">
 
-          <button
-            className="icon-btn-premium mobile-allowed-icon"
-            onClick={() => setShowMoreMenu(v => !v)}
-          >
-            <HiDotsVertical />
-          </button>
+          <div ref={moreRef} className="relative">
+            <button
+              className="icon-btn-premium mobile-allowed-icon"
+              onClick={() => setShowMoreMenu(v => !v)}
+            >
+              <HiDotsVertical />
+            </button>
 
             {showMoreMenu && (
               <div className="dropdown-menu-premium">
-
                 <button
                   className="dropdown-item-premium"
                   onClick={() => setIsDarkMode(!isDarkMode)}
@@ -191,8 +207,8 @@ export default function TopNav({
                 <button
                   className="dropdown-item-premium"
                   onClick={() => {
-                    setShowNotifications(v => !v);
                     setShowMoreMenu(false);
+                    navigate(notificationsPath);
                   }}
                 >
                   <HiBell />
@@ -203,19 +219,17 @@ export default function TopNav({
                     </span>
                   )}
                 </button>
-
               </div>
             )}
           </div>
 
-          {/* PROFILE */}
           <div ref={profileRef}>
             <button
               className="profile-btn-premium"
               onClick={() => setShowProfileMenu(v => !v)}
             >
               <div className="profile-avatar-sm">
-                {userName.split(' ').map(n => n[0]).join('')}
+                {userInitials(userName)}
               </div>
 
               <span className="profile-info-text">
@@ -227,23 +241,24 @@ export default function TopNav({
 
             {showProfileMenu && (
               <div className="dropdown-menu-premium">
+                <div className="dropdown-item-premium" style={{ cursor: "default", opacity: 0.8 }}>
+                  <HiUser /> {userRole}
+                </div>
 
-                <button className="dropdown-item-premium">
+                <button className="dropdown-item-premium" onClick={goToProfile}>
                   <HiUser /> Profile
                 </button>
 
-                <button className="dropdown-item-premium">
+                <button className="dropdown-item-premium" onClick={goToSettings}>
                   <HiCog /> Settings
                 </button>
 
-                <button className="dropdown-item-premium text-red">
+                <button className="dropdown-item-premium text-red" onClick={handleLogout}>
                   <HiLogout /> Logout
                 </button>
-
               </div>
             )}
           </div>
-
         </div>
       </div>
     </header>

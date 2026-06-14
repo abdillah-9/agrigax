@@ -1,92 +1,116 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../../contexts/AuthContext";
+import { useMessages } from "../../../hooks/useMessages";
+import { enrichConversations, messagesBasePath, type EnrichedConversation } from "../../../api/messageHelpers";
 import "../styles/chat.css";
-
-const conversations = [
-  { id: "1", name: "Kilimo Best Supplies", lastMessage: "Your booking is confirmed for May 20th", time: "2 min ago", unread: 2, online: true, avatar: "KB" },
-  { id: "2", name: "Customer Care", lastMessage: "We are reviewing your refund request", time: "1 hour ago", unread: 0, online: true, avatar: "CC" },
-  { id: "3", name: "AgriPro Solutions", lastMessage: "Thank you for your order!", time: "3 hours ago", unread: 0, online: false, avatar: "AP" },
-  { id: "4", name: "Farm Help Services", lastMessage: "I'll be available on Friday", time: "Yesterday", unread: 1, online: true, avatar: "FH" },
-  { id: "5", name: "Green Tech Agri", lastMessage: "Payment received, thank you", time: "2 days ago", unread: 0, online: false, avatar: "GT" },
-];
 
 export default function Messages() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useAuthContext();
+  const { fetchConversations, loading, error } = useMessages();
+  const [conversations, setConversations] = useState<EnrichedConversation[]>([]);
   const [search, setSearch] = useState("");
 
-  const filtered = conversations.filter(c =>
-    c.name.toLowerCase().includes(search.toLowerCase()) ||
-    c.lastMessage.toLowerCase().includes(search.toLowerCase())
+  const loadConversations = useCallback(async () => {
+    if (!user?.id) return;
+    const rows = await fetchConversations();
+    const enriched = await enrichConversations(rows, user.id);
+    setConversations(enriched);
+  }, [fetchConversations, user?.id]);
+
+  useEffect(() => {
+    loadConversations();
+  }, [loadConversations]);
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    return conversations.filter(
+      (c) =>
+        c.otherUserName.toLowerCase().includes(q) ||
+        c.lastMessage.toLowerCase().includes(q)
+    );
+  }, [conversations, search]);
+
+  const unreadTotal = useMemo(
+    () => conversations.reduce((sum, c) => sum + c.unread, 0),
+    [conversations]
   );
 
-  const unreadTotal = conversations.reduce((sum, c) => sum + c.unread, 0);
+  const messagesPath = messagesBasePath(location.pathname);
 
   return (
     <main className="customer-page">
-      {/* Header Banner */}
       <div className="messages-header-banner">
         <div className="messages-header-content">
           <div>
             <p className="messages-header-badge">Messages</p>
             <h1 className="messages-header-title">Conversations</h1>
             <p className="messages-header-subtitle">
-              {unreadTotal > 0 
-                ? `${unreadTotal} unread message${unreadTotal > 1 ? 's' : ''}` 
-                : 'All caught up! ✨'}
+              {loading && conversations.length === 0
+                ? "Loading..."
+                : unreadTotal > 0
+                  ? `${unreadTotal} unread message${unreadTotal > 1 ? "s" : ""}`
+                  : "All caught up!"}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Search */}
+      {error && (
+        <p className="messages-header-subtitle" style={{ color: "#b42318", padding: "0 24px" }}>
+          {error}
+        </p>
+      )}
+
       <div className="messages-search-wrap">
         <input
           className="messages-search-input"
           placeholder="Search conversations..."
           value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
-      {/* Conversation List */}
       <section className="messages-list">
-        {filtered.map(conv => (
+        {filtered.map((conv) => (
           <div
             key={conv.id}
             className="message-conversation-card"
-            onClick={() => navigate(`/app/messages/${conv.id}`)}
+            onClick={() => navigate(`${messagesPath}/${conv.id}`)}
           >
-            {/* Avatar */}
-            <div className={`conversation-avatar ${conv.unread > 0 ? 'conversation-avatar-unread' : 'conversation-avatar-read'}`}>
+            <div
+              className={`conversation-avatar ${conv.unread > 0 ? "conversation-avatar-unread" : "conversation-avatar-read"}`}
+            >
               {conv.avatar}
-              {conv.online && <div className="conversation-online-dot" />}
             </div>
 
-            {/* Content */}
             <div className="conversation-content">
               <div className="conversation-top-row">
-                <h3 className={`conversation-name ${conv.unread > 0 ? 'conversation-name-unread' : ''}`}>
-                  {conv.name}
+                <h3 className={`conversation-name ${conv.unread > 0 ? "conversation-name-unread" : ""}`}>
+                  {conv.otherUserName}
                 </h3>
                 <span className="conversation-time">{conv.time}</span>
               </div>
-              <p className={`conversation-preview ${conv.unread > 0 ? 'conversation-preview-unread' : ''}`}>
+              <p className={`conversation-preview ${conv.unread > 0 ? "conversation-preview-unread" : ""}`}>
                 {conv.lastMessage}
               </p>
             </div>
 
-            {/* Unread badge */}
-            {conv.unread > 0 && (
-              <span className="conversation-badge">{conv.unread}</span>
-            )}
+            {conv.unread > 0 && <span className="conversation-badge">{conv.unread}</span>}
           </div>
         ))}
 
-        {filtered.length === 0 && (
+        {!loading && filtered.length === 0 && (
           <div className="chat-empty">
             <div className="chat-empty-icon">💬</div>
-            <h3 className="chat-empty-title">No conversations found</h3>
-            <p className="chat-empty-text">Try adjusting your search</p>
+            <h3 className="chat-empty-title">
+              {search ? "No conversations found" : "No conversations yet"}
+            </h3>
+            <p className="chat-empty-text">
+              {search ? "Try adjusting your search" : "Start a chat from a listing or booking."}
+            </p>
           </div>
         )}
       </section>

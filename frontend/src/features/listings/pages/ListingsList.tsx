@@ -1,29 +1,30 @@
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   HiMagnifyingGlass,
   HiStar,
   HiMapPin,
-  HiFunnel,
   HiXMark,
   HiAdjustmentsHorizontal,
 } from "react-icons/hi2";
+import { useListings } from "../../../hooks/useListings";
+import { useCategories } from "../../../hooks/useCategories";
+import { categoryNameById, formatListingType, listingImageStyle } from "../../../api/listingHelpers";
+import type { Category, Listing } from "../../../types/api.types";
 import "../styles/listings.css";
 
-const allListings = [
-  { id: "1", title: "Tractor Rental", provider: "Kilimo Best", category: "Farm Equipment", type: "equipment", price: 120000, rating: 4.8, location: "Morogoro" },
-  { id: "2", title: "Irrigation Setup", provider: "Green Tech", category: "Irrigation", type: "service", price: 350000, rating: 4.6, location: "Dar es Salaam" },
-  { id: "3", title: "Organic Seeds", provider: "AgriPro", category: "Seeds", type: "product", price: 25000, rating: 4.5, location: "Dodoma" },
-  { id: "4", title: "Farm Labor", provider: "Farm Help", category: "Labor", type: "worker", price: 50000, rating: 4.2, location: "Arusha" },
-  { id: "5", title: "Soil Testing", provider: "Green Tech", category: "Technology", type: "service", price: 45000, rating: 4.7, location: "Mwanza" },
-  { id: "6", title: "Dairy Cows", provider: "Livestock Co", category: "Livestock", type: "livestock", price: 1200000, rating: 4.9, location: "Mbeya" },
-  { id: "7", title: "Harvesting Machine", provider: "Kilimo Best", category: "Farm Equipment", type: "equipment", price: 200000, rating: 4.4, location: "Morogoro" },
-  { id: "8", title: "Fertilizer Supply", provider: "AgriPro", category: "Farm Inputs", type: "product", price: 65000, rating: 4.3, location: "Dodoma" },
-];
+const LISTING_TYPES = ["service", "product", "equipment", "livestock", "worker"];
 
 export default function ListingsList() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { fetchListings, loading, error } = useListings();
+  const { fetchCategories } = useCategories();
+
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
@@ -31,24 +32,58 @@ export default function ListingsList() {
   const [showFilters, setShowFilters] = useState(false);
 
   const basePath = location.pathname.includes("/provider") ? "/provider/browse" : "/app/listings";
-  const categories = [...new Set(allListings.map(l => l.category))];
-  const types = [...new Set(allListings.map(l => l.type))];
 
-  let filtered = allListings.filter(l => {
-    const matchSearch = l.title.toLowerCase().includes(search.toLowerCase()) ||
-                        l.provider.toLowerCase().includes(search.toLowerCase()) ||
-                        l.location.toLowerCase().includes(search.toLowerCase());
-    const matchCategory = categoryFilter === "all" || l.category === categoryFilter;
-    const matchType = typeFilter === "all" || l.type === typeFilter;
-    return matchSearch && matchCategory && matchType;
-  });
+  const loadListings = useCallback(async () => {
+    const params: Record<string, string> = {
+      page: String(page),
+      limit: "20",
+    };
 
-  if (priceSort === "low") filtered.sort((a, b) => a.price - b.price);
-  if (priceSort === "high") filtered.sort((a, b) => b.price - a.price);
+    if (categoryFilter !== "all") params.category_id = categoryFilter;
+    if (typeFilter !== "all") params.type = typeFilter;
+
+    const { items, pagination } = await fetchListings(params);
+    setListings(items);
+    setTotalPages(pagination?.totalPages || 1);
+  }, [fetchListings, page, categoryFilter, typeFilter]);
+
+  useEffect(() => {
+    fetchCategories().then(setCategories);
+  }, [fetchCategories]);
+
+  useEffect(() => {
+    loadListings();
+  }, [loadListings]);
+
+  const filtered = useMemo(() => {
+    let items = [...listings];
+
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      items = items.filter(
+        (l) =>
+          l.title.toLowerCase().includes(q) ||
+          l.description.toLowerCase().includes(q) ||
+          l.location.toLowerCase().includes(q)
+      );
+    }
+
+    if (priceSort === "low") items.sort((a, b) => a.price - b.price);
+    if (priceSort === "high") items.sort((a, b) => b.price - a.price);
+
+    return items;
+  }, [listings, search, priceSort]);
+
+  function resetFilters() {
+    setCategoryFilter("all");
+    setTypeFilter("all");
+    setSearch("");
+    setPriceSort("none");
+    setPage(1);
+  }
 
   return (
     <main className="customer-page">
-      {/* Header Banner */}
       <div className="listings-header-banner">
         <div className="listings-header-content">
           <div>
@@ -63,39 +98,41 @@ export default function ListingsList() {
         </div>
       </div>
 
-      {/* Search & Filters Bar */}
       <div className="listings-filters-row">
         <div className="listings-search-wrap">
           <HiMagnifyingGlass className="listings-search-icon" />
           <input
             className="listings-search-input listings-search-input-icon"
-            placeholder="Search by name, provider, or location..."
+            placeholder="Search by title or location..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
           />
         </div>
         <select
           className="listings-filter-select"
           value={priceSort}
-          onChange={e => setPriceSort(e.target.value)}
+          onChange={(e) => setPriceSort(e.target.value)}
         >
           <option value="none">Sort by Price</option>
           <option value="low">Lowest First</option>
           <option value="high">Highest First</option>
         </select>
-        <button
-          className="listings-toggle-btn"
-          onClick={() => setShowFilters(!showFilters)}
-        >
+        <button className="listings-toggle-btn" onClick={() => setShowFilters(!showFilters)}>
           {showFilters ? (
-            <><HiXMark className="listings-toggle-icon" /> Hide Filters</>
+            <>
+              <HiXMark className="listings-toggle-icon" /> Hide Filters
+            </>
           ) : (
-            <><HiAdjustmentsHorizontal className="listings-toggle-icon" /> Filters</>
+            <>
+              <HiAdjustmentsHorizontal className="listings-toggle-icon" /> Filters
+            </>
           )}
         </button>
       </div>
 
-      {/* Filter Panel */}
       {showFilters && (
         <div className="listings-filter-panel">
           <div className="listings-filter-grid">
@@ -104,10 +141,17 @@ export default function ListingsList() {
               <select
                 className="listings-filter-select-full"
                 value={categoryFilter}
-                onChange={e => setCategoryFilter(e.target.value)}
+                onChange={(e) => {
+                  setCategoryFilter(e.target.value);
+                  setPage(1);
+                }}
               >
                 <option value="all">All Categories</option>
-                {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="listings-filter-group">
@@ -115,43 +159,48 @@ export default function ListingsList() {
               <select
                 className="listings-filter-select-full"
                 value={typeFilter}
-                onChange={e => setTypeFilter(e.target.value)}
+                onChange={(e) => {
+                  setTypeFilter(e.target.value);
+                  setPage(1);
+                }}
               >
                 <option value="all">All Types</option>
-                {types.map(t => <option key={t} value={t}>{t}</option>)}
+                {LISTING_TYPES.map((t) => (
+                  <option key={t} value={t}>
+                    {formatListingType(t)}
+                  </option>
+                ))}
               </select>
             </div>
-            <button
-              className="listings-reset-btn"
-              onClick={() => { setCategoryFilter("all"); setTypeFilter("all"); setSearch(""); setPriceSort("none"); }}
-            >
+            <button className="listings-reset-btn" onClick={resetFilters}>
               Reset All Filters
             </button>
           </div>
         </div>
       )}
 
-      {/* Results count */}
+      {error && <p className="listings-count-text" style={{ color: "#b42318" }}>{error}</p>}
+
       <p className="listings-count-text">
-        {filtered.length} listing{filtered.length !== 1 ? "s" : ""} found
+        {loading ? "Loading listings..." : `${filtered.length} listing${filtered.length !== 1 ? "s" : ""} found`}
       </p>
 
-      {/* Listings Grid */}
-      {filtered.length > 0 ? (
+      {!loading && filtered.length > 0 ? (
         <section className="services-grid">
-          {filtered.map(listing => (
+          {filtered.map((listing) => (
             <div key={listing.id} className="service-card">
-              <div className="service-image" />
+              <div className="service-image" style={listingImageStyle(listing)} />
               <div className="service-content">
                 <div className="service-badges">
-                  <span className="service-badge service-badge-type">{listing.type}</span>
-                  <span className="service-badge service-badge-category">{listing.category}</span>
+                  <span className="service-badge service-badge-type">{formatListingType(listing.type)}</span>
+                  <span className="service-badge service-badge-category">
+                    {categoryNameById(categories, listing.categoryId)}
+                  </span>
                 </div>
                 <h3 className="service-title">{listing.title}</h3>
-                <p className="service-provider">by {listing.provider}</p>
                 <div className="service-meta-row">
                   <span className="service-rating">
-                    <HiStar className="service-rating-icon" /> {listing.rating}
+                    <HiStar className="service-rating-icon" /> {listing.ratingAvg.toFixed(1)}
                   </span>
                   <span className="service-location">
                     <HiMapPin className="service-location-icon" /> {listing.location}
@@ -170,13 +219,35 @@ export default function ListingsList() {
             </div>
           ))}
         </section>
-      ) : (
+      ) : !loading ? (
         <div className="listings-empty">
           <div className="listings-empty-icon">
             <HiMagnifyingGlass />
           </div>
           <h3 className="listings-empty-title">No listings found</h3>
           <p className="listings-empty-text">Try adjusting your search or filters</p>
+        </div>
+      ) : null}
+
+      {totalPages > 1 && (
+        <div className="listings-filters-row" style={{ justifyContent: "center", marginTop: "1.5rem" }}>
+          <button
+            className="listings-toggle-btn"
+            disabled={page <= 1 || loading}
+            onClick={() => setPage((p) => p - 1)}
+          >
+            Previous
+          </button>
+          <span className="listings-count-text">
+            Page {page} of {totalPages}
+          </span>
+          <button
+            className="listings-toggle-btn"
+            disabled={page >= totalPages || loading}
+            onClick={() => setPage((p) => p + 1)}
+          >
+            Next
+          </button>
         </div>
       )}
     </main>

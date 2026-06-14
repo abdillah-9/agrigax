@@ -4,9 +4,9 @@ export const providerMenu: MenuItem[] = [
   { label: "Dashboard", path: "/provider" },
   { label: "Browse Listings", path: "/provider/browse" },
   { label: "My Listings", path: "/provider/listings" },
-  { label: "Bookings", path: "/provider/bookings" },
-  { label: "Earnings", path: "/provider/earnings" },
-  { label: "Messages", path: "/provider/messages" },
+  { label: "Bookings", path: "/provider/bookings", requiresVerified: true },
+  { label: "Earnings", path: "/provider/earnings", requiresVerified: true },
+  { label: "Messages", path: "/provider/messages", requiresVerified: true },
   { label: "Notifications", path: "/provider/notifications" },
   {
     label: "Analytics",

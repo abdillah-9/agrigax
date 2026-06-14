@@ -2,13 +2,19 @@ import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import TopNav from "./components/TopNav";
+import { useAuthContext } from "../contexts/AuthContext";
 import { adminMenu } from "./components/menu/adminMenu";
+import { displayName, roleLabel } from "../utils/userDisplay";
 import "./styles/layout.css";
 
 export default function AdminLayout() {
+  const { user } = useAuthContext();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  const userName = displayName(user);
+  const userRole = user ? roleLabel(user.role) : "Administrator";
 
   useEffect(() => {
     const handleResize = () => {
@@ -25,7 +31,6 @@ export default function AdminLayout() {
     <div className="flex h-full">
       <div className="layout-bg-overlay" />
       
-      {/* Mobile overlay */}
       {isMobile && (
         <div 
           className={`sidebar-mobile-overlay ${mobileSidebarOpen ? 'active' : ''}`}
@@ -36,8 +41,9 @@ export default function AdminLayout() {
       <Sidebar 
         menu={adminMenu} 
         userType="admin"
-        userName="Admin User"
-        userRole="Administrator"
+        userName={userName}
+        userRole={userRole}
+        isVerified
         isCollapsed={sidebarCollapsed}
         isMobile={isMobile}
         mobileOpen={mobileSidebarOpen}
@@ -47,8 +53,8 @@ export default function AdminLayout() {
       <div className="flex flex-col w-full" style={{ position: 'relative', zIndex: 1 }}>
         <TopNav 
           userType="admin"
-          userName="Admin User"
-          userRole="Administrator"
+          userName={userName}
+          userRole={userRole}
           onToggleSidebar={() => {
             if (isMobile) {
               setMobileSidebarOpen(!mobileSidebarOpen);

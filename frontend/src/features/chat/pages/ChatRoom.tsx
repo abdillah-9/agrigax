@@ -1,93 +1,135 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useAuthContext } from "../../../contexts/AuthContext";
+import { useMessages } from "../../../hooks/useMessages";
+import {
+  formatMessageTime,
+  messagesBasePath,
+  resolveChatPartner,
+} from "../../../api/messageHelpers";
+import type { Message } from "../../../types/api.types";
 import "../styles/chat.css";
-
-const initialMessages = [
-  { id: "1", sender: "them", text: "Hello! How can I help you today?", time: "10:30 AM" },
-  { id: "2", sender: "me", text: "Hi, I need help with my booking for tractor rental", time: "10:31 AM" },
-  { id: "3", sender: "them", text: "Sure! Can you share your booking ID?", time: "10:32 AM" },
-  { id: "4", sender: "me", text: "It's BK-001", time: "10:33 AM" },
-  { id: "5", sender: "them", text: "Got it! Your booking is confirmed for May 20th. Everything looks good on our end.", time: "10:34 AM" },
-  { id: "6", sender: "them", text: "Is there anything else you need?", time: "10:34 AM" },
-];
 
 export default function ChatRoom() {
   const navigate = useNavigate();
-  const [messages, setMessages] = useState(initialMessages);
+  const location = useLocation();
+  const { id } = useParams<{ id: string }>();
+  const { user } = useAuthContext();
+  const { fetchConversations, fetchMessages, sendMessage, loading, error } = useMessages();
+
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [partnerName, setPartnerName] = useState("Conversation");
+  const [partnerAvatar, setPartnerAvatar] = useState("?");
   const [newMessage, setNewMessage] = useState("");
+  const [sending, setSending] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSend = () => {
-    if (!newMessage.trim()) return;
-    const now = new Date();
-    const time = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
-    setMessages(prev => [...prev, { id: Date.now().toString(), sender: "me", text: newMessage, time }]);
-    setNewMessage("");
+  const loadChat = useCallback(async () => {
+    if (!id || !user?.id) return;
 
-    setTimeout(() => {
-      const replyTime = new Date();
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
-        sender: "them",
-        text: "Thanks for your message! I'll get back to you shortly.",
-        time: replyTime.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })
-      }]);
-    }, 1500);
-  };
+    const [conversations, rows] = await Promise.all([
+      fetchConversations(),
+      fetchMessages(id),
+    ]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+    const conv = conversations.find((c) => c.id === id) ?? null;
+    setMessages(rows);
+
+    const partner = await resolveChatPartner(conv, rows, user.id);
+    setPartnerName(partner.name);
+    setPartnerAvatar(partner.avatar);
+  }, [fetchConversations, fetchMessages, id, user?.id]);
+
+  useEffect(() => {
+    loadChat();
+  }, [loadChat]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  async function handleSend() {
+    if (!id || !newMessage.trim() || sending) return;
+
+    setSending(true);
+    const sent = await sendMessage(id, { text: newMessage.trim() });
+    setSending(false);
+
+    if (sent) {
+      setMessages((prev) => [...prev, sent]);
+      setNewMessage("");
+    }
+  }
+
+  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
-  };
+  }
+
+  const messagesPath = messagesBasePath(location.pathname);
 
   return (
     <main className="customer-page chat-room-container">
-      {/* Header */}
       <div className="chat-header">
-        <button className="chat-back-btn" onClick={() => navigate(-1)}>
+        <button className="chat-back-btn" onClick={() => navigate(messagesPath)}>
           ← Back
         </button>
-        <div className="chat-avatar">KB</div>
+        <div className="chat-avatar">{partnerAvatar}</div>
         <div className="chat-header-info">
-          <h2 className="chat-header-name">Kilimo Best Supplies</h2>
+          <h2 className="chat-header-name">{partnerName}</h2>
           <div className="chat-header-status">
-            <span className="chat-online-indicator" />
-            <span className="chat-status-text">Online</span>
+            <span className="chat-status-text">Messages</span>
           </div>
         </div>
-        <button className="chat-end-btn">End Chat</button>
       </div>
 
-      {/* Messages Area */}
+      {error && (
+        <p style={{ color: "#b42318", padding: "8px 16px", margin: 0 }}>{error}</p>
+      )}
+
       <section className="chat-messages-area">
-        {messages.map(msg => (
-          <div key={msg.id} className={`chat-message-wrapper ${msg.sender === "me" ? "chat-message-wrapper-me" : "chat-message-wrapper-them"}`}>
-            <div style={{ maxWidth: "70%" }}>
-              <div className={`chat-message-bubble ${msg.sender === "me" ? "chat-message-me" : "chat-message-them"}`}>
-                {msg.text}
+        {loading && messages.length === 0 ? (
+          <p style={{ textAlign: "center", color: "#666" }}>Loading messages...</p>
+        ) : (
+          messages.map((msg) => {
+            const isMe = msg.senderId === user?.id;
+            return (
+              <div
+                key={msg.id}
+                className={`chat-message-wrapper ${isMe ? "chat-message-wrapper-me" : "chat-message-wrapper-them"}`}
+              >
+                <div style={{ maxWidth: "70%" }}>
+                  <div
+                    className={`chat-message-bubble ${isMe ? "chat-message-me" : "chat-message-them"}`}
+                  >
+                    {msg.text}
+                  </div>
+                  <p className={`chat-message-time ${isMe ? "chat-message-time-right" : ""}`}>
+                    {formatMessageTime(msg.createdAt)}
+                  </p>
+                </div>
               </div>
-              <p className={`chat-message-time ${msg.sender === "me" ? "chat-message-time-right" : ""}`}>
-                {msg.time}
-              </p>
-            </div>
-          </div>
-        ))}
+            );
+          })
+        )}
+        <div ref={messagesEndRef} />
       </section>
 
-      {/* Input Area */}
       <div className="chat-input-area">
         <input
           className="chat-input"
           placeholder="Type a message... (Enter to send)"
           value={newMessage}
-          onChange={e => setNewMessage(e.target.value)}
+          onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={handleKeyDown}
+          disabled={!id}
         />
         <button
           className="chat-send-btn"
           onClick={handleSend}
-          disabled={!newMessage.trim()}
+          disabled={!newMessage.trim() || sending || !id}
         >
           Send
         </button>

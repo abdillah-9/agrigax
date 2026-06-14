@@ -1,34 +1,39 @@
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import { useAuthContext } from "../contexts/AuthContext";
 
 type Role = "customer" | "provider" | "admin";
 
 interface Props {
   children: React.ReactNode;
-  allowedRoles?: Role[]; // optional now
+  allowedRoles?: Role[];
 }
 
 export default function ProtectedRoutes({ children, allowedRoles }: Props) {
+  const { user, loading, checkSession } = useAuthContext();
+  const [checked, setChecked] = useState(false);
 
-  const user = {
-    role: "customer" as Role, // replace later with context/auth
-  };
+  useEffect(() => {
+    checkSession().finally(() => setChecked(true));
+  }, [checkSession]);
 
-  // ❌ no user
+  if (!checked || loading) {
+    return (
+      <div style={{ minHeight: "40vh", display: "grid", placeItems: "center" }}>
+        Loading...
+      </div>
+    );
+  }
+
   if (!user) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace />;
   }
 
-  // ✅ if no restriction → allow ALL logged-in users
-  if (!allowedRoles || allowedRoles.length === 0) {
-    return <>{children}</>;
+  if (allowedRoles?.length && !allowedRoles.includes(user.role as Role)) {
+    if (user.role === "provider") return <Navigate to="/provider" replace />;
+    if (user.role === "admin") return <Navigate to="/admin" replace />;
+    return <Navigate to="/app" replace />;
   }
-
-  // ✅ role allowed check
-  // const isAllowed = allowedRoles.includes(user.role);
-
-  // if (!isAllowed) {
-  //   return <Navigate to="/login" />;
-  // }
 
   return <>{children}</>;
 }
