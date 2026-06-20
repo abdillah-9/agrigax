@@ -1,84 +1,92 @@
-import { useState } from "react";
-
-const demoRefunds = [
-  { id: "REF-001", paymentId: "PAY-010", customer: "David Shayo", provider: "Farm Help", amount: 120000, reason: "Service cancelled by provider", status: "approved", requestDate: "2026-05-18", processedDate: "2026-05-19" },
-  { id: "REF-002", paymentId: "PAY-005", customer: "John Banda", provider: "AgriPro", amount: 65000, reason: "Payment failed but deducted", status: "pending", requestDate: "2026-05-19", processedDate: "-" },
-  { id: "REF-003", paymentId: "PAY-012", customer: "Grace Mushi", provider: "Green Tech", amount: 45000, reason: "Service quality dispute", status: "processing", requestDate: "2026-05-19", processedDate: "-" },
-  { id: "REF-004", paymentId: "PAY-008", customer: "Peter Tembo", provider: "Kilimo Best", amount: 85000, reason: "Duplicate charge", status: "approved", requestDate: "2026-05-16", processedDate: "2026-05-17" },
-];
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useAdmin } from "../../../hooks/useAdmin";
+import { formatAdminDate } from "../../../api/adminHelpers";
+import type { AdminPayment } from "../../../types/api.types";
 
 export default function Refunds() {
+  const { fetchRefunds, loading, error } = useAdmin();
+  const [refunds, setRefunds] = useState<AdminPayment[]>([]);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
 
-  const filtered = demoRefunds.filter(r => {
-    const matchSearch = r.customer.toLowerCase().includes(search.toLowerCase()) || r.reason.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = statusFilter === "all" || r.status === statusFilter;
-    return matchSearch && matchStatus;
-  });
+  const loadRefunds = useCallback(async () => {
+    const { items } = await fetchRefunds({ page: "1", limit: "100" });
+    setRefunds(items);
+  }, [fetchRefunds]);
+
+  useEffect(() => {
+    loadRefunds();
+  }, [loadRefunds]);
+
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    return refunds.filter(
+      (r) =>
+        (r.customerName || "").toLowerCase().includes(q) ||
+        (r.providerName || "").toLowerCase().includes(q) ||
+        r.id.toLowerCase().includes(q)
+    );
+  }, [refunds, search]);
 
   return (
     <div>
       <div className="page-header">
         <h1 className="page-title">Refunds</h1>
-        <p className="page-subtitle">Process and manage refund requests</p>
+        <p className="page-subtitle">Refunded payment records from the platform</p>
       </div>
+
+      {error && <p className="page-subtitle" style={{ color: "#b42318" }}>{error}</p>}
 
       <div className="table-container">
         <div className="inv-toolbar">
           <div className="inv-toolbar-left">
-            <div className="inv-toolbar-title">Refund Requests</div>
-            <div className="inv-toolbar-sub">{filtered.length} requests</div>
+            <div className="inv-toolbar-title">Refunded Payments</div>
+            <div className="inv-toolbar-sub">
+              {loading && refunds.length === 0 ? "Loading..." : `${filtered.length} refunds`}
+            </div>
           </div>
           <div className="inv-toolbar-right">
-            <select className="input-select" style={{ width: "auto" }} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-              <option value="all">All</option>
-              <option value="pending">Pending</option>
-              <option value="processing">Processing</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
             <div className="inv-search-wrap">
-              <input className="inv-search" placeholder="Search refunds..." value={search} onChange={(e) => setSearch(e.target.value)} />
+              <input
+                className="inv-search"
+                placeholder="Search refunds..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
             </div>
           </div>
         </div>
         <table className="data-table">
           <thead>
             <tr>
-              <th>Refund ID</th>
-              <th>Payment</th>
+              <th>Payment ID</th>
+              <th>Booking</th>
               <th>Customer</th>
+              <th>Provider</th>
               <th>Amount</th>
-              <th>Reason</th>
-              <th>Status</th>
-              <th>Requested</th>
-              <th>Actions</th>
+              <th>Method</th>
+              <th>Refunded On</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map(refund => (
-              <tr key={refund.id}>
-                <td className="fw-medium">{refund.id}</td>
-                <td>{refund.paymentId}</td>
-                <td>{refund.customer}</td>
-                <td>TZS {refund.amount.toLocaleString()}</td>
-                <td className="text-muted">{refund.reason}</td>
-                <td>
-                  {refund.status === "pending" && <span className="badge badge-warning">Pending</span>}
-                  {refund.status === "processing" && <span className="badge badge-info">Processing</span>}
-                  {refund.status === "approved" && <span className="badge badge-success">Approved</span>}
-                  {refund.status === "rejected" && <span className="badge badge-danger">Rejected</span>}
-                </td>
-                <td>{refund.requestDate}</td>
-                <td>
-                  <div className="flex gap-sm">
-                    <button className="inv-action-btn inv-action-btn-success">Approve</button>
-                    <button className="inv-action-btn inv-action-btn-danger">Reject</button>
-                  </div>
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="text-muted">
+                  {loading ? "Loading refunds..." : "No refunded payments found."}
                 </td>
               </tr>
-            ))}
+            ) : (
+              filtered.map((refund) => (
+                <tr key={refund.id}>
+                  <td className="fw-medium">{refund.id}</td>
+                  <td>{refund.bookingId}</td>
+                  <td>{refund.customerName || "—"}</td>
+                  <td>{refund.providerName || "—"}</td>
+                  <td>TZS {refund.amount.toLocaleString()}</td>
+                  <td><span className="badge badge-default">{refund.method || "—"}</span></td>
+                  <td>{formatAdminDate(refund.createdAt)}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

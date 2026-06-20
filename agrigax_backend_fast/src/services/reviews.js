@@ -69,3 +69,23 @@ module.exports.adminListReviews = async () => {
   const rows = await db("reviews").orderBy("created_at", "desc");
   return rows.map(formatReview);
 };
+
+module.exports.adminApproveReview = async (id) => {
+  const review = await getReviewById(id);
+  if (!review) throw new AppError("Review not found", 404);
+  const updated = await updateReview(id, { is_approved: true });
+  return formatReview(updated);
+};
+
+module.exports.adminHideReview = async (id) => {
+  const review = await getReviewById(id);
+  if (!review) throw new AppError("Review not found", 404);
+  const updated = await updateReview(id, { is_approved: false });
+  return formatReview(updated);
+};
+
+module.exports.adminDeleteReview = async (id) => {
+  const review = await getReviewById(id);
+  if (!review) throw new AppError("Review not found", 404);
+  await deleteReview(id);
+};

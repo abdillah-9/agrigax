@@ -54,6 +54,10 @@ export const adminMenu = [
       {
         label: "Booking Disputes",
         path: "/admin/booking-disputes"
+      },
+      {
+        label: "Messages",
+        path: "/admin/messages"
       }
     ]
   },

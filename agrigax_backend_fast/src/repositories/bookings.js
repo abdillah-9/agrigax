@@ -45,6 +45,27 @@ module.exports.resolveDispute = async (id, updates) => {
   return module.exports.getDisputeById(id);
 };
 
+module.exports.getAllBookings = async ({ offset, limit, status }) => {
+  const query = db("bookings").orderBy("created_at", "desc");
+
+  if (status) {
+    query.where({ status });
+  }
+
+  const [{ count }] = await query.clone().count({ count: "*" });
+  const rows = await query.offset(offset).limit(limit);
+
+  return { rows, total: Number(count) };
+};
+
+module.exports.getOpenDisputeForBooking = async (booking_id) => {
+  return db("disputes")
+    .where({ booking_id })
+    .whereIn("status", ["open", "under_review"])
+    .orderBy("created_at", "desc")
+    .first();
+};
+
 module.exports.countOpenDisputes = async () => {
   const [{ count }] = await db("disputes").where({ status: "open" }).count({ count: "*" });
   return Number(count);

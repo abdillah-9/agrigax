@@ -1,5 +1,5 @@
 const knex = require('knex');
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 const knexFileConfig = require('../../knexfile');
 const db = knex( knexFileConfig['development']);
 

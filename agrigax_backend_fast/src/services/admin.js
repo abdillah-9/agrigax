@@ -1,18 +1,46 @@
-const { countUsers, getAllUsers, suspendUser, reinstateUser } = require("../repositories/users");
+const { countUsers, getAllUsers, getAdminProviders, suspendUser, reinstateUser } = require("../repositories/users");
 const { countCategories } = require("../repositories/categories");
 const { countListings, countPendingListings } = require("../repositories/listings");
-const { listPending, approveListing, rejectListing } = require("../services/listings");
-const { countBookings, getAllDisputes, resolveBookingDispute } = require("../services/bookings");
+const { countBookings, countOpenDisputes, getDisputeById } = require("../repositories/bookings");
 const { countReviews } = require("../repositories/reviews");
-const { countOpenDisputes } = require("../repositories/bookings");
+const { listPending, approveListing, rejectListing } = require("../services/listings");
+const {
+  getAllDisputes,
+  resolveBookingDispute,
+  adminListBookings,
+  adminGetBooking,
+} = require("../services/bookings");
 const { adminListCategories } = require("../services/categories");
-const { adminListReviews } = require("../services/reviews");
+const {
+  adminListReviews,
+  adminApproveReview,
+  adminHideReview,
+  adminDeleteReview,
+} = require("../services/reviews");
+const { listAllPayments, listRefundedPayments, countAllPayments } = require("../services/payments");
+const { adminListTransactions, countAllTransactions } = require("../services/wallets");
+const {
+  adminListConversations,
+  adminGetConversationMessages,
+  countAllConversations,
+} = require("../services/messages");
 const { formatUser } = require("../utils/response");
+const { formatAdminProvider } = require("../utils/formatters");
 const AppError = require("../errors/AppError");
-const { getDisputeById } = require("../repositories/bookings");
 
 module.exports.getDashboard = async () => {
-  const [users, listings, bookings, categories, reviews, pendingListings, openDisputes] = await Promise.all([
+  const [
+    users,
+    listings,
+    bookings,
+    categories,
+    reviews,
+    pendingListings,
+    openDisputes,
+    payments,
+    transactions,
+    conversations,
+  ] = await Promise.all([
     countUsers(),
     countListings(),
     countBookings(),
@@ -20,14 +48,33 @@ module.exports.getDashboard = async () => {
     countReviews(),
     countPendingListings(),
     countOpenDisputes(),
+    countAllPayments(),
+    countAllTransactions(),
+    countAllConversations(),
   ]);
 
-  return { users, listings, bookings, categories, reviews, pendingListings, openDisputes };
+  return {
+    users,
+    listings,
+    bookings,
+    categories,
+    reviews,
+    pendingListings,
+    openDisputes,
+    payments,
+    transactions,
+    conversations,
+  };
 };
 
-module.exports.listUsers = async (pagination) => {
-  const { rows, total } = await getAllUsers(pagination);
+module.exports.listUsers = async (filters) => {
+  const { rows, total } = await getAllUsers(filters);
   return { data: rows.map(formatUser), total };
+};
+
+module.exports.listProviders = async (filters) => {
+  const { rows, total } = await getAdminProviders(filters);
+  return { data: rows.map(formatAdminProvider), total };
 };
 
 module.exports.suspend = async (id) => {
@@ -66,4 +113,44 @@ module.exports.getCategories = async (pagination) => {
 
 module.exports.getReviews = async () => {
   return adminListReviews();
+};
+
+module.exports.approveReview = async (id) => {
+  return adminApproveReview(id);
+};
+
+module.exports.hideReview = async (id) => {
+  return adminHideReview(id);
+};
+
+module.exports.deleteReview = async (id) => {
+  await adminDeleteReview(id);
+};
+
+module.exports.getBookings = async (filters) => {
+  return adminListBookings(filters);
+};
+
+module.exports.getBooking = async (id) => {
+  return adminGetBooking(id);
+};
+
+module.exports.getPayments = async (filters) => {
+  return listAllPayments(filters);
+};
+
+module.exports.getRefunds = async (filters) => {
+  return listRefundedPayments(filters);
+};
+
+module.exports.getTransactions = async (filters) => {
+  return adminListTransactions(filters);
+};
+
+module.exports.getConversations = async (filters) => {
+  return adminListConversations(filters);
+};
+
+module.exports.getConversationMessages = async (id) => {
+  return adminGetConversationMessages(id);
 };

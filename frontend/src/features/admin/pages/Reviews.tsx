@@ -4,9 +4,10 @@ import { clearAdminLookupCache, enrichAdminReviews, formatAdminDate } from "../.
 import type { EnrichedAdminReview } from "../../../types/api.types";
 
 export default function Reviews() {
-  const { fetchReviews, loading, error } = useAdmin();
+  const { fetchReviews, approveReview, hideReview, deleteReview, loading, error } = useAdmin();
   const [reviews, setReviews] = useState<EnrichedAdminReview[]>([]);
   const [search, setSearch] = useState("");
+  const [actionId, setActionId] = useState<string | null>(null);
 
   const loadReviews = useCallback(async () => {
     clearAdminLookupCache();
@@ -28,6 +29,18 @@ export default function Reviews() {
         (r.comment || "").toLowerCase().includes(q)
     );
   }, [reviews, search]);
+
+  async function runAction(id: string, action: "approve" | "hide" | "delete") {
+    setActionId(id);
+    const ok =
+      action === "approve"
+        ? await approveReview(id)
+        : action === "hide"
+          ? await hideReview(id)
+          : await deleteReview(id);
+    setActionId(null);
+    if (ok) await loadReviews();
+  }
 
   return (
     <div>
@@ -67,12 +80,13 @@ export default function Reviews() {
               <th>Comment</th>
               <th>Status</th>
               <th>Date</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={7} className="text-muted">
+                <td colSpan={8} className="text-muted">
                   {loading ? "Loading reviews..." : "No reviews match your search."}
                 </td>
               </tr>
@@ -94,6 +108,35 @@ export default function Reviews() {
                     )}
                   </td>
                   <td>{formatAdminDate(review.createdAt)}</td>
+                  <td>
+                    <div className="flex gap-sm">
+                      {!review.isApproved && (
+                        <button
+                          className="inv-action-btn inv-action-btn-success"
+                          disabled={actionId === review.id}
+                          onClick={() => runAction(review.id, "approve")}
+                        >
+                          Publish
+                        </button>
+                      )}
+                      {review.isApproved && (
+                        <button
+                          className="inv-action-btn inv-action-btn-secondary"
+                          disabled={actionId === review.id}
+                          onClick={() => runAction(review.id, "hide")}
+                        >
+                          Hide
+                        </button>
+                      )}
+                      <button
+                        className="inv-action-btn inv-action-btn-danger"
+                        disabled={actionId === review.id}
+                        onClick={() => runAction(review.id, "delete")}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))
             )}

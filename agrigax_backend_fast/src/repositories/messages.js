@@ -39,3 +39,15 @@ module.exports.createMessage = async (data) => {
 module.exports.getConversationById = async (id) => {
   return db("conversations").where({ id }).first();
 };
+
+module.exports.getAllConversations = async ({ offset, limit }) => {
+  const query = db("conversations").orderBy("last_message_at", "desc");
+  const [{ count }] = await query.clone().count({ count: "*" });
+  const rows = await query.offset(offset).limit(limit);
+  return { rows, total: Number(count) };
+};
+
+module.exports.countConversations = async () => {
+  const [{ count }] = await db("conversations").count({ count: "*" });
+  return Number(count);
+};

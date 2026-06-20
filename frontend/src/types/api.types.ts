@@ -270,6 +270,75 @@ export interface AdminDashboardStats {
   reviews: number;
   pendingListings: number;
   openDisputes: number;
+  payments: number;
+  transactions: number;
+  conversations: number;
+}
+
+export interface AdminBooking {
+  id: string;
+  listingId: string;
+  customerId: string;
+  providerId: string;
+  status: string;
+  displayStatus: string;
+  scheduledAt: string | null;
+  notes: string | null;
+  createdAt: string;
+  customerName: string | null;
+  providerName: string | null;
+  service: string | null;
+  amount: number | null;
+}
+
+export interface AdminPayment {
+  id: string;
+  bookingId: string;
+  payerId: string;
+  receiverId: string;
+  amount: number;
+  method: string | null;
+  status: string;
+  transactionRef: string | null;
+  createdAt: string;
+  customerName: string | null;
+  providerName: string | null;
+}
+
+export interface AdminProvider {
+  id: string;
+  username: string;
+  fullName: string;
+  email: string | null;
+  phone: string;
+  isVerified: boolean;
+  isSuspended: boolean;
+  totalListings: number;
+  createdAt: string;
+}
+
+export interface AdminTransaction {
+  id: string;
+  type: "credit" | "debit";
+  amount: number;
+  reference: string | null;
+  description: string | null;
+  createdAt: string;
+  userId: string;
+  userName: string;
+  userUsername: string;
+}
+
+export interface AdminConversation {
+  id: string;
+  listingId: string | null;
+  userOneId: string;
+  userTwoId: string;
+  userOneName: string | null;
+  userTwoName: string | null;
+  listingTitle: string | null;
+  lastMessageAt: string | null;
+  createdAt: string;
 }
 
 export interface Dispute {

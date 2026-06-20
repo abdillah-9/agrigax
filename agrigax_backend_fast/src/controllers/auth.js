@@ -42,6 +42,12 @@ module.exports.register = async (req, res, next) => {
 
     setAuthCookies(res, { access_token_hash, refresh_token_hash });
 
+    if (devOtp) {
+      console.log("\n========================================");
+      console.log(`[AgriGax] REGISTER OTP for ${user.phone}: ${devOtp}`);
+      console.log("========================================\n");
+    }
+
     return sendSuccess(
       res,
       attachDevOtp({ user: formatUser(user), requiresVerification }, devOtp),

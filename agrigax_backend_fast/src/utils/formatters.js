@@ -111,3 +111,50 @@ module.exports.formatDispute = (row) => ({
   resolutionNote: row.resolution_note,
   createdAt: row.created_at,
 });
+
+module.exports.formatPayment = (payment) => ({
+  id: String(payment.id),
+  bookingId: String(payment.booking_id),
+  payerId: String(payment.payer_id),
+  receiverId: String(payment.receiver_id),
+  amount: Number(payment.amount),
+  method: payment.method,
+  status: payment.status === "paid" ? "completed" : payment.status,
+  transactionRef: payment.transaction_ref,
+  createdAt: payment.created_at,
+});
+
+module.exports.formatAdminBooking = (booking, extras = {}) => ({
+  ...module.exports.formatBooking(booking),
+  customerName: extras.customerName ?? null,
+  providerName: extras.providerName ?? null,
+  service: extras.service ?? null,
+  amount: extras.amount ?? null,
+  displayStatus: extras.displayStatus ?? booking.status,
+});
+
+module.exports.formatAdminTransaction = (row) => ({
+  ...module.exports.formatTransaction(row),
+  userId: String(row.user_id),
+  userName: row.user_name,
+  userUsername: row.user_username,
+});
+
+module.exports.formatAdminConversation = (row, extras = {}) => ({
+  ...module.exports.formatConversation(row),
+  userOneName: extras.userOneName ?? null,
+  userTwoName: extras.userTwoName ?? null,
+  listingTitle: extras.listingTitle ?? null,
+});
+
+module.exports.formatAdminProvider = (user) => ({
+  id: String(user.id),
+  username: user.username,
+  fullName: user.full_name,
+  email: user.email || null,
+  phone: user.phone,
+  isVerified: Boolean(user.is_verified),
+  isSuspended: Boolean(user.is_suspended),
+  totalListings: Number(user.total_listings || 0),
+  createdAt: user.created_at,
+});

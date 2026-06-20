@@ -22,8 +22,54 @@ module.exports.getProviders = async ({ offset, limit }) => {
   return { rows, total: Number(count) };
 };
 
-module.exports.getAllUsers = async ({ offset, limit }) => {
+module.exports.getAllUsers = async ({ offset, limit, role, suspended, search }) => {
   const query = db("users").select("*").whereNull("deleted_at").orderBy("created_at", "desc");
+
+  if (role) {
+    query.where({ active_role: role });
+  }
+
+  if (suspended === true || suspended === "true") {
+    query.where({ is_suspended: true });
+  } else if (suspended === false || suspended === "false") {
+    query.where({ is_suspended: false });
+  }
+
+  if (search) {
+    const term = `%${search}%`;
+    query.andWhere(function applySearch() {
+      this.where("full_name", "like", term)
+        .orWhere("username", "like", term)
+        .orWhere("email", "like", term)
+        .orWhere("phone", "like", term);
+    });
+  }
+
+  const [{ count }] = await query.clone().clearSelect().count({ count: "*" });
+  const rows = await query.offset(offset).limit(limit);
+  return { rows, total: Number(count) };
+};
+
+module.exports.getAdminProviders = async ({ offset, limit, search }) => {
+  const query = db("users")
+    .select(
+      "users.*",
+      db.raw("(SELECT COUNT(*) FROM listings WHERE listings.provider_id = users.id) as total_listings")
+    )
+    .where({ active_role: "provider" })
+    .whereNull("deleted_at")
+    .orderBy("created_at", "desc");
+
+  if (search) {
+    const term = `%${search}%`;
+    query.andWhere(function applySearch() {
+      this.where("full_name", "like", term)
+        .orWhere("username", "like", term)
+        .orWhere("email", "like", term)
+        .orWhere("phone", "like", term);
+    });
+  }
+
   const [{ count }] = await query.clone().clearSelect().count({ count: "*" });
   const rows = await query.offset(offset).limit(limit);
   return { rows, total: Number(count) };

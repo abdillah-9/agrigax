@@ -15,6 +15,7 @@ import Payments from "../features/admin/pages/Payments";
 import Commissions from "../features/admin/pages/Commissions";
 import Refunds from "../features/admin/pages/Refunds";
 import Reviews from "../features/admin/pages/Reviews";
+import Messages from "../features/admin/pages/Messages";
 import ReportedReviews from "../features/admin/pages/ReportedReviews";
 import Announcements from "../features/admin/pages/Announcements";
 import PushNotifications from "../features/admin/pages/PushNotifications";
@@ -50,6 +51,7 @@ export default function AdminRoutes() {
         <Route path="commissions" element={<Commissions />} />
         <Route path="refunds" element={<Refunds />} />
         <Route path="reviews" element={<Reviews />} />
+        <Route path="messages" element={<Messages />} />
         <Route path="reported-reviews" element={<ReportedReviews />} />
         <Route path="announcements" element={<Announcements />} />
         <Route path="push-notifications" element={<PushNotifications />} />

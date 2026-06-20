@@ -33,10 +33,12 @@ export default function Dashboard() {
     return [
       { label: "Total Users", value: stats.users.toLocaleString(), icon: "👥", path: "/admin/users" },
       { label: "Active Listings", value: stats.listings.toLocaleString(), icon: "📋", path: "/admin/listings" },
-      { label: "Total Bookings", value: stats.bookings.toLocaleString(), icon: "📅", path: null },
+      { label: "Total Bookings", value: stats.bookings.toLocaleString(), icon: "📅", path: "/admin/bookings" },
       { label: "Categories", value: stats.categories.toLocaleString(), icon: "🏷️", path: "/admin/categories" },
       { label: "Pending Approvals", value: stats.pendingListings.toLocaleString(), icon: "⏳", path: "/admin/listings" },
       { label: "Open Disputes", value: stats.openDisputes.toLocaleString(), icon: "⚠️", path: "/admin/booking-disputes" },
+      { label: "Payments", value: stats.payments.toLocaleString(), icon: "💳", path: "/admin/payments" },
+      { label: "Conversations", value: stats.conversations.toLocaleString(), icon: "💬", path: "/admin/messages" },
     ];
   }, [stats]);
 
@@ -144,6 +146,15 @@ export default function Dashboard() {
                 <td>
                   <button className="inv-action-btn inv-action-btn-primary" onClick={() => navigate("/admin/reviews")}>
                     Manage Reviews
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td className="fw-medium">Wallet Transactions</td>
+                <td>{stats.transactions.toLocaleString()}</td>
+                <td>
+                  <button className="inv-action-btn inv-action-btn-primary" onClick={() => navigate("/admin/payments")}>
+                    View Payments
                   </button>
                 </td>
               </tr>

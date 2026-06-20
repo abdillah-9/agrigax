@@ -3,13 +3,19 @@ import apiClient from "../api/client";
 import { ADMIN } from "../api/endpoints";
 import { toCategoryCreateBody, toCategoryUpdateBody } from "../api/adminHelpers";
 import type {
+  AdminBooking,
+  AdminConversation,
   AdminDashboardStats,
+  AdminPayment,
+  AdminProvider,
+  AdminTransaction,
   AdminUser,
   ApiResponse,
   Category,
   CreateCategoryPayload,
   Dispute,
   Listing,
+  Message,
   Pagination,
   ResolveDisputePayload,
   Review,
@@ -45,6 +51,23 @@ export function useAdmin() {
       return { items: data.data, pagination: data.pagination };
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to fetch users");
+      return { items: [], pagination: undefined };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchProviders = useCallback(async (params?: Record<string, string>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await apiClient.get<ApiResponse<AdminProvider[]> & { pagination?: Pagination }>(
+        ADMIN.PROVIDERS,
+        { params }
+      );
+      return { items: data.data, pagination: data.pagination };
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to fetch providers");
       return { items: [], pagination: undefined };
     } finally {
       setLoading(false);
@@ -109,6 +132,102 @@ export function useAdmin() {
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to reject listing");
       return false;
+    }
+  }, []);
+
+  const fetchBookings = useCallback(async (params?: Record<string, string>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await apiClient.get<ApiResponse<AdminBooking[]> & { pagination?: Pagination }>(
+        ADMIN.BOOKINGS,
+        { params }
+      );
+      return { items: data.data, pagination: data.pagination };
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to fetch bookings");
+      return { items: [], pagination: undefined };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchPayments = useCallback(async (params?: Record<string, string>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await apiClient.get<ApiResponse<AdminPayment[]> & { pagination?: Pagination }>(
+        ADMIN.PAYMENTS,
+        { params }
+      );
+      return { items: data.data, pagination: data.pagination };
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to fetch payments");
+      return { items: [], pagination: undefined };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchRefunds = useCallback(async (params?: Record<string, string>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await apiClient.get<ApiResponse<AdminPayment[]> & { pagination?: Pagination }>(
+        ADMIN.REFUNDS,
+        { params }
+      );
+      return { items: data.data, pagination: data.pagination };
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to fetch refunds");
+      return { items: [], pagination: undefined };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchTransactions = useCallback(async (params?: Record<string, string>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await apiClient.get<ApiResponse<AdminTransaction[]> & { pagination?: Pagination }>(
+        ADMIN.TRANSACTIONS,
+        { params }
+      );
+      return { items: data.data, pagination: data.pagination };
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to fetch transactions");
+      return { items: [], pagination: undefined };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchConversations = useCallback(async (params?: Record<string, string>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await apiClient.get<ApiResponse<AdminConversation[]> & { pagination?: Pagination }>(
+        ADMIN.MESSAGES_CONVERSATIONS,
+        { params }
+      );
+      return { items: data.data, pagination: data.pagination };
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to fetch conversations");
+      return { items: [], pagination: undefined };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchConversationMessages = useCallback(async (id: string) => {
+    setError(null);
+    try {
+      const { data } = await apiClient.get<ApiResponse<Message[]>>(ADMIN.MESSAGE_BY_ID(id));
+      return data.data;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to fetch messages");
+      return [];
     }
   }, []);
 
@@ -199,20 +318,63 @@ export function useAdmin() {
     }
   }, []);
 
+  const approveReview = useCallback(async (id: string) => {
+    setError(null);
+    try {
+      await apiClient.put(ADMIN.APPROVE_REVIEW(id));
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to approve review");
+      return false;
+    }
+  }, []);
+
+  const hideReview = useCallback(async (id: string) => {
+    setError(null);
+    try {
+      await apiClient.put(ADMIN.HIDE_REVIEW(id));
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to hide review");
+      return false;
+    }
+  }, []);
+
+  const deleteReview = useCallback(async (id: string) => {
+    setError(null);
+    try {
+      await apiClient.delete(ADMIN.DELETE_REVIEW(id));
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to delete review");
+      return false;
+    }
+  }, []);
+
   return {
     fetchDashboard,
     fetchUsers,
+    fetchProviders,
     suspendUser,
     reinstateUser,
     fetchPendingListings,
     approveListing,
     rejectListing,
+    fetchBookings,
+    fetchPayments,
+    fetchRefunds,
+    fetchTransactions,
+    fetchConversations,
+    fetchConversationMessages,
     fetchDisputes,
     resolveDispute,
     fetchCategories,
     createCategory,
     updateCategory,
     fetchReviews,
+    approveReview,
+    hideReview,
+    deleteReview,
     loading,
     error,
   };

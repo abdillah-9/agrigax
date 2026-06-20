@@ -10,8 +10,11 @@ const {
   getDisputes,
   getDisputeById,
   resolveDispute,
+  getAllBookings,
+  getOpenDisputeForBooking,
 } = require("../repositories/bookings");
-const { formatBooking, formatDispute } = require("../utils/formatters");
+const { getUserById } = require("../repositories/auth");
+const { formatBooking, formatDispute, formatAdminBooking } = require("../utils/formatters");
 
 const parseListingId = (body) => Number(body.listing_id || body.listingId);
 
@@ -195,4 +198,44 @@ module.exports.resolveBookingDispute = async (id, body) => {
   });
 
   return formatDispute(updated);
+};
+
+const enrichAdminBooking = async (booking) => {
+  const [listing, customer, provider, dispute] = await Promise.all([
+    getListingById(booking.listing_id, { publicOnly: false }),
+    getUserById(booking.customer_id),
+    getUserById(booking.provider_id),
+    getOpenDisputeForBooking(booking.id),
+  ]);
+
+  return formatAdminBooking(booking, {
+    customerName: customer?.full_name ?? null,
+    providerName: provider?.full_name ?? null,
+    service: listing?.title ?? null,
+    amount: listing ? Number(listing.price) : null,
+    displayStatus: dispute ? "disputed" : booking.status,
+  });
+};
+
+module.exports.adminListBookings = async ({ offset, limit, status }) => {
+  const filterStatus = status === "disputed" ? null : status;
+  const { rows, total } = await getAllBookings({ offset, limit, status: filterStatus });
+
+  let enriched = await Promise.all(rows.map(enrichAdminBooking));
+
+  if (status === "disputed") {
+    enriched = enriched.filter((booking) => booking.displayStatus === "disputed");
+  }
+
+  return { data: enriched, total: status === "disputed" ? enriched.length : total };
+};
+
+module.exports.adminGetBooking = async (id) => {
+  const booking = await getBookingById(id);
+
+  if (!booking) {
+    throw new AppError("Booking not found", 404);
+  }
+
+  return enrichAdminBooking(booking);
 };

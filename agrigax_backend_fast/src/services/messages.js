@@ -6,8 +6,12 @@ const {
   getMessages,
   createMessage,
   getConversationById,
+  getAllConversations,
+  countConversations,
 } = require("../repositories/messages");
-const { formatConversation, formatMessage } = require("../utils/formatters");
+const { getUserById } = require("../repositories/auth");
+const { getListingById } = require("../repositories/listings");
+const { formatConversation, formatMessage, formatAdminConversation } = require("../utils/formatters");
 
 const assertParticipant = (conversation, userId) => {
   const allowed =
@@ -73,3 +77,36 @@ module.exports.sendMessage = async (userId, conversationId, body) => {
 
   return formatMessage(row);
 };
+
+const enrichAdminConversation = async (conversation) => {
+  const [userOne, userTwo, listing] = await Promise.all([
+    getUserById(conversation.user_one_id),
+    getUserById(conversation.user_two_id),
+    conversation.listing_id ? getListingById(conversation.listing_id, { publicOnly: false }) : null,
+  ]);
+
+  return formatAdminConversation(conversation, {
+    userOneName: userOne?.full_name ?? null,
+    userTwoName: userTwo?.full_name ?? null,
+    listingTitle: listing?.title ?? null,
+  });
+};
+
+module.exports.adminListConversations = async ({ offset, limit }) => {
+  const { rows, total } = await getAllConversations({ offset, limit });
+  const data = await Promise.all(rows.map(enrichAdminConversation));
+  return { data, total };
+};
+
+module.exports.adminGetConversationMessages = async (conversationId) => {
+  const conversation = await getConversationById(conversationId);
+
+  if (!conversation) {
+    throw new AppError("Conversation not found", 404);
+  }
+
+  const rows = await getMessages(conversationId);
+  return rows.map(formatMessage);
+};
+
+module.exports.countAllConversations = async () => countConversations();

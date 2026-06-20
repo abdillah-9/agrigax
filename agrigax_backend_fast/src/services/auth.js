@@ -22,7 +22,6 @@ const {
 } = require("../repositories/auth");
 const db = require("../configs/db");
 const { shouldExposeDevOtp } = require("../utils/devOtp");
-require("dotenv").config();
 
 const OTP_EXPIRY_MINUTES = 10;
 

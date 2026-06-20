@@ -6,8 +6,10 @@ const {
   updateWalletBalance,
   createTransaction,
   getTransactionsByWallet,
+  getAllTransactions,
+  countTransactions,
 } = require("../repositories/wallets");
-const { formatWallet, formatTransaction } = require("../utils/formatters");
+const { formatWallet, formatTransaction, formatAdminTransaction } = require("../utils/formatters");
 
 const getOrCreateWallet = async (userId) => {
   let wallet = await getWalletByUserId(userId);
@@ -89,3 +91,10 @@ module.exports.withdraw = async (userId, body) => {
     method: body.method,
   });
 };
+
+module.exports.adminListTransactions = async ({ offset, limit, type }) => {
+  const { rows, total } = await getAllTransactions({ offset, limit, type });
+  return { data: rows.map(formatAdminTransaction), total };
+};
+
+module.exports.countAllTransactions = async () => countTransactions();
