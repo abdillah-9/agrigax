@@ -40,7 +40,6 @@ module.exports.deletecategoryById = async(req, res, next)=>{
 
 module.exports.selectAllCategories = async(req, res, next)=>{
     try{
-        const {} = req.body;
         const result = await selectAllCategories();
 
         return res.status(200).json({message:"All categories fetched succssful"});

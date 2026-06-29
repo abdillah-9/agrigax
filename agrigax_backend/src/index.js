@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const authRouter = require("./routes/auth");
+const { categoriesRouter } = require("./routes/categories");
 require("dotenv").config();
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(cors(
 
 // middlewares here
 app.use("/auth", authRouter);
+app.use("/categories", categoriesRouter)
 
 
 //Error middleware as last resort

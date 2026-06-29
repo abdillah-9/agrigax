@@ -1,4 +1,5 @@
 const express = require("express");
+
 const {
   getCategories,
   getCategoryById,
@@ -6,6 +7,7 @@ const {
   updateCategory,
   deleteCategory,
 } = require("../controllers/categories");
+
 const { asyncHandler } = require("../middlewares/asyncHandler");
 const validate = require("../middlewares/validate");
 const { guards } = require("../configs/accessPolicy");
