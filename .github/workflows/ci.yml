@@ -13,11 +13,11 @@ jobs:
       - name: installing node 
         uses: actions/setup-node@v4
         with:
-            node-version: 22
+            node-version: 25
       
       - name: install npm
         working-directory: agrigax_backend
-        run: npm ci
+        run: npm install
         
 
 
