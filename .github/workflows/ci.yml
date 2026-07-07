@@ -17,7 +17,7 @@ jobs:
       
       - name: install npm
         working-directory: agrigax_backend
-        run: npm install
+        run: npm ci
         
 
 
