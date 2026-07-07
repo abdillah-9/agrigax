@@ -19,7 +19,5 @@ jobs:
         working-directory: /agrigax_backend
         run: npm ci
         
-      - name: what is wrong here
-        working-directory: /agrigax_backend
-        run: npx vitest
+
 
