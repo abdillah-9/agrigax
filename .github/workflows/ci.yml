@@ -1,14 +1,25 @@
-name: first CI
-
-on: 
-    push:
-        branches:
-            - main
-
+name: CI unyama
+on:
+  push:
+    branches:
+      -  main
 jobs: 
-    say-hello:
-        runs-on: ubuntu-latest
-        steps:
-            - name: hello
-              run: echo "first CI run"
+  unyama:
+    runs-on: ubuntu-latest
+    steps:
+      - name: single command app cloning
+        uses: actions/checkout@v4
+
+      - name: installing node 
+        uses: actions/setup-node@v4
+        with:
+            node-version: 22
+      
+      - name: install npm
+        working-directory: /agrigax_backend
+        run: npm ci
+        
+      - name: what is wrong here
+        working-directory: /agrigax_backend
+        run: npx vitest
 
