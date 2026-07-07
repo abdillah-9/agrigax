@@ -16,7 +16,7 @@ jobs:
             node-version: 22
       
       - name: install npm
-        working-directory: /agrigax_backend
+        working-directory: agrigax_backend
         run: npm ci
         
 
