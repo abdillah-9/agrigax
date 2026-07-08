@@ -6,22 +6,22 @@ on:
 jobs: 
   CI-unyama:
     runs-on: ubuntu-latest
-
+    env:
+      DB_CLIENT: mysql2
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_NAME: agrigax_test
+      PORT: 4000
+      MIGRATIONS_TABLE_NAME: knex_migrations
+      NODE_ENV: development
+      ACCESS_SECRET_KEY: test-access
+      REFRESH_SECRET_KEY: test-refresh
+      
     services:
       mysql:
         image: mysql:8
-        env:
-          DB_CLIENT: mysql2
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_USER: root
-          DB_PASSWORD: password
-          DB_NAME: agrigax_test
-          PORT: 4000
-          MIGRATIONS_TABLE_NAME: knex_migrations
-          NODE_ENV: development
-          ACCESS_SECRET_KEY: test-access
-          REFRESH_SECRET_KEY: test-refresh
 
     steps:
       - name: single command app cloning
@@ -44,4 +44,4 @@ jobs:
         working-directory: agrigax_backend
         run: npx vitest
         
-        
+
