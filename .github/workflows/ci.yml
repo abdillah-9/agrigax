@@ -37,6 +37,7 @@ jobs:
         run: npm ci
 
       - name: run migrations
+        working-directory: agrigax_backend
         run: npx knex migrate:latest
 
       - name: run tests
