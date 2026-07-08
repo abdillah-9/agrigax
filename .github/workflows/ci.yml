@@ -18,6 +18,10 @@ jobs:
       - name: install npm
         working-directory: agrigax_backend
         run: npm ci
+
+      - name: run tests
+        working-directory: agrigax_backend
+        run: npx vitest
         
 
 
