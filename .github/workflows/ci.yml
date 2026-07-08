@@ -44,3 +44,4 @@ jobs:
         working-directory: agrigax_backend
         run: npx vitest
         
+        
