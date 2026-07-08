@@ -18,10 +18,15 @@ jobs:
       NODE_ENV: development
       ACCESS_SECRET_KEY: test-access
       REFRESH_SECRET_KEY: test-refresh
-      
+
     services:
       mysql:
         image: mysql:8
+        env: 
+          MYSQL_ROOT_PASSWORD: ${{ env.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ env.DB_NAME }} 
+        ports:
+          - 3307:3306
 
     steps:
       - name: single command app cloning
