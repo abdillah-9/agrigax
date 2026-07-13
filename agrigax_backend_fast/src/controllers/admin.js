@@ -16,9 +16,6 @@ const {
   deleteReview,
   getBookings,
   getBooking,
-  getPayments,
-  getRefunds,
-  getTransactions,
   getConversations,
   getConversationMessages,
 } = require("../services/admin");
@@ -216,36 +213,6 @@ module.exports.getBooking = async (req, res, next) => {
   try {
     const data = await getBooking(req.params.id);
     return sendSuccess(res, data, "Booking fetched");
-  } catch (e) {
-    next(e);
-  }
-};
-
-module.exports.getPayments = async (req, res, next) => {
-  try {
-    const pagination = parsePagination(req.query);
-    const { data, total } = await getPayments(listFilters(req.query, pagination));
-    return sendPaginated(res, data, buildPagination(pagination.page, pagination.limit, total), "Payments fetched");
-  } catch (e) {
-    next(e);
-  }
-};
-
-module.exports.getRefunds = async (req, res, next) => {
-  try {
-    const pagination = parsePagination(req.query);
-    const { data, total } = await getRefunds(pagination);
-    return sendPaginated(res, data, buildPagination(pagination.page, pagination.limit, total), "Refunds fetched");
-  } catch (e) {
-    next(e);
-  }
-};
-
-module.exports.getTransactions = async (req, res, next) => {
-  try {
-    const pagination = parsePagination(req.query);
-    const { data, total } = await getTransactions(listFilters(req.query, pagination));
-    return sendPaginated(res, data, buildPagination(pagination.page, pagination.limit, total), "Transactions fetched");
   } catch (e) {
     next(e);
   }

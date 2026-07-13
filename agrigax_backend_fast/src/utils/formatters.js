@@ -42,21 +42,6 @@ module.exports.formatFavorite = (row) => ({
   createdAt: row.created_at,
 });
 
-module.exports.formatWallet = (wallet) => ({
-  id: String(wallet.id),
-  balance: Number(wallet.balance),
-  currency: wallet.currency,
-});
-
-module.exports.formatTransaction = (tx) => ({
-  id: String(tx.id),
-  type: tx.type,
-  amount: Number(tx.amount),
-  reference: tx.reference,
-  description: tx.description,
-  createdAt: tx.created_at,
-});
-
 module.exports.formatConversation = (row, viewerId = null) => ({
   id: String(row.id),
   listingId: row.listing_id ? String(row.listing_id) : null,
@@ -112,18 +97,6 @@ module.exports.formatDispute = (row) => ({
   createdAt: row.created_at,
 });
 
-module.exports.formatPayment = (payment) => ({
-  id: String(payment.id),
-  bookingId: String(payment.booking_id),
-  payerId: String(payment.payer_id),
-  receiverId: String(payment.receiver_id),
-  amount: Number(payment.amount),
-  method: payment.method,
-  status: payment.status === "paid" ? "completed" : payment.status,
-  transactionRef: payment.transaction_ref,
-  createdAt: payment.created_at,
-});
-
 module.exports.formatAdminBooking = (booking, extras = {}) => ({
   ...module.exports.formatBooking(booking),
   customerName: extras.customerName ?? null,
@@ -131,13 +104,6 @@ module.exports.formatAdminBooking = (booking, extras = {}) => ({
   service: extras.service ?? null,
   amount: extras.amount ?? null,
   displayStatus: extras.displayStatus ?? booking.status,
-});
-
-module.exports.formatAdminTransaction = (row) => ({
-  ...module.exports.formatTransaction(row),
-  userId: String(row.user_id),
-  userName: row.user_name,
-  userUsername: row.user_username,
 });
 
 module.exports.formatAdminConversation = (row, extras = {}) => ({

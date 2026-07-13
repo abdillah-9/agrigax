@@ -13,8 +13,6 @@ const favoritesRouter = require("./routes/favorites");
 const reviewsRouter = require("./routes/reviews");
 const messagesRouter = require("./routes/messages");
 const notificationsRouter = require("./routes/notifications");
-const paymentsRouter = require("./routes/payments");
-const walletsRouter = require("./routes/wallets");
 const disputesRouter = require("./routes/disputes");
 const adminRouter = require("./routes/admin");
 const { notFound } = require("./middlewares/notFound");
@@ -50,8 +48,6 @@ app.use("/favorites", favoritesRouter);
 app.use("/reviews", reviewsRouter);
 app.use("/messages", messagesRouter);
 app.use("/notifications", notificationsRouter);
-app.use("/payments", paymentsRouter);
-app.use("/wallet", walletsRouter);
 app.use("/disputes", disputesRouter);
 app.use("/admin", adminRouter);
 

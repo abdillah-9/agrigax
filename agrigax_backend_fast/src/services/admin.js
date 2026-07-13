@@ -17,8 +17,6 @@ const {
   adminHideReview,
   adminDeleteReview,
 } = require("../services/reviews");
-const { listAllPayments, listRefundedPayments, countAllPayments } = require("../services/payments");
-const { adminListTransactions, countAllTransactions } = require("../services/wallets");
 const {
   adminListConversations,
   adminGetConversationMessages,
@@ -37,8 +35,6 @@ module.exports.getDashboard = async () => {
     reviews,
     pendingListings,
     openDisputes,
-    payments,
-    transactions,
     conversations,
   ] = await Promise.all([
     countUsers(),
@@ -48,8 +44,6 @@ module.exports.getDashboard = async () => {
     countReviews(),
     countPendingListings(),
     countOpenDisputes(),
-    countAllPayments(),
-    countAllTransactions(),
     countAllConversations(),
   ]);
 
@@ -61,8 +55,6 @@ module.exports.getDashboard = async () => {
     reviews,
     pendingListings,
     openDisputes,
-    payments,
-    transactions,
     conversations,
   };
 };
@@ -133,18 +125,6 @@ module.exports.getBookings = async (filters) => {
 
 module.exports.getBooking = async (id) => {
   return adminGetBooking(id);
-};
-
-module.exports.getPayments = async (filters) => {
-  return listAllPayments(filters);
-};
-
-module.exports.getRefunds = async (filters) => {
-  return listRefundedPayments(filters);
-};
-
-module.exports.getTransactions = async (filters) => {
-  return adminListTransactions(filters);
 };
 
 module.exports.getConversations = async (filters) => {

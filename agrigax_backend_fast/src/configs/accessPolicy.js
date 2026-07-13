@@ -3,7 +3,7 @@
  *
  * PUBLIC       → visitors, no cookie required (browse listings, categories)
  * AUTH         → registered users (profile, settings, favorites, notifications)
- * VERIFIED     → OTP-verified users (bookings, messages, wallet, create/manage listings)
+ * VERIFIED     → OTP-verified users (bookings, messages, create/manage listings)
  * PROVIDER     → verified + active_role === "provider"
  * ADMIN        → active_role === "admin" (verification not required for admin ops)
  */
@@ -73,12 +73,6 @@ const routeAccess = {
     reject: "provider",
     complete: "provider",
     cancel: "verified",
-  },
-  wallet: {
-    balance: "verified",
-    transactions: "verified",
-    deposit: "verified",
-    withdraw: "verified",
   },
   messages: {
     conversations: "verified",

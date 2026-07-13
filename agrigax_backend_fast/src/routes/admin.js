@@ -20,9 +20,6 @@ const {
   deleteReviewHandler,
   getBookings,
   getBooking,
-  getPayments,
-  getRefunds,
-  getTransactions,
   getConversations,
   getConversationMessages,
 } = require("../controllers/admin");
@@ -52,10 +49,6 @@ adminRouter.delete("/categories/:id", ...adminOnly, asyncHandler(deleteCategory)
 
 adminRouter.get("/bookings", ...adminOnly, asyncHandler(getBookings));
 adminRouter.get("/bookings/:id", ...adminOnly, asyncHandler(getBooking));
-
-adminRouter.get("/payments", ...adminOnly, asyncHandler(getPayments));
-adminRouter.get("/refunds", ...adminOnly, asyncHandler(getRefunds));
-adminRouter.get("/transactions", ...adminOnly, asyncHandler(getTransactions));
 
 adminRouter.get("/messages/conversations", ...adminOnly, asyncHandler(getConversations));
 adminRouter.get("/messages/:id", ...adminOnly, asyncHandler(getConversationMessages));
