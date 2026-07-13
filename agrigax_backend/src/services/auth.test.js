@@ -20,7 +20,7 @@ describe("services_authentication_tests", ()=>{
         });
 
         //sign in into fake account
-        const result = await signIn({email:"temp1@example.com", password:'some_hash_here'});
+        const result = await signIn({email:"temp8@example.com", password:'some_hash_here'});
 
         expect(result).toBeDefined();
 
