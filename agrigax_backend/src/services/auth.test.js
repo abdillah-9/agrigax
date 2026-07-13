@@ -44,7 +44,6 @@ describe("services_authentication_tests", ()=>{
 
     expect(result.id).toBeDefined();
     expect(result.access_token).toBeDefined();
-
     });
 
     test("signOut",async ()=>{

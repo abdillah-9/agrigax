@@ -53,3 +53,8 @@ jobs:
       - name: run tests ...
         working-directory: agrigax_backend
         run: npx vitest -t signIn_test
+      
+      - name: build the app
+        working-directory: agrigax-backend
+        run: npm run build
+        
