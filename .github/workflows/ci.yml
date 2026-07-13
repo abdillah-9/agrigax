@@ -46,6 +46,10 @@ jobs:
         working-directory: agrigax_backend
         run: npm ci
 
+      # - name: run eslint
+      #   working-directory: agrigax_backend
+      #   run: npm run lint
+
       - name: run migrations
         working-directory: agrigax_backend
         run: npx knex migrate:latest
@@ -55,6 +59,6 @@ jobs:
         run: npx vitest -t signIn_test
       
       - name: build the app
-        working-directory: agrigax-backend
+        working-directory: agrigax_backend
         run: npm run build
-        
+
