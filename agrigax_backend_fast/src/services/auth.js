@@ -22,6 +22,9 @@ const {
 } = require("../repositories/auth");
 const db = require("../configs/db");
 const { shouldExposeDevOtp } = require("../utils/devOtp");
+const { assignDefaultPlan } = require("./subscriptionActivation");
+
+const VENDOR_ROLE = "provider";
 
 const OTP_EXPIRY_MINUTES = 10;
 
@@ -137,7 +140,7 @@ module.exports.register = async ({
   const password_hash = await bcrypt.hash(password, 10);
 
   const userId = await db.transaction(async (trx) => {
-    return createNewUserAccount(trx, {
+    const newUserId = await createNewUserAccount(trx, {
       username: normalizedUsername,
       full_name,
       phone: normalizedPhone,
@@ -148,6 +151,15 @@ module.exports.register = async ({
       is_verified: false,
       is_suspended: false,
     });
+
+    // Every vendor is auto-placed on the default (Starter) plan at
+    // registration, at no cost and with no manual step — requirements §3, §5.1.
+    // Customers never hold a subscription, so this is skipped for them.
+    if (active_role === VENDOR_ROLE) {
+      await assignDefaultPlan(trx, newUserId);
+    }
+
+    return newUserId;
   });
 
   const user = await getUserById(userId);
