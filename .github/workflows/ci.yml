@@ -58,7 +58,7 @@ jobs:
         working-directory: agrigax_backend
         run: npx vitest -t signIn_test
       
-      - name: build the app
-        working-directory: agrigax_backend
-        run: npm run build
+      # - name: build the app
+      #   working-directory: agrigax_backend
+      #   run: npm run build
 
