@@ -45,6 +45,6 @@ jobs:
         working-directory: agrigax_backend
         run: npx knex migrate:latest
 
-      - name: run tests
+      - name: run tests ...
         working-directory: agrigax_backend
         run: npx vitest -t signIn_test
