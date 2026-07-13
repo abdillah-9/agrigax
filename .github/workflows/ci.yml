@@ -27,6 +27,11 @@ jobs:
           MYSQL_DATABASE: ${{ env.DB_NAME }} 
         ports:
           - 3307:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost --password"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
           
     steps:
       - name: single command app cloning
