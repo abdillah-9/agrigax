@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-const { signIn, signUp, signOut, userSessionCheck, quickUserSessionCheck } = require('./auth');
+const { signIn, signUp, signOut, userSessionCheck, quickUserSessionCheck, deleteAccountById } = require('./auth');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
@@ -7,10 +7,27 @@ describe("services_authentication_tests", ()=>{
     //sign_in test
     test("signIn_test",async ()=>{
 
-        const result = await signIn({email:"test@example.com", password:'some_hash_here'});
+        //create temp account
+        const create_temp_account = await signUp({
+            full_name: "Temp User 8",
+            phone: "+255700000008",
+            email: "temp8@example.com",
+            password: "some_hash_here",
+            avatar: null,
+            active_role: "customer",
+            is_verified: false,
+            is_suspended: false
+        });
+
+        //sign in into fake account
+        const result = await signIn({email:"temp1@example.com", password:'some_hash_here'});
 
         expect(result).toBeDefined();
-    });
+
+        //delete temp account
+        await deleteAccountById(create_temp_account.id);
+
+    }); 
 
     //sign_up test
     test("signUp_test", async ()=>{

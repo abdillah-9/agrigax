@@ -1,57 +1,74 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { getUserByEmail, updateUserRefreshTokenById, createNewUserAccount, insertNewRefreshToken } = require("../repositories/auth");
+
+const {
+    getUserByEmail,
+    getUserByEmailIncludingDeleted,
+    restoreDeletedUser,
+    updateUserRefreshTokenById,
+    createNewUserAccount,
+    insertNewRefreshToken,
+    deleteUserById
+} = require("../repositories/auth");
+
 const db = require("../configs/db");
-require('dotenv').config();
 
-module.exports.signIn = async({email, password})=>{
+require("dotenv").config();
 
-    //verify email if its available in DB -- by fetching user from DB using this email
+
+module.exports.signIn = async ({ email, password }) => {
+
     const userData = await getUserByEmail(email);
 
-    if(!userData){
+    if (!userData) {
         throw new Error("Invalid credentials");
     }
 
-    //verify if password is valid -- by using bcrypt we validate the password against DB password
 
-    try{
-        const validPassword = await bcrypt.compare(password, userData.password_hash);
+    const validPassword = await bcrypt.compare(
+        password,
+        userData.password_hash
+    );
 
-        if(!validPassword){
-            throw new Error("Invalid password");
+
+    if (!validPassword) {
+        throw new Error("Invalid password");
+    }
+
+
+    const access_token_hash = jwt.sign(
+        { id: userData.id },
+        process.env.ACCESS_SECRET_KEY,
+        {
+            expiresIn: "15m"
         }
-    }
-    catch(e){
-        throw e;
-    }
+    );
 
-    //If valid 
-    // --we generate tokens ( access and key tokens) && 
-    const access_token_hash = await jwt.sign({id:userData.id}, process.env.ACCESS_SECRET_KEY,{
-        expiresIn:'15 min'
-    });
-    const refresh_token_hash = await jwt.sign({id:userData.id}, process.env.REFRESH_SECRET_KEY,{
-        expiresIn:'7 days'
-    });
-    
-    // --we update refresh token in DB &&
-    try{
-        const userId = await jwt.verify(refresh_token_hash, process.env.REFRESH_SECRET_KEY);
 
-        const new_value = null;
-        await updateUserRefreshTokenById(userId.id, new_value);
-        return userId;
-    }  
-    catch(e){
-        throw e;
-    }
+    const refresh_token_hash = jwt.sign(
+        { id: userData.id },
+        process.env.REFRESH_SECRET_KEY,
+        {
+            expiresIn: "7d"
+        }
+    );
 
-    // --we send user ID and access Token to controller which will create the tokens
-    // return {id:userData.id, access_token_hash, refresh_token_hash};
-    return "well done";
 
-}
+    await updateUserRefreshTokenById(
+        userData.id,
+        refresh_token_hash
+    );
+
+
+    return {
+        id: userData.id,
+        access_token_hash,
+        refresh_token_hash
+    };
+
+};
+
+
 
 module.exports.signUp = async ({
     full_name,
@@ -64,127 +81,344 @@ module.exports.signUp = async ({
     is_suspended
 }) => {
 
-    // 1. Check if user already exists
-    const existingUser = await getUserByEmail(email);
 
-    if (existingUser) {
-        throw new Error("Account exists");
-    }
+    // check including deleted accounts
+    const existingUser = await getUserByEmailIncludingDeleted(email);
 
-    //1.5. hash password
-    const password_hash = await bcrypt.hash(password,10);
 
-    // 2. Create user + refresh token INSIDE transaction
+    const password_hash = await bcrypt.hash(password, 10);
+
+
+
     const userId = await db.transaction(async (trx) => {
 
-        // create user
-        const id = await createNewUserAccount(trx, {
-            full_name,
-            phone,
-            email,
-            password_hash,
-            avatar,
-            active_role,
-            is_verified,
-            is_suspended
-        });
+        let id;
 
-        // generate refresh token (needs user id, so MUST be here)
+
+        // user exists
+        if (existingUser) {
+
+
+            // account still active
+            if (existingUser.deleted_at === null) {
+                throw new Error("Account exists");
+            }
+
+
+            // restore deleted account
+            await restoreDeletedUser(trx, {
+
+                id: existingUser.id,
+
+                full_name,
+                phone,
+                password_hash,
+                avatar,
+                active_role,
+                is_verified,
+                is_suspended
+
+            });
+
+
+            id = existingUser.id;
+
+
+        }
+        else {
+
+
+            // create completely new user
+            id = await createNewUserAccount(trx, {
+
+                full_name,
+                phone,
+                email,
+                password_hash,
+                avatar,
+                active_role,
+                is_verified,
+                is_suspended
+
+            });
+
+        }
+
+
+
         const refresh_token = jwt.sign(
             { id },
             process.env.REFRESH_SECRET_KEY,
-            { expiresIn: "7d" }
+            {
+                expiresIn: "7d"
+            }
         );
 
-        // store refresh token
-        //throw new Error("Rolling back ");
+
+
         await insertNewRefreshToken(trx, {
+
             user_id: id,
             refresh_token_hash: refresh_token
+
         });
 
-        // return created user id
+
+
         return id;
+
     });
 
-    // 3. Generate access token OUTSIDE transaction
+
+
     const access_token = jwt.sign(
         { id: userId },
         process.env.ACCESS_SECRET_KEY,
-        { expiresIn: "15m" }
+        {
+            expiresIn: "15m"
+        }
     );
 
-    // 4. Return response
+
     return {
+
         id: userId,
         access_token
+
     };
+
 };
 
-module.exports.signOut = async({access_token_hash, refresh_token_hash})=>{
-    // validate tokens if are real
-    const userId = await jwt.verify(access_token_hash,process.env.ACCESS_SECRET_KEY);
-    if(userId?.id){
-        const new_value = null;
-        await updateUserRefreshTokenById(userId.id, new_value);
+
+
+
+
+module.exports.signOut = async ({
+    access_token_hash,
+    refresh_token_hash
+}) => {
+
+
+    try {
+
+        const userId = await jwt.verify(
+            access_token_hash,
+            process.env.ACCESS_SECRET_KEY
+        );
+
+
+        if (userId?.id) {
+
+            await updateUserRefreshTokenById(
+                userId.id,
+                null
+            );
+
+
+            return userId;
+
+        }
+
+
+    }
+    catch (e) {
+
+        const userId = await jwt.verify(
+            refresh_token_hash,
+            process.env.REFRESH_SECRET_KEY
+        );
+
+
+        await updateUserRefreshTokenById(
+            userId.id,
+            null
+        );
+
+
         return userId;
+
     }
 
-    try{
-        const userId = await jwt.verify(refresh_token_hash, process.env.REFRESH_SECRET_KEY);
+};
 
-        const new_value = null;
-        await updateUserRefreshTokenById(userId.id, new_value);
-        return userId;
-    }
-    catch(e){
-        throw e;
-    }
-}
 
-module.exports.userSessionCheck = async({access_token_hash, refresh_token_hash})=>{
-    //check if access token is valid
-    const userId = await jwt.verify(access_token_hash, process.env.ACCESS_SECRET_KEY);
 
-    if(userId){
-        const new_access_token_hash = jwt.sign({id: userId.id}, process.env.ACCESS_SECRET_KEY, {expiresIn:'15 min'});
-        const new_value = jwt.sign({id: userId.id}, process.env.REFRESH_SECRET_KEY, {expiresIn:'7 days'});
 
-        await updateUserRefreshTokenById(userId.id, new_value);
+
+module.exports.userSessionCheck = async ({
+    access_token_hash,
+    refresh_token_hash
+}) => {
+
+
+    try {
+
+        const userId = await jwt.verify(
+            access_token_hash,
+            process.env.ACCESS_SECRET_KEY
+        );
+
+
+        const new_access_token_hash = jwt.sign(
+            {
+                id: userId.id
+            },
+            process.env.ACCESS_SECRET_KEY,
+            {
+                expiresIn: "15m"
+            }
+        );
+
+
+        const new_refresh_token_hash = jwt.sign(
+            {
+                id: userId.id
+            },
+            process.env.REFRESH_SECRET_KEY,
+            {
+                expiresIn: "7d"
+            }
+        );
+
+
+        await updateUserRefreshTokenById(
+            userId.id,
+            new_refresh_token_hash
+        );
+
 
         return {
-            id:userId.id, 
-            access_token_hash:new_access_token_hash,
-            refresh_token_hash:new_value,  
+
+            id: userId.id,
+
+            access_token_hash:
+                new_access_token_hash,
+
+            refresh_token_hash:
+                new_refresh_token_hash
+
         };
+
+
     }
+    catch (e) {
 
-    try{
-        const userId = await jwt.verify(refresh_token_hash, process.env.REFRESH_SECRET_KEY);
 
-        const new_access_token_hash = jwt.sign(userId, process.env.ACCESS_SECRET_KEY, {expiresIn:'15 min'});
-        const new_value = jwt.sign(userId, process.env.REFRESH_SECRET_KEY, {expiresIn:'7 days'});
+        const userId = await jwt.verify(
+            refresh_token_hash,
+            process.env.REFRESH_SECRET_KEY
+        );
 
-        await updateUserRefreshTokenById(userId.id, new_value);
+
+        const new_access_token_hash = jwt.sign(
+            {
+                id: userId.id
+            },
+            process.env.ACCESS_SECRET_KEY,
+            {
+                expiresIn: "15m"
+            }
+        );
+
+
+        const new_refresh_token_hash = jwt.sign(
+            {
+                id: userId.id
+            },
+            process.env.REFRESH_SECRET_KEY,
+            {
+                expiresIn: "7d"
+            }
+        );
+
+
+
+        await updateUserRefreshTokenById(
+            userId.id,
+            new_refresh_token_hash
+        );
+
+
+
         return {
-            id:userId.id, 
-            access_token_hash:new_access_token_hash,
-            refresh_token_hash:new_value,  
+
+            id: userId.id,
+
+            access_token_hash:
+                new_access_token_hash,
+
+            refresh_token_hash:
+                new_refresh_token_hash
+
         };
-    }
-    catch(e){
-        throw e;
-    }
-}
 
-module.exports.quickUserSessionCheck = async({access_token_hash})=>{
+    }
 
-    //validate access token
-    try{
-        const userId = await jwt.verify(access_token_hash, process.env.ACCESS_SECRET_KEY);
-        return {id: userId.id}
+};
+
+
+
+
+
+
+module.exports.quickUserSessionCheck = async ({
+    access_token_hash
+}) => {
+
+
+    try {
+
+        const userId = await jwt.verify(
+            access_token_hash,
+            process.env.ACCESS_SECRET_KEY
+        );
+
+
+        return {
+            id: userId.id
+        };
+
+
     }
-    catch(e){
+    catch (e) {
+
         throw e;
+
     }
-}
+
+};
+
+
+
+
+
+
+
+module.exports.deleteAccountById = async (user_id) => {
+
+
+    try {
+
+
+        await db.transaction(async (trx) => {
+
+
+            await deleteUserById(
+                trx,
+                {
+                    user_id
+                }
+            );
+
+
+        });
+
+
+    }
+    catch (e) {
+
+        throw e;
+
+    }
+
+};

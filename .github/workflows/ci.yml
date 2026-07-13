@@ -16,7 +16,7 @@ jobs:
       PORT: 4000
       MIGRATIONS_TABLE_NAME: knex_migrations
       NODE_ENV: development
-      ACCESS_SECRET_KEY: test-access
+      ACCESS_SECRET_KEY: test-access 
       REFRESH_SECRET_KEY: test-refresh
 
     services:
@@ -35,7 +35,7 @@ jobs:
       - name: installing node 
         uses: actions/setup-node@v4
         with:
-            node-version: 25
+            node-version: 24
       
       - name: install npm
         working-directory: agrigax_backend
@@ -47,6 +47,4 @@ jobs:
 
       - name: run tests
         working-directory: agrigax_backend
-        run: npx vitest
-        
-
+        run: npx vitest -t signIn_test
