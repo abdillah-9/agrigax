@@ -10,6 +10,7 @@ const {
   softDeleteListing,
   getImagesByListingIds,
   replaceListingImages,
+  incrementViews,
 } = require("../repositories/listings");
 const { formatListing } = require("../utils/formatters");
 
@@ -19,6 +20,8 @@ const mapCreateBody = (body, provider_id) => ({
   type: body.type,
   category_id: body.category_id || body.categoryId,
   location: body.location,
+  latitude: body.latitude ?? null,
+  longitude: body.longitude ?? null,
   price: body.price ?? 0,
   is_available: body.is_available ?? body.isAvailable ?? true,
   is_approved: false,
@@ -53,6 +56,10 @@ module.exports.getPublicListing = async (id) => {
   if (!listing) {
     throw new AppError("Listing not found", 404);
   }
+
+  // Count this page load and reflect it in the response without a re-read.
+  await incrementViews(listing.id);
+  listing.views = Number(listing.views || 0) + 1;
 
   const imageMap = await getImagesByListingIds([listing.id]);
   return formatListing(listing, imageMap[listing.id] || []);
@@ -107,6 +114,8 @@ module.exports.updateProviderListing = async (providerId, id, body) => {
     updates.category_id = body.category_id || body.categoryId;
   }
   if (body.location !== undefined) updates.location = body.location;
+  if (body.latitude !== undefined) updates.latitude = body.latitude;
+  if (body.longitude !== undefined) updates.longitude = body.longitude;
   if (body.price !== undefined) updates.price = body.price;
   if (body.is_available !== undefined || body.isAvailable !== undefined) {
     updates.is_available = body.is_available ?? body.isAvailable;

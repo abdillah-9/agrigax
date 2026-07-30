@@ -1,0 +1,20 @@
+household_size:
+  possible_causes:
+    - Empty dwelling coded as a household
+    - Members not listed on the roster
+    - Data entry of 0 instead of missing
+  recommendation: Confirm against the household roster; size must be at least 1 for enumerated households.
+  severity_hint: critical
+age:
+  possible_causes:
+    - Year of birth entered as age
+    - Digit transposition
+    - Proxy respondent estimation error
+  recommendation: Cross-check with date of birth if available; ages above 120 need field verification.
+  severity_hint: critical
+relationship_to_head:
+  possible_causes:
+    - Numeric codes not mapped to labels
+    - Inconsistent coding across enumeration areas
+  recommendation: Normalize relationship codes using the census codebook before analysis.
+  severity_hint: warning

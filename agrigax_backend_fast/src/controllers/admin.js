@@ -18,9 +18,37 @@ const {
   getBooking,
   getConversations,
   getConversationMessages,
+  getSubscriptionPlans,
+  getSubscriptionPlan,
+  getPaymentMethods,
+  getSubscriptionRequests,
+  getSubscriptionRequest,
+  getVendorSubscriptions,
+  getRevenueReport,
+  getVendorCountsReport,
+  getRequestsReport,
+  getExpirationsReport,
 } = require("../services/admin");
 const { createCategory, updateCategory, removeCategory } = require("../services/categories");
-const { formatCategory } = require("../utils/formatters");
+const {
+  createPlan,
+  updatePlan,
+  removePlan,
+} = require("../services/subscriptionPlans");
+const {
+  createPaymentMethod,
+  updatePaymentMethod,
+} = require("../services/paymentMethods");
+const { approveRequest, rejectRequest } = require("../services/subscriptionActivation");
+const {
+  formatCategory,
+  formatSubscriptionPlan,
+  formatPaymentMethod,
+  formatSubscriptionRequest,
+  formatSubscriptionRequestLog,
+  formatVendorSubscription,
+} = require("../utils/formatters");
+const parseDate = (value) => (value ? new Date(value) : undefined);
 const { sendSuccess, sendPaginated } = require("../utils/response");
 const { parsePagination, buildPagination } = require("../utils/pagination");
 
@@ -232,6 +260,209 @@ module.exports.getConversationMessages = async (req, res, next) => {
   try {
     const data = await getConversationMessages(req.params.id);
     return sendSuccess(res, data, "Conversation messages fetched");
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.getSubscriptionPlans = async (req, res, next) => {
+  try {
+    const pagination = parsePagination(req.query);
+    const { rows, total } = await getSubscriptionPlans(pagination);
+    return sendPaginated(
+      res,
+      rows.map(formatSubscriptionPlan),
+      buildPagination(pagination.page, pagination.limit, total),
+      "Plans fetched"
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.getSubscriptionPlanById = async (req, res, next) => {
+  try {
+    const plan = await getSubscriptionPlan(req.params.id);
+    return sendSuccess(res, formatSubscriptionPlan(plan), "Plan fetched");
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.createSubscriptionPlan = async (req, res, next) => {
+  try {
+    const plan = await createPlan(req.body);
+    return sendSuccess(res, formatSubscriptionPlan(plan), "Plan created", 201);
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.updateSubscriptionPlan = async (req, res, next) => {
+  try {
+    const plan = await updatePlan(req.params.id, req.body);
+    return sendSuccess(res, formatSubscriptionPlan(plan), "Plan updated");
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.deleteSubscriptionPlan = async (req, res, next) => {
+  try {
+    await removePlan(req.params.id);
+    return sendSuccess(res, null, "Plan deleted");
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.getPaymentMethods = async (req, res, next) => {
+  try {
+    const pagination = parsePagination(req.query);
+    const { rows, total } = await getPaymentMethods(pagination);
+    return sendPaginated(
+      res,
+      rows.map(formatPaymentMethod),
+      buildPagination(pagination.page, pagination.limit, total),
+      "Payment methods fetched"
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.createPaymentMethod = async (req, res, next) => {
+  try {
+    const method = await createPaymentMethod(req.body);
+    return sendSuccess(res, formatPaymentMethod(method), "Payment method created", 201);
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.updatePaymentMethod = async (req, res, next) => {
+  try {
+    const method = await updatePaymentMethod(req.params.id, req.body);
+    return sendSuccess(res, formatPaymentMethod(method), "Payment method updated");
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.getSubscriptionRequests = async (req, res, next) => {
+  try {
+    const pagination = parsePagination(req.query);
+    const { rows, total } = await getSubscriptionRequests({
+      ...pagination,
+      status: req.query.status,
+      vendor_id: req.query.vendorId,
+    });
+
+    return sendPaginated(
+      res,
+      rows.map(formatSubscriptionRequest),
+      buildPagination(pagination.page, pagination.limit, total),
+      "Subscription requests fetched"
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.getSubscriptionRequestById = async (req, res, next) => {
+  try {
+    const { request, logs } = await getSubscriptionRequest(req.params.id);
+    return sendSuccess(
+      res,
+      { ...formatSubscriptionRequest(request), logs: logs.map(formatSubscriptionRequestLog) },
+      "Subscription request fetched"
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.approveSubscriptionRequest = async (req, res, next) => {
+  try {
+    const { request, subscription } = await approveRequest(req.user.id, req.params.id);
+    return sendSuccess(
+      res,
+      { request: formatSubscriptionRequest(request), subscription: formatVendorSubscription(subscription) },
+      "Subscription request approved"
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.rejectSubscriptionRequest = async (req, res, next) => {
+  try {
+    const request = await rejectRequest(req.user.id, req.params.id, req.body?.comment);
+    return sendSuccess(res, formatSubscriptionRequest(request), "Subscription request rejected");
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.getVendorSubscriptions = async (req, res, next) => {
+  try {
+    const pagination = parsePagination(req.query);
+    const { rows, total } = await getVendorSubscriptions({
+      ...pagination,
+      status: req.query.status,
+      vendorId: req.query.vendorId,
+      planId: req.query.planId,
+      expiringWithinDays: req.query.expiringWithinDays ? Number(req.query.expiringWithinDays) : undefined,
+    });
+
+    return sendPaginated(
+      res,
+      rows.map(formatVendorSubscription),
+      buildPagination(pagination.page, pagination.limit, total),
+      "Vendor subscriptions fetched"
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.getRevenueReport = async (req, res, next) => {
+  try {
+    const report = await getRevenueReport(req.query.period);
+    return sendSuccess(res, report, "Revenue report fetched");
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.getVendorCountsReport = async (req, res, next) => {
+  try {
+    const report = await getVendorCountsReport();
+    return sendSuccess(res, report, "Vendor counts report fetched");
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.getRequestsReport = async (req, res, next) => {
+  try {
+    const pagination = parsePagination(req.query);
+    const report = await getRequestsReport({
+      ...pagination,
+      status: req.query.status,
+      from: parseDate(req.query.from),
+      to: parseDate(req.query.to),
+    });
+    return sendSuccess(res, report, "Requests report fetched");
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports.getExpirationsReport = async (req, res, next) => {
+  try {
+    const report = await getExpirationsReport();
+    return sendSuccess(res, report, "Expirations report fetched");
   } catch (e) {
     next(e);
   }

@@ -9,10 +9,13 @@ module.exports.create = Joi.object({
   category_id: Joi.number().integer().positive().required(),
   categoryId: Joi.number().integer().positive(),
   location: Joi.string().max(255).required(),
+  latitude: Joi.number().min(-90).max(90).allow(null),
+  longitude: Joi.number().min(-180).max(180).allow(null),
   price: Joi.number().precision(2).min(0).default(0),
   is_available: Joi.boolean().default(true),
   isAvailable: Joi.boolean(),
-  images: Joi.array().items(Joi.string().uri()).max(10).default([]),
+  // catalog images are frontend-served paths like /catalog/maize.svg
+  images: Joi.array().items(Joi.string().uri({ allowRelative: true }).max(500)).max(10).default([]),
 }).or("category_id", "categoryId");
 
 module.exports.update = Joi.object({
@@ -22,8 +25,10 @@ module.exports.update = Joi.object({
   category_id: Joi.number().integer().positive(),
   categoryId: Joi.number().integer().positive(),
   location: Joi.string().max(255),
+  latitude: Joi.number().min(-90).max(90).allow(null),
+  longitude: Joi.number().min(-180).max(180).allow(null),
   price: Joi.number().precision(2).min(0),
   is_available: Joi.boolean(),
   isAvailable: Joi.boolean(),
-  images: Joi.array().items(Joi.string().uri()).max(10),
+  images: Joi.array().items(Joi.string().uri({ allowRelative: true }).max(500)).max(10),
 }).min(1);

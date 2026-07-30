@@ -1,0 +1,32 @@
+rules:
+  - id: env_aqi_over_500
+    name: "AQI above 500"
+    description: "Air Quality Index above 500 exceeds the standard scale maximum"
+    condition:
+      all:
+        - column: aqi
+          op: gt
+          value: 500
+    severity: critical
+
+  - id: env_negative_pm25
+    name: "Negative PM2.5"
+    description: "PM2.5 concentration cannot be negative"
+    condition:
+      all:
+        - column: pm25
+          op: lt
+          value: 0
+    severity: critical
+
+  - id: env_negative_pm10
+    name: "Negative PM10"
+    description: "PM10 concentration cannot be negative"
+    condition:
+      all:
+        - column: pm10
+          op: lt
+          value: 0
+    severity: critical
+
+missing_sentinels: []

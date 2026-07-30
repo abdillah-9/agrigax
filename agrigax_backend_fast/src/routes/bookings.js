@@ -15,6 +15,7 @@ const {
 const { asyncHandler } = require("../middlewares/asyncHandler");
 const validate = require("../middlewares/validate");
 const { guards } = require("../configs/accessPolicy");
+const { requireActiveSubscription } = require("../middlewares/requireActiveSubscription");
 const schemas = require("../validations/bookings");
 
 const bookingsRouter = express.Router();
@@ -27,7 +28,7 @@ bookingsRouter.get("/my", ...guards.verified, asyncHandler(getMyBookings));
 bookingsRouter.get("/provider", ...guards.provider, asyncHandler(getProviderBookings));
 bookingsRouter.get("/:id", ...guards.verified, asyncHandler(getBookingById));
 bookingsRouter.post("/", ...guards.verified, validate(schemas.create), asyncHandler(createBooking));
-bookingsRouter.put("/:id/accept", ...guards.provider, asyncHandler(acceptBooking));
+bookingsRouter.put("/:id/accept", ...guards.provider, requireActiveSubscription(), asyncHandler(acceptBooking));
 bookingsRouter.put("/:id/reject", ...guards.provider, asyncHandler(rejectBooking));
 bookingsRouter.put("/:id/complete", ...guards.provider, asyncHandler(completeBooking));
 bookingsRouter.put("/:id/cancel", ...guards.verified, asyncHandler(cancelBooking));

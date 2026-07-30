@@ -5,7 +5,14 @@ export const providerMenu: MenuItem[] = [
   { label: "Browse Listings", path: "/provider/browse" },
   { label: "My Listings", path: "/provider/listings" },
   { label: "Bookings", path: "/provider/bookings", requiresVerified: true },
-  { label: "Earnings", path: "/provider/earnings", requiresVerified: true },
+  {
+    label: "Subscription",
+    children: [
+      { label: "My Plan", path: "/provider/subscription" },
+      { label: "Upgrade Plan", path: "/provider/subscription/plans" },
+      { label: "My Requests", path: "/provider/subscription/requests" },
+    ],
+  },
   { label: "Messages", path: "/provider/messages", requiresVerified: true },
   { label: "Notifications", path: "/provider/notifications" },
   {

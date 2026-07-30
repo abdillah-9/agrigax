@@ -1,0 +1,48 @@
+id: ministry_of_health
+name: Ministry of Health
+domain: healthcare
+column_fingerprint: 84144b7f73a63aa0
+expected_columns:
+- patient_id
+- diagnosis
+- temperature
+- pulse
+- systolic_bp
+- diastolic_bp
+- gender
+- pregnant
+- age
+- facility_code
+- ward
+required_columns:
+- patient_id
+- diagnosis
+- temperature
+- pulse
+- systolic_bp
+- diastolic_bp
+- gender
+- pregnant
+- age
+- facility_code
+- ward
+terminology:
+  diagnosis:
+    HTN: Hypertension
+    DM: Diabetes
+    TB: Tuberculosis
+  gender:
+    male: Male
+    MALE: Male
+    F: Female
+    M: Male
+    m: Male
+ranges: {}
+rules: []
+missing_sentinels: []
+common_problems:
+- 'gender: Inconsistent capitalization'
+notes: Learned from sample_data/healthcare_sample.csv
+seen_count: 2
+updated_at: '2026-07-30T12:53:25'
+created_at: '2026-07-30T12:38:00'

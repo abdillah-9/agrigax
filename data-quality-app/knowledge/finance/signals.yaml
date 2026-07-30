@@ -1,0 +1,37 @@
+strong_columns:
+  - account_id
+  - transaction_id
+  - debit
+  - credit
+  - balance
+  - invoice
+  - tax
+  - revenue
+  - expenditure
+weak_columns:
+  - amount
+  - payment
+  - ledger
+  - journal
+  - currency
+  - voucher
+  - budget
+  - cost_center
+  - gl_code
+keywords:
+  - finance
+  - accounting
+  - transaction
+  - invoice
+  - debit
+  - credit
+  - revenue
+exclude_columns:
+  - patient_id
+  - diagnosis
+  - student_id
+  - farm_id
+  - herd_id
+  - waterpoint_id
+  - enumerator
+  - aqi

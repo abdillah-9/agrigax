@@ -1,0 +1,19 @@
+ranges:
+  yield:
+    min: 0
+    max: null
+  rainfall_mm:
+    min: 0
+    max: 5000
+  rainfall:
+    min: 0
+    max: 5000
+  hectare:
+    min: 0
+    max: null
+  acreage:
+    min: 0
+    max: null
+  fertilizer:
+    min: 0
+    max: null

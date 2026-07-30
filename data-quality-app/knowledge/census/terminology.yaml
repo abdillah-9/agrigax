@@ -1,0 +1,38 @@
+description: Census term normalization
+synonyms:
+  m: Male
+  male: Male
+  f: Female
+  female: Female
+  hoh: Head
+  head: Head
+  spouse: Spouse
+  child: Child
+  other: Other relative
+maps:
+  gender:
+    m: Male
+    male: Male
+    f: Female
+    female: Female
+  sex:
+    m: Male
+    male: Male
+    f: Female
+    female: Female
+  relationship_to_head:
+    "1": Head
+    "2": Spouse
+    "3": Child
+    "4": Parent
+    "5": Sibling
+    "6": Other relative
+    "7": Non-relative
+    hoh: Head
+    head: Head
+    spouse: Spouse
+    wife: Spouse
+    husband: Spouse
+    child: Child
+    son: Child
+    daughter: Child

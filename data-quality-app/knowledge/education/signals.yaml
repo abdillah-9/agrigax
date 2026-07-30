@@ -1,0 +1,35 @@
+strong_columns:
+  - student_id
+  - school_id
+  - grade
+  - enrollment
+  - attendance
+  - exam_score
+  - teacher_id
+  - classroom
+weak_columns:
+  - school
+  - subject
+  - marks
+  - term
+  - semester
+  - class
+  - pupil
+  - learner
+  - headteacher
+keywords:
+  - education
+  - school
+  - student
+  - enrollment
+  - attendance
+  - exam
+exclude_columns:
+  - patient_id
+  - diagnosis
+  - temperature
+  - farm_id
+  - account_id
+  - herd_id
+  - waterpoint_id
+  - pollutant

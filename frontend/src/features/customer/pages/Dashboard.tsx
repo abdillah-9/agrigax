@@ -1,16 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { HiSearch, HiClipboardList, HiHeart, HiArrowRight, HiCalendar } from "react-icons/hi";
-import { FaWallet } from "react-icons/fa6";
+import { HiSearch, HiClipboardList, HiHeart, HiArrowRight, HiCalendar, HiChat } from "react-icons/hi";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { useBookings } from "../../../hooks/useBookings";
 import { useFavorites } from "../../../hooks/useFavorites";
-import { usePayments } from "../../../hooks/usePayments";
 import {
   bookingCardInitials,
   customerDashboardStats,
   dashboardBadgeClass,
-  formatCompactCurrency,
   sortBookingsNewest,
 } from "../../../api/dashboardHelpers";
 import {
@@ -20,14 +17,14 @@ import {
   formatBookingDate,
 } from "../../../api/bookingHelpers";
 import { displayName } from "../../../utils/userDisplay";
-import type { EnrichedBooking, Wallet } from "../../../types/api.types";
+import type { EnrichedBooking } from "../../../types/api.types";
 import "../styles/customer.css";
 
 const quickLinks = [
   { icon: HiSearch, label: "Browse Listings", path: "/app/listings" },
   { icon: HiCalendar, label: "My Bookings", path: "/app/bookings" },
   { icon: HiHeart, label: "Favorites", path: "/app/favorites" },
-  { icon: FaWallet, label: "Wallet", path: "/app/wallet" },
+  { icon: HiChat, label: "Messages", path: "/app/messages" },
 ];
 
 export default function Dashboard() {
@@ -35,36 +32,32 @@ export default function Dashboard() {
   const { user } = useAuthContext();
   const { fetchMyBookings, loading: bookingsLoading, error: bookingsError } = useBookings();
   const { fetchFavorites, error: favoritesError } = useFavorites();
-  const { fetchWallet, error: walletError } = usePayments();
 
   const [bookings, setBookings] = useState<EnrichedBooking[]>([]);
   const [favoriteCount, setFavoriteCount] = useState(0);
-  const [wallet, setWallet] = useState<Wallet | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadDashboard = useCallback(async () => {
     setLoading(true);
     clearBookingLookupCache();
 
-    const [bookingRows, favorites, walletData] = await Promise.all([
+    const [bookingRows, favorites] = await Promise.all([
       fetchMyBookings(),
       fetchFavorites(),
-      fetchWallet(),
     ]);
 
     setBookings(await enrichBookings(bookingRows));
     setFavoriteCount(favorites.length);
-    setWallet(walletData);
     setLoading(false);
-  }, [fetchMyBookings, fetchFavorites, fetchWallet]);
+  }, [fetchMyBookings, fetchFavorites]);
 
   useEffect(() => {
     loadDashboard();
   }, [loadDashboard]);
 
   const stats = useMemo(
-    () => customerDashboardStats(bookings, favoriteCount, wallet),
-    [bookings, favoriteCount, wallet]
+    () => customerDashboardStats(bookings, favoriteCount),
+    [bookings, favoriteCount]
   );
 
   const recentBookings = useMemo(
@@ -72,7 +65,7 @@ export default function Dashboard() {
     [bookings]
   );
 
-  const error = bookingsError || favoritesError || walletError;
+  const error = bookingsError || favoritesError;
   const name = displayName(user);
 
   return (
@@ -130,12 +123,12 @@ export default function Dashboard() {
         <div className="dash-stat-card dash-stat-gold">
           <div className="dash-stat-row">
             <div className="dash-stat-icon-wrap dash-stat-icon-gold">
-              <FaWallet />
+              <HiCalendar />
             </div>
             <div>
-              <p className="dash-stat-label">Wallet Balance</p>
+              <p className="dash-stat-label">Total Bookings</p>
               <p className="dash-stat-value dash-stat-value-gold">
-                {loading ? "—" : formatCompactCurrency(stats.walletBalance, stats.walletCurrency)}
+                {loading || bookingsLoading ? "—" : bookings.length}
               </p>
             </div>
           </div>

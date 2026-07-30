@@ -11,6 +11,16 @@ const {
   adminGetBooking,
 } = require("../services/bookings");
 const { adminListCategories } = require("../services/categories");
+const { adminListPlans, adminGetPlan } = require("../services/subscriptionPlans");
+const { adminListPaymentMethods } = require("../services/paymentMethods");
+const { adminListRequests, adminGetRequest } = require("../services/subscriptionRequests");
+const { adminListSubscriptions } = require("../services/vendorSubscriptions");
+const {
+  getRevenueReport,
+  getVendorCountsReport,
+  getRequestsReport,
+  getExpirationsReport,
+} = require("../services/adminReporting");
 const {
   adminListReviews,
   adminApproveReview,
@@ -101,6 +111,46 @@ module.exports.resolveDispute = async (id, body) => {
 
 module.exports.getCategories = async (pagination) => {
   return adminListCategories(pagination);
+};
+
+module.exports.getSubscriptionPlans = async (pagination) => {
+  return adminListPlans(pagination);
+};
+
+module.exports.getSubscriptionPlan = async (id) => {
+  return adminGetPlan(id);
+};
+
+module.exports.getPaymentMethods = async (pagination) => {
+  return adminListPaymentMethods(pagination);
+};
+
+module.exports.getSubscriptionRequests = async (filters) => {
+  return adminListRequests(filters);
+};
+
+module.exports.getSubscriptionRequest = async (id) => {
+  return adminGetRequest(id);
+};
+
+module.exports.getVendorSubscriptions = async (filters) => {
+  return adminListSubscriptions(filters);
+};
+
+module.exports.getRevenueReport = async (period) => {
+  return getRevenueReport(period);
+};
+
+module.exports.getVendorCountsReport = async () => {
+  return getVendorCountsReport();
+};
+
+module.exports.getRequestsReport = async (filters) => {
+  return getRequestsReport(filters);
+};
+
+module.exports.getExpirationsReport = async () => {
+  return getExpirationsReport();
 };
 
 module.exports.getReviews = async () => {

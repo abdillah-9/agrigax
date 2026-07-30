@@ -1,0 +1,13 @@
+ranges:
+  depth_m:
+    min: 0
+    max: 1000
+  depth:
+    min: 0
+    max: 1000
+  distance_km:
+    min: 0
+    max: 500
+  distance:
+    min: 0
+    max: 500

@@ -34,8 +34,31 @@ module.exports.replaceListingImages = async (trx, listing_id, urls = []) => {
   await trx("listing_images").insert(rows);
 };
 
+// Great-circle distance in km between a point and each listing (haversine via
+// spherical law of cosines) — raw SQL fragment with parameter placeholders.
+const DISTANCE_SQL =
+  "(6371 * ACOS(LEAST(1, COS(RADIANS(?)) * COS(RADIANS(listings.latitude)) * COS(RADIANS(listings.longitude) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(listings.latitude)))))";
+
 module.exports.findListings = async ({ offset, limit, filters = {}, publicOnly = true }) => {
   const query = db("listings").select(listingSelect);
+
+  // Nearby mode: only listings with coordinates, annotated with distance_km,
+  // optionally capped to a radius, sorted nearest first.
+  const lat = Number(filters.lat);
+  const lng = Number(filters.lng);
+  const nearby =
+    filters.lat !== undefined && filters.lng !== undefined &&
+    Number.isFinite(lat) && Number.isFinite(lng);
+
+  if (nearby) {
+    query.select(db.raw(`${DISTANCE_SQL} as distance_km`, [lat, lng, lat]));
+    query.whereNotNull("listings.latitude").whereNotNull("listings.longitude");
+
+    const radius = Number(filters.radius_km);
+    if (Number.isFinite(radius) && radius > 0) {
+      query.whereRaw(`${DISTANCE_SQL} <= ?`, [lat, lng, lat, radius]);
+    }
+  }
 
   if (publicOnly) {
     applyPublicFilters(query);
@@ -53,6 +76,18 @@ module.exports.findListings = async ({ offset, limit, filters = {}, publicOnly =
     query.where("listings.location", "like", `%${filters.location}%`);
   }
 
+  // Smart search / typeahead: one term matched against title, description
+  // and location so typing e.g. "maharage" surfaces every relevant listing.
+  if (filters.search) {
+    const term = `%${filters.search}%`;
+    query.where((builder) => {
+      builder
+        .where("listings.title", "like", term)
+        .orWhere("listings.description", "like", term)
+        .orWhere("listings.location", "like", term);
+    });
+  }
+
   if (filters.provider_id) {
     query.where({ "listings.provider_id": filters.provider_id });
   }
@@ -61,9 +96,16 @@ module.exports.findListings = async ({ offset, limit, filters = {}, publicOnly =
     query.where({ "listings.is_approved": false });
   }
 
-  query.orderBy("listings.created_at", "desc");
-
+  // Count before ordering: in nearby mode the ORDER BY references the
+  // distance_km alias, which wouldn't exist in the cleared-select count query.
   const [{ count }] = await query.clone().clearSelect().count({ count: "*" });
+
+  if (nearby) {
+    query.orderByRaw(`${DISTANCE_SQL} asc`, [lat, lng, lat]);
+  } else {
+    query.orderBy("listings.created_at", "desc");
+  }
+
   const rows = await query.offset(offset).limit(limit);
 
   return { rows, total: Number(count) };
@@ -77,6 +119,12 @@ module.exports.getListingById = async (id, { publicOnly = false } = {}) => {
   }
 
   return query.first();
+};
+
+// Page-load view counter — every hit on the public detail endpoint counts,
+// including refreshes (product decision, not a bug).
+module.exports.incrementViews = async (id) => {
+  await db("listings").where({ id }).increment("views", 1);
 };
 
 module.exports.getFeaturedListings = async (limit = 10) => {

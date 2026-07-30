@@ -1,0 +1,7 @@
+ranges:
+  household_size:
+    min: 1
+    max: 50
+  age:
+    min: 0
+    max: 120

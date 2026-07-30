@@ -13,7 +13,7 @@ import {
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { useBookings } from "../../../hooks/useBookings";
 import { useListings } from "../../../hooks/useListings";
-import { usePayments } from "../../../hooks/usePayments";
+import { useSubscriptions } from "../../../hooks/useSubscriptions";
 import {
   bookingCardInitials,
   dashboardBadgeClass,
@@ -29,13 +29,14 @@ import {
   formatBookingDate,
 } from "../../../api/bookingHelpers";
 import { displayName } from "../../../utils/userDisplay";
-import type { EnrichedBooking, Listing, Wallet } from "../../../types/api.types";
+import { formatSubscriptionDate } from "../../../api/subscriptionHelpers";
+import type { CurrentSubscription, EnrichedBooking, Listing } from "../../../types/api.types";
 import "../styles/provider.css";
 
 const quickLinks = [
   { icon: HiCollection, label: "My Listings", path: "/provider/listings" },
   { icon: HiCalendar, label: "Bookings", path: "/provider/bookings" },
-  { icon: HiCurrencyDollar, label: "Earnings", path: "/provider/earnings" },
+  { icon: HiCurrencyDollar, label: "Subscription", path: "/provider/subscription" },
   { icon: HiChartBar, label: "Analytics", path: "/provider/analytics" },
 ];
 
@@ -44,36 +45,36 @@ export default function Dashboard() {
   const { user } = useAuthContext();
   const { fetchProviderBookings, loading: bookingsLoading, error: bookingsError } = useBookings();
   const { fetchMyListings, error: listingsError } = useListings();
-  const { fetchWallet, error: walletError } = usePayments();
+  const { fetchCurrent, error: subscriptionError } = useSubscriptions();
 
   const [bookings, setBookings] = useState<EnrichedBooking[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
-  const [wallet, setWallet] = useState<Wallet | null>(null);
+  const [subscription, setSubscription] = useState<CurrentSubscription | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadDashboard = useCallback(async () => {
     setLoading(true);
     clearBookingLookupCache();
 
-    const [bookingRows, listingRows, walletData] = await Promise.all([
+    const [bookingRows, listingRows, subscriptionData] = await Promise.all([
       fetchProviderBookings(),
       fetchMyListings(),
-      fetchWallet(),
+      fetchCurrent(),
     ]);
 
     setBookings(await enrichBookings(bookingRows));
     setListings(listingRows);
-    setWallet(walletData);
+    setSubscription(subscriptionData);
     setLoading(false);
-  }, [fetchProviderBookings, fetchMyListings, fetchWallet]);
+  }, [fetchProviderBookings, fetchMyListings, fetchCurrent]);
 
   useEffect(() => {
     loadDashboard();
   }, [loadDashboard]);
 
   const stats = useMemo(
-    () => providerDashboardStats(bookings, listings, wallet),
-    [bookings, listings, wallet]
+    () => providerDashboardStats(bookings, listings),
+    [bookings, listings]
   );
 
   const recentBookings = useMemo(
@@ -83,7 +84,7 @@ export default function Dashboard() {
 
   const weeklyRevenue = useMemo(() => weeklyRevenueFromBookings(bookings), [bookings]);
 
-  const error = bookingsError || listingsError || walletError;
+  const error = bookingsError || listingsError || subscriptionError;
   const name = displayName(user);
 
   return (
@@ -120,9 +121,9 @@ export default function Dashboard() {
               <HiCurrencyDollar />
             </div>
             <div>
-              <p className="dash-stat-label">Wallet Balance</p>
+              <p className="dash-stat-label">Current Plan</p>
               <p className="dash-stat-value dash-stat-value-green">
-                {loading ? "—" : formatCompactCurrency(stats.walletBalance, stats.walletCurrency)}
+                {loading ? "—" : subscription?.plan?.name || "—"}
               </p>
             </div>
           </div>
@@ -130,7 +131,9 @@ export default function Dashboard() {
             <span className="dash-stat-trend dash-stat-trend-neutral">
               {loading
                 ? "Loading..."
-                : `${formatCompactCurrency(stats.completedTotal, stats.walletCurrency)} from completed bookings`}
+                : subscription?.endDate
+                  ? `Renews / expires ${formatSubscriptionDate(subscription.endDate)}`
+                  : "Never expires"}
             </span>
           </div>
         </div>
@@ -197,14 +200,14 @@ export default function Dashboard() {
             <h2 className="dash-section-title">Weekly Revenue</h2>
             <p className="dash-section-subtitle">Completed bookings in the last 7 days</p>
           </div>
-          <button className="dash-action-btn" onClick={() => navigate("/provider/earnings")}>
-            <span>View Earnings</span>
+          <button className="dash-action-btn" onClick={() => navigate("/provider/bookings")}>
+            <span>View Bookings</span>
             <HiArrowRight className="dash-btn-icon" />
           </button>
         </div>
         <div className="provider-revenue-card">
           <div className="provider-revenue-total">
-            <span className="provider-revenue-currency">{stats.walletCurrency}</span>
+            <span className="provider-revenue-currency">{stats.currency}</span>
             <span className="provider-revenue-amount">
               {loading ? "—" : weeklyRevenue.total.toLocaleString()}
             </span>
@@ -215,7 +218,7 @@ export default function Dashboard() {
               <div key={`${bar.day}-${index}`} className="provider-bar-col">
                 <div className="provider-bar-fill" style={{ height: `${bar.height}%` }}>
                   <span className="provider-bar-tooltip">
-                    {bar.value > 0 ? formatCompactCurrency(bar.value, stats.walletCurrency) : "—"}
+                    {bar.value > 0 ? formatCompactCurrency(bar.value, stats.currency) : "—"}
                   </span>
                 </div>
                 <span className="provider-bar-label">{bar.day}</span>

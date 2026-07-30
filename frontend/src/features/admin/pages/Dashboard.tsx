@@ -2,27 +2,32 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../../contexts/AuthContext";
 import { useAdmin } from "../../../hooks/useAdmin";
+import { useAdminSubscriptions } from "../../../hooks/useAdminSubscriptions";
 import { formatAdminDate } from "../../../api/adminHelpers";
 import { displayName } from "../../../utils/userDisplay";
-import type { AdminDashboardStats, AdminUser } from "../../../types/api.types";
+import type { AdminDashboardStats, AdminUser, RequestCountsReport } from "../../../types/api.types";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuthContext();
   const { fetchDashboard, fetchUsers, loading, error } = useAdmin();
+  const { fetchRequestCounts } = useAdminSubscriptions();
 
   const [stats, setStats] = useState<AdminDashboardStats | null>(null);
+  const [requestCounts, setRequestCounts] = useState<RequestCountsReport | null>(null);
   const [recentUsers, setRecentUsers] = useState<AdminUser[]>([]);
 
   const loadDashboard = useCallback(async () => {
-    const [dashboard, usersResult] = await Promise.all([
+    const [dashboard, usersResult, reqCounts] = await Promise.all([
       fetchDashboard(),
       fetchUsers({ page: "1", limit: "5" }),
+      fetchRequestCounts(),
     ]);
 
     if (dashboard) setStats(dashboard);
+    setRequestCounts(reqCounts);
     setRecentUsers(usersResult.items);
-  }, [fetchDashboard, fetchUsers]);
+  }, [fetchDashboard, fetchUsers, fetchRequestCounts]);
 
   useEffect(() => {
     loadDashboard();
@@ -37,10 +42,10 @@ export default function Dashboard() {
       { label: "Categories", value: stats.categories.toLocaleString(), icon: "🏷️", path: "/admin/categories" },
       { label: "Pending Approvals", value: stats.pendingListings.toLocaleString(), icon: "⏳", path: "/admin/listings" },
       { label: "Open Disputes", value: stats.openDisputes.toLocaleString(), icon: "⚠️", path: "/admin/booking-disputes" },
-      { label: "Payments", value: stats.payments.toLocaleString(), icon: "💳", path: "/admin/payments" },
+      { label: "Pending Subscriptions", value: (requestCounts?.pending ?? 0).toLocaleString(), icon: "💳", path: "/admin/subscription-requests" },
       { label: "Conversations", value: stats.conversations.toLocaleString(), icon: "💬", path: "/admin/messages" },
     ];
-  }, [stats]);
+  }, [stats, requestCounts]);
 
   const name = displayName(user);
 
@@ -150,11 +155,14 @@ export default function Dashboard() {
                 </td>
               </tr>
               <tr>
-                <td className="fw-medium">Wallet Transactions</td>
-                <td>{stats.transactions.toLocaleString()}</td>
+                <td className="fw-medium">Pending Subscription Requests</td>
+                <td>{(requestCounts?.pending ?? 0).toLocaleString()}</td>
                 <td>
-                  <button className="inv-action-btn inv-action-btn-primary" onClick={() => navigate("/admin/payments")}>
-                    View Payments
+                  <button
+                    className="inv-action-btn inv-action-btn-primary"
+                    onClick={() => navigate("/admin/subscription-requests")}
+                  >
+                    Review Requests
                   </button>
                 </td>
               </tr>

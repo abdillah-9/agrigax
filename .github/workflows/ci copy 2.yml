@@ -1,0 +1,40 @@
+name:
+  CI-CD
+on:
+  push:
+    branches:
+      - main
+jobs:
+  Unyama:
+    runs-on: ubuntu-latest
+    env:
+      MYSQL_ROOT_PASSWORD: aaa
+      MYSQL_DATABASE: aaa
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ env.MYSQL_DATABASE }}
+    steps:
+      - name: step01
+        uses: actions/checkout@v4
+
+      - name: step02
+        uses: actions/node-run@v4
+
+      - name: step03
+        working-directory: ~/agrigax/agrigax_backend
+        run: npm ci
+
+      - name: step04
+        working-directory: ~/agrigax/agrigax_backend
+        run: npx knex migrate:latest
+
+      - name: step05
+        working-directory: ~/agrigax/agrigax_backend
+        run: npx vitest
+
+      - name: step06
+        run: ssh -i secrets.agrigax_backend_ed25519 deploy@https://demo-server 
+    

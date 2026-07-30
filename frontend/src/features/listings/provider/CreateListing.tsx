@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { HiArrowLeft, HiPlus, HiCheck } from "react-icons/hi2";
 import { useCategories } from "../../../hooks/useCategories";
 import { useListings } from "../../../hooks/useListings";
+import CatalogImagePicker from "../components/CatalogImagePicker";
+import LocationPicker, { type PickedLocation } from "../components/LocationPicker";
 import type { Category } from "../../../types/api.types";
 import "../styles/listings.css";
 
@@ -18,8 +20,13 @@ export default function CreateListing() {
     type: "service",
     categoryId: "",
     price: "",
-    location: "",
     isAvailable: true,
+  });
+  const [imageUrl, setImageUrl] = useState("");
+  const [place, setPlace] = useState<PickedLocation>({
+    location: "",
+    latitude: null,
+    longitude: null,
   });
 
   useEffect(() => {
@@ -42,8 +49,11 @@ export default function CreateListing() {
       type: form.type,
       categoryId,
       price: Number(form.price),
-      location: form.location.trim(),
+      location: place.location.trim(),
+      latitude: place.latitude,
+      longitude: place.longitude,
       isAvailable: form.isAvailable,
+      images: imageUrl ? [imageUrl] : [],
     });
 
     if (!result) return;
@@ -144,16 +154,9 @@ export default function CreateListing() {
               />
             </div>
 
-            <div className="listing-form-field">
+            <div className="listing-form-field listing-form-field-full">
               <label className="label label-required">Location</label>
-              <input
-                className="input-text"
-                type="text"
-                placeholder="e.g. Dar es Salaam"
-                value={form.location}
-                onChange={(e) => handleChange("location", e.target.value)}
-                required
-              />
+              <LocationPicker value={place} onChange={setPlace} />
             </div>
 
             <div className="listing-form-field listing-form-field-full">
@@ -166,6 +169,11 @@ export default function CreateListing() {
                 onChange={(e) => handleChange("description", e.target.value)}
                 required
               />
+            </div>
+
+            <div className="listing-form-field listing-form-field-full">
+              <label className="label">Picture</label>
+              <CatalogImagePicker value={imageUrl} onChange={setImageUrl} />
             </div>
           </div>
 

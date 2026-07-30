@@ -17,6 +17,18 @@ module.exports.createNotification = async (data) => {
   return db("notifications").where({ id }).first();
 };
 
+// No column in this schema tracks "already notified" for a given
+// vendor_subscriptions row — dedupe the pre-expiry warnings by checking
+// whether this exact title was already sent to this user today instead.
+module.exports.hasNotificationToday = async (user_id, title) => {
+  const row = await db("notifications")
+    .where({ user_id, title })
+    .whereRaw("DATE(created_at) = CURDATE()")
+    .first();
+
+  return Boolean(row);
+};
+
 module.exports.countUnread = async (user_id) => {
   const [{ count }] = await db("notifications").where({ user_id, is_read: false }).count({ count: "*" });
   return Number(count);

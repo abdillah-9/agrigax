@@ -1,0 +1,39 @@
+description: Education term normalization
+synonyms:
+  m: Male
+  male: Male
+  f: Female
+  female: Female
+  p1: Grade 1
+  p2: Grade 2
+  p3: Grade 3
+  p4: Grade 4
+  p5: Grade 5
+  p6: Grade 6
+  p7: Grade 7
+maps:
+  gender:
+    m: Male
+    male: Male
+    f: Female
+    female: Female
+  sex:
+    m: Male
+    male: Male
+    f: Female
+    female: Female
+  grade:
+    p1: "1"
+    p2: "2"
+    p3: "3"
+    p4: "4"
+    p5: "5"
+    p6: "6"
+    p7: "7"
+    "std 1": "1"
+    "std 2": "2"
+    "std 3": "3"
+    "std 4": "4"
+    "std 5": "5"
+    "std 6": "6"
+    "std 7": "7"

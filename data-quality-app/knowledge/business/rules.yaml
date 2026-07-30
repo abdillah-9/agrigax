@@ -1,0 +1,22 @@
+rules:
+  - id: business_negative_employees
+    name: "Negative employees"
+    description: "Employee count cannot be negative"
+    condition:
+      all:
+        - column: employees
+          op: lt
+          value: 0
+    severity: critical
+
+  - id: business_negative_turnover
+    name: "Negative turnover"
+    description: "Turnover cannot be negative"
+    condition:
+      all:
+        - column: turnover
+          op: lt
+          value: 0
+    severity: critical
+
+missing_sentinels: []

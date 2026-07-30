@@ -1,0 +1,24 @@
+cattle:
+  possible_causes:
+    - Sign error or placeholder for "unknown"
+    - Deaths subtracted incorrectly from herd total
+  recommendation: Reconcile cattle counts with the livestock register; counts must be ≥ 0.
+  severity_hint: critical
+poultry:
+  possible_causes:
+    - Flock losses entered as negative stock
+    - Unit mix-up (dozens vs birds)
+  recommendation: Verify poultry numbers against farm or household livestock census forms.
+  severity_hint: critical
+goat:
+  possible_causes:
+    - Data entry error
+    - Species column swap with sheep
+  recommendation: Cross-check goat counts with species-specific herd records.
+  severity_hint: critical
+vaccination:
+  possible_causes:
+    - Inconsistent yes/no coding
+    - Campaign vs routine vaccination not distinguished
+  recommendation: Normalize vaccination status codes before computing coverage rates.
+  severity_hint: warning

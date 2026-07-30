@@ -9,7 +9,9 @@ import CreateListing from "../features/listings/provider/CreateListing";
 import EditListing from "../features/listings/provider/EditListing";
 import ProviderBookings from "../features/bookings/provider/ProviderBookings";
 import MyBookings from "../features/bookings/pages/MyBookings";
-import Earnings from "../features/provider/pages/Earnings";
+import MySubscription from "../features/subscriptions/pages/MySubscription";
+import UpgradePlan from "../features/subscriptions/pages/UpgradePlan";
+import MyRequests from "../features/subscriptions/pages/MyRequests";
 import Analytics from "../features/provider/pages/Analytics";
 import Availability from "../features/provider/pages/Availability";
 import Notifications from "../features/notifications/pages/Notifications";
@@ -30,7 +32,9 @@ export default function ProviderRoutes() {
         <Route path="listings/edit/:id" element={<EditListing />} />
         <Route path="bookings" element={<ProviderBookings />} />
         <Route path="my-bookings" element={<MyBookings />} />
-        <Route path="earnings" element={<Earnings />} />
+        <Route path="subscription" element={<MySubscription />} />
+        <Route path="subscription/plans" element={<UpgradePlan />} />
+        <Route path="subscription/requests" element={<MyRequests />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="availability" element={<Availability />} />
         <Route path="notifications" element={<Notifications />} />

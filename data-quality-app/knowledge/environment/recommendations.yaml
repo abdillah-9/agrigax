@@ -1,0 +1,27 @@
+aqi:
+  possible_causes:
+    - Raw concentration mistaken for AQI
+    - Sensor spike or calibration failure
+    - Aggregation of sub-indices incorrectly
+  recommendation: Recalculate AQI from verified pollutant concentrations; values must be 0–500.
+  severity_hint: critical
+pm25:
+  possible_causes:
+    - Instrument malfunction
+    - Unit error (µg/m³ vs ppm)
+    - Extreme event not flagged
+  recommendation: Compare with co-located monitors and flag values outside 0–1000 µg/m³ for review.
+  severity_hint: warning
+pm10:
+  possible_causes:
+    - Dust event or sensor clogging
+    - Data entry error
+    - Wrong averaging period
+  recommendation: Validate against monitoring station logs for the same timestamp.
+  severity_hint: warning
+forest_cover:
+  possible_causes:
+    - Percentage vs absolute area confusion
+    - Classification threshold change between years
+  recommendation: Confirm whether forest_cover is a percent (0–100) or area measure before comparing periods.
+  severity_hint: warning

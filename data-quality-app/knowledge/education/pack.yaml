@@ -1,0 +1,4 @@
+domain: education
+display_name: Education
+description: Student enrollment, attendance, and assessment data
+version: "1.0"

@@ -9,11 +9,14 @@ import SuspendedUsers from "../features/admin/pages/SuspendedUsers";
 import ListingsApproval from "../features/admin/pages/ListingsApproval";
 import Categories from "../features/admin/pages/Categories";
 import FeaturedListings from "../features/admin/pages/FeaturedListings";
+import ImageCatalog from "../features/admin/pages/ImageCatalog";
 import Bookings from "../features/admin/pages/Bookings";
 import BookingDisputes from "../features/admin/pages/BookingDisputes";
-import Payments from "../features/admin/pages/Payments";
-import Commissions from "../features/admin/pages/Commissions";
-import Refunds from "../features/admin/pages/Refunds";
+import SubscriptionRequests from "../features/admin/pages/SubscriptionRequests";
+import SubscriptionPlans from "../features/admin/pages/SubscriptionPlans";
+import PaymentMethods from "../features/admin/pages/PaymentMethods";
+import VendorSubscriptions from "../features/admin/pages/VendorSubscriptions";
+import SubscriptionReports from "../features/admin/pages/SubscriptionReports";
 import Reviews from "../features/admin/pages/Reviews";
 import Messages from "../features/admin/pages/Messages";
 import ReportedReviews from "../features/admin/pages/ReportedReviews";
@@ -45,11 +48,14 @@ export default function AdminRoutes() {
         <Route path="listings" element={<ListingsApproval />} />
         <Route path="categories" element={<Categories />} />
         <Route path="featured-listings" element={<FeaturedListings />} />
+        <Route path="image-catalog" element={<ImageCatalog />} />
         <Route path="bookings" element={<Bookings />} />
         <Route path="booking-disputes" element={<BookingDisputes />} />
-        <Route path="payments" element={<Payments />} />
-        <Route path="commissions" element={<Commissions />} />
-        <Route path="refunds" element={<Refunds />} />
+        <Route path="subscription-requests" element={<SubscriptionRequests />} />
+        <Route path="subscription-plans" element={<SubscriptionPlans />} />
+        <Route path="payment-methods" element={<PaymentMethods />} />
+        <Route path="vendor-subscriptions" element={<VendorSubscriptions />} />
+        <Route path="subscription-reports" element={<SubscriptionReports />} />
         <Route path="reviews" element={<Reviews />} />
         <Route path="messages" element={<Messages />} />
         <Route path="reported-reviews" element={<ReportedReviews />} />

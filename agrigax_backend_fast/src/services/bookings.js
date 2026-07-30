@@ -18,6 +18,32 @@ const { formatBooking, formatDispute, formatAdminBooking } = require("../utils/f
 
 const parseListingId = (body) => Number(body.listing_id || body.listingId);
 
+// Contact details are revealed to the two parties only after the vendor
+// accepts — the booking is the bridge to the phone call, and hiding numbers
+// until acceptance stops fake bookings made just to harvest phone numbers.
+const CONTACT_STATUSES = ["accepted", "completed"];
+
+const contactOf = (user) => (user ? { name: user.full_name, phone: user.phone } : null);
+
+const formatWithContact = async (booking) => {
+  const formatted = formatBooking(booking);
+
+  if (!CONTACT_STATUSES.includes(booking.status)) {
+    return formatted;
+  }
+
+  const [customer, provider] = await Promise.all([
+    getUserById(booking.customer_id),
+    getUserById(booking.provider_id),
+  ]);
+
+  return {
+    ...formatted,
+    customerContact: contactOf(customer),
+    providerContact: contactOf(provider),
+  };
+};
+
 module.exports.createCustomerBooking = async (customerId, body) => {
   const listingId = parseListingId(body);
 
@@ -45,22 +71,12 @@ module.exports.createCustomerBooking = async (customerId, body) => {
 
 module.exports.getMyBookings = async (customerId) => {
   const rows = await getBookingsForCustomer(customerId);
-  return rows.map(formatBooking);
+  return Promise.all(rows.map(formatWithContact));
 };
 
 module.exports.getProviderBookings = async (providerId) => {
   const rows = await getBookingsForProvider(providerId);
-  return rows.map(formatBooking);
-};
-
-module.exports.getBooking = async (id) => {
-  const booking = await getBookingById(id);
-
-  if (!booking) {
-    throw new AppError("Booking not found", 404);
-  }
-
-  return formatBooking(booking);
+  return Promise.all(rows.map(formatWithContact));
 };
 
 const assertBookingParty = (booking, userId) => {
@@ -71,6 +87,20 @@ const assertBookingParty = (booking, userId) => {
   if (!allowed) {
     throw new AppError("You do not have permission to perform this action", 403);
   }
+};
+
+module.exports.getBooking = async (id, viewerId) => {
+  const booking = await getBookingById(id);
+
+  if (!booking) {
+    throw new AppError("Booking not found", 404);
+  }
+
+  // Only the customer or the vendor on this booking may view it —
+  // it now carries phone numbers.
+  assertBookingParty(booking, viewerId);
+
+  return formatWithContact(booking);
 };
 
 module.exports.acceptBooking = async (providerId, id) => {
@@ -85,7 +115,7 @@ module.exports.acceptBooking = async (providerId, id) => {
   }
 
   const updated = await updateBookingStatus(id, "accepted");
-  return formatBooking(updated);
+  return formatWithContact(updated);
 };
 
 module.exports.rejectBooking = async (providerId, id) => {
@@ -115,7 +145,7 @@ module.exports.completeBooking = async (providerId, id) => {
   }
 
   const updated = await updateBookingStatus(id, "completed");
-  return formatBooking(updated);
+  return formatWithContact(updated);
 };
 
 module.exports.cancelBooking = async (userId, id) => {

@@ -1,0 +1,25 @@
+tax_rate:
+  possible_causes:
+    - Percentage entered as a fraction or multiplied incorrectly
+    - Inclusive tax confused with exclusive rate
+    - Typing error
+  recommendation: Confirm statutory tax rate against finance policy and correct percentages above 100.
+  severity_hint: critical
+income:
+  possible_causes:
+    - Refunds or reversals posted as negative income
+    - Sign convention confusion with expenditure
+  recommendation: Review chart of accounts; move reversals to the appropriate contra or expenditure account.
+  severity_hint: warning
+amount:
+  possible_causes:
+    - Debit/credit sign convention
+    - Currency conversion error
+  recommendation: Validate against source invoice or bank statement; keep signed amounts only where the ledger expects them.
+  severity_hint: warning
+balance:
+  possible_causes:
+    - Opening balance not carried forward
+    - Unposted journals
+  recommendation: Reconcile running balance with the general ledger trial balance.
+  severity_hint: warning

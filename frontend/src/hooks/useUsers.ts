@@ -2,7 +2,13 @@ import { useCallback, useState } from "react";
 import apiClient from "../api/client";
 import { USERS } from "../api/endpoints";
 import { toProfileUpdateBody } from "../api/mappers";
-import type { ApiResponse, UpdateProfilePayload, UpdateSettingsPayload, User } from "../types/api.types";
+import type {
+  ApiResponse,
+  ProviderRating,
+  UpdateProfilePayload,
+  UpdateSettingsPayload,
+  User,
+} from "../types/api.types";
 
 export function useUsers() {
   const [loading, setLoading] = useState(false);
@@ -66,5 +72,42 @@ export function useUsers() {
     }
   }, []);
 
-  return { fetchProfile, fetchUserById, updateProfile, updateSettings, loading, error };
+  const fetchProviderRating = useCallback(async (providerId: string) => {
+    try {
+      const { data } = await apiClient.get<ApiResponse<{ rating: ProviderRating }>>(
+        USERS.PROVIDER_RATING(providerId)
+      );
+      return data.data.rating;
+    } catch {
+      return null;
+    }
+  }, []);
+
+  const rateProvider = useCallback(async (providerId: string, rating: number, comment?: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await apiClient.put<ApiResponse<{ rating: ProviderRating }>>(
+        USERS.PROVIDER_RATING(providerId),
+        { rating, comment }
+      );
+      return data.data.rating;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to submit rating");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return {
+    fetchProfile,
+    fetchUserById,
+    updateProfile,
+    updateSettings,
+    fetchProviderRating,
+    rateProvider,
+    loading,
+    error,
+  };
 }

@@ -13,10 +13,16 @@ const favoritesRouter = require("./routes/favorites");
 const reviewsRouter = require("./routes/reviews");
 const messagesRouter = require("./routes/messages");
 const notificationsRouter = require("./routes/notifications");
+const subscriptionPlansRouter = require("./routes/subscriptionPlans");
+const subscriptionsRouter = require("./routes/subscriptions");
+const paymentMethodsRouter = require("./routes/paymentMethods");
+const subscriptionRequestsRouter = require("./routes/subscriptionRequests");
+const catalogImagesRouter = require("./routes/catalogImages");
 const disputesRouter = require("./routes/disputes");
 const adminRouter = require("./routes/admin");
 const { notFound } = require("./middlewares/notFound");
 const { errorHandler } = require("./middlewares/errorHandler");
+const { startSubscriptionJobs } = require("./jobs/subscriptionExpiry");
 
 const app = express();
 
@@ -48,6 +54,11 @@ app.use("/favorites", favoritesRouter);
 app.use("/reviews", reviewsRouter);
 app.use("/messages", messagesRouter);
 app.use("/notifications", notificationsRouter);
+app.use("/subscription-plans", subscriptionPlansRouter);
+app.use("/subscriptions", subscriptionsRouter);
+app.use("/payment-methods", paymentMethodsRouter);
+app.use("/subscription-requests", subscriptionRequestsRouter);
+app.use("/catalog-images", catalogImagesRouter);
 app.use("/disputes", disputesRouter);
 app.use("/admin", adminRouter);
 
@@ -61,6 +72,8 @@ module.exports = app;
 //Run node app here — only start the HTTP server when run directly, not when imported by tests.
 if (require.main === module) {
   const PORT = process.env.PORT || 4000;
+
+  startSubscriptionJobs();
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Node app is running on http://localhost:${PORT}`);

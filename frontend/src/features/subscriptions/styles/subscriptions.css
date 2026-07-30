@@ -1,0 +1,129 @@
+/* Subscription feature styles — plan cards and payment instructions */
+
+.sub-plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.sub-plan-card {
+  background: var(--neutral-lightest, #fdfffc);
+  border: 1px solid var(--neutral-light, #e6e9e8);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+.sub-plan-card.sub-plan-current {
+  border: 2px solid var(--primary-base, #4b815b);
+}
+
+.sub-plan-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--neutral-dark, #181818);
+}
+
+.sub-plan-price {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--primary-base, #4b815b);
+}
+
+.sub-plan-price small {
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+}
+
+.sub-plan-desc {
+  font-size: 13px;
+  color: #666;
+  min-height: 36px;
+}
+
+.sub-plan-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--neutral-dark, #181818);
+}
+
+.sub-plan-list li::before {
+  content: "• ";
+  color: var(--primary-base, #4b815b);
+  font-weight: 700;
+}
+
+.sub-plan-cta {
+  margin-top: auto;
+}
+
+.sub-current-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  background: var(--neutral-lightest, #fdfffc);
+  border: 1px solid var(--neutral-light, #e6e9e8);
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+.sub-current-banner .sub-plan-name {
+  margin-right: auto;
+}
+
+.sub-method-card {
+  border: 1px solid var(--neutral-light, #e6e9e8);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.sub-method-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.sub-methods-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  padding: 16px;
+}
+
+.sub-form-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.sub-form-grid label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neutral-dark, #181818);
+  display: grid;
+  gap: 4px;
+}
+
+.sub-form-grid input,
+.sub-form-grid select,
+.sub-form-grid textarea {
+  padding: 10px 12px;
+  border: 1px solid var(--neutral-light, #e6e9e8);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+}

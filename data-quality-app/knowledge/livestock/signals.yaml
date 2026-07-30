@@ -1,0 +1,35 @@
+strong_columns:
+  - herd_id
+  - cattle
+  - goat
+  - sheep
+  - poultry
+  - vaccination
+  - livestock_type
+weak_columns:
+  - livestock
+  - animal
+  - herd
+  - flock
+  - veterinary
+  - breed
+  - pasture
+  - dairy
+  - pigs
+keywords:
+  - livestock
+  - cattle
+  - herd
+  - poultry
+  - vaccination
+  - goat
+  - sheep
+exclude_columns:
+  - patient_id
+  - student_id
+  - account_id
+  - waterpoint_id
+  - pollutant
+  - aqi
+  - exam_score
+  - turnover

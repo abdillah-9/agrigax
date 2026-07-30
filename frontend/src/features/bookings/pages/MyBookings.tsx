@@ -172,6 +172,16 @@ export default function MyBookings() {
                 <span className="primary-base fw-bold">{formatBookingAmount(booking.price)}</span>
               </div>
             </div>
+            {booking.providerContact?.phone && (
+              <div className="booking-contact-banner">
+                <span>
+                  Vendor accepted — call <strong>{booking.providerContact.name}</strong> to arrange:
+                </span>
+                <a className="booking-call-btn" href={`tel:${booking.providerContact.phone}`}>
+                  📞 {booking.providerContact.phone}
+                </a>
+              </div>
+            )}
             <div className="booking-actions">
               <button
                 className="booking-outline-btn"
@@ -223,6 +233,14 @@ export default function MyBookings() {
                   <div className="flex justify-between"><span className="fw-semibold">Notes:</span><span>{selectedBooking.notes}</span></div>
                 )}
                 <div className="flex justify-between"><span className="fw-semibold">Status:</span><span className="badge badge-info">{selectedBooking.status}</span></div>
+                {selectedBooking.providerContact?.phone && (
+                  <div className="flex justify-between">
+                    <span className="fw-semibold">Vendor phone:</span>
+                    <a className="booking-call-btn" href={`tel:${selectedBooking.providerContact.phone}`}>
+                      📞 {selectedBooking.providerContact.phone}
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
             <div className="inv-modal-footer">

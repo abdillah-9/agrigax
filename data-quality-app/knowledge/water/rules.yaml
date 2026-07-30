@@ -1,0 +1,32 @@
+rules:
+  - id: water_negative_depth
+    name: "Negative depth"
+    description: "Borehole or well depth cannot be negative"
+    condition:
+      all:
+        - column: depth_m
+          op: lt
+          value: 0
+    severity: critical
+
+  - id: water_negative_depth_alias
+    name: "Negative depth (depth)"
+    description: "Depth cannot be negative"
+    condition:
+      all:
+        - column: depth
+          op: lt
+          value: 0
+    severity: critical
+
+  - id: water_negative_distance
+    name: "Negative distance"
+    description: "Distance to water source cannot be negative"
+    condition:
+      all:
+        - column: distance_km
+          op: lt
+          value: 0
+    severity: critical
+
+missing_sentinels: []

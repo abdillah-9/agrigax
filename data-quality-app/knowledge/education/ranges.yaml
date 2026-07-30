@@ -1,0 +1,19 @@
+ranges:
+  exam_score:
+    min: 0
+    max: 100
+  marks:
+    min: 0
+    max: 100
+  attendance_pct:
+    min: 0
+    max: 100
+  attendance:
+    min: 0
+    max: 100
+  grade:
+    min: 1
+    max: 13
+  age:
+    min: 3
+    max: 30

@@ -3,12 +3,14 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   HiArrowLeft,
   HiStar,
+  HiOutlineStar,
   HiTag,
   HiMapPin,
   HiCurrencyDollar,
   HiCheckCircle,
   HiXMark,
   HiHeart,
+  HiEye,
 } from "react-icons/hi2";
 import { useListings } from "../../../hooks/useListings";
 import { useCategories } from "../../../hooks/useCategories";
@@ -17,6 +19,7 @@ import { useBookings } from "../../../hooks/useBookings";
 import { useFavorites } from "../../../hooks/useFavorites";
 import { useReviews } from "../../../hooks/useReviews";
 import { useAuthContext } from "../../../contexts/AuthContext";
+import ListingRouteMap from "../components/ListingRouteMap";
 import {
   categoryNameById,
   formatListingType,
@@ -27,7 +30,7 @@ import {
   enrichReviews,
   formatReviewDate,
 } from "../../../api/reviewHelpers";
-import type { Category, EnrichedReview, Listing } from "../../../types/api.types";
+import type { Category, EnrichedReview, Listing, ProviderRating } from "../../../types/api.types";
 import "../styles/listings.css";
 
 export default function ListingDetails() {
@@ -37,7 +40,7 @@ export default function ListingDetails() {
   const { user } = useAuthContext();
   const { fetchListingById, loading, error } = useListings();
   const { fetchCategories } = useCategories();
-  const { fetchUserById } = useUsers();
+  const { fetchUserById, fetchProviderRating, rateProvider, error: ratingError } = useUsers();
   const { createBooking, loading: bookingLoading, error: bookingError } = useBookings();
   const { fetchFavorites, toggleFavorite, loading: favoriteLoading } = useFavorites();
   const { fetchReviews, createReview, deleteReview, loading: reviewLoading, error: reviewError } = useReviews();
@@ -45,6 +48,8 @@ export default function ListingDetails() {
   const [listing, setListing] = useState<Listing | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [providerName, setProviderName] = useState<string>("Provider");
+  const [providerRating, setProviderRating] = useState<ProviderRating | null>(null);
+  const [ratingSaved, setRatingSaved] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [reviews, setReviews] = useState<EnrichedReview[]>([]);
   const [reviewRating, setReviewRating] = useState(5);
@@ -68,7 +73,18 @@ export default function ListingDetails() {
     fetchUserById(listing.providerId).then((provider) => {
       if (provider) setProviderName(provider.fullName);
     });
-  }, [listing?.providerId, fetchUserById]);
+    fetchProviderRating(listing.providerId).then(setProviderRating);
+  }, [listing?.providerId, fetchUserById, fetchProviderRating]);
+
+  async function handleRateVendor(stars: number) {
+    if (!listing?.providerId) return;
+    setRatingSaved(false);
+    const updated = await rateProvider(listing.providerId, stars);
+    if (updated) {
+      setProviderRating(updated);
+      setRatingSaved(true);
+    }
+  }
 
   useEffect(() => {
     if (!user || !listing?.id) {
@@ -217,6 +233,10 @@ export default function ListingDetails() {
                 <HiStar className="service-rating-icon" /> {listing.ratingAvg.toFixed(1)}
               </span>
               {" "}({reviews.length || listing.ratingCount} reviews)
+              {" · "}
+              <span className="service-rating" title="Page views">
+                <HiEye className="service-rating-icon" /> {listing.views.toLocaleString()} views
+              </span>
             </p>
             <button
               type="button"
@@ -234,6 +254,52 @@ export default function ListingDetails() {
               {isFavorited ? "Saved" : "Save"}
             </button>
           </div>
+
+          {providerRating && (
+            <div className="vendor-rating-box">
+              <div className="vendor-rating-summary">
+                <span className="fw-semibold">Vendor rating:</span>
+                <span className="service-rating">
+                  <HiStar className="service-rating-icon" />
+                  {providerRating.count > 0 ? providerRating.average.toFixed(1) : "—"}
+                </span>
+                <span className="text-sm">
+                  ({providerRating.count} rating{providerRating.count !== 1 ? "s" : ""})
+                </span>
+              </div>
+
+              {providerRating.canRate && (
+                <div className="vendor-rating-action">
+                  <span className="text-sm">
+                    {providerRating.myRating
+                      ? "Your rating (tap to change):"
+                      : "You've worked with this vendor — rate them:"}
+                  </span>
+                  <div className="vendor-rating-stars">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <button
+                        key={n}
+                        type="button"
+                        className="vendor-star-btn"
+                        aria-label={`Rate ${n} star${n > 1 ? "s" : ""}`}
+                        onClick={() => handleRateVendor(n)}
+                      >
+                        {providerRating.myRating && n <= providerRating.myRating ? (
+                          <HiStar className="vendor-star-filled" />
+                        ) : (
+                          <HiOutlineStar className="vendor-star-empty" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                  {ratingSaved && <span className="text-sm" style={{ color: "#15803d" }}>Saved!</span>}
+                  {ratingError && (
+                    <span className="text-sm" style={{ color: "#b42318" }}>{ratingError}</span>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           <p className="service-details-text">{listing.description}</p>
 
@@ -270,6 +336,18 @@ export default function ListingDetails() {
               Book Now
             </button>
             <button className="back-outline-btn" onClick={() => navigate(backPath)}>Back</button>
+          </div>
+        </div>
+      </section>
+
+      <section className="service-details-card" style={{ marginTop: 24 }}>
+        <div className="service-details-content">
+          <h2 className="customer-page-title" style={{ fontSize: "1.25rem" }}>How to Reach It</h2>
+          <p className="customer-page-subtitle" style={{ marginTop: 4 }}>
+            {listing.location}
+          </p>
+          <div style={{ marginTop: 12 }}>
+            <ListingRouteMap listing={listing} />
           </div>
         </div>
       </section>

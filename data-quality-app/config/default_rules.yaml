@@ -1,0 +1,98 @@
+# Default business rule templates (Phase 8)
+# Users can edit this file or pass --rules path/to/custom.yaml
+
+rules:
+  - id: age_doctor
+    name: "Child cannot be a doctor"
+    description: "Age under 18 with occupation Doctor is impossible"
+    condition:
+      all:
+        - column: age
+          op: lt
+          value: 18
+        - column: occupation
+          op: icontains
+          value: doctor
+    severity: critical
+
+  - id: marriage_child
+    name: "Child cannot be married"
+    description: "Age under 16 with marriage=Yes is impossible"
+    condition:
+      all:
+        - column: age
+          op: lt
+          value: 16
+        - column: married
+          op: in
+          value: ["yes", "y", "true", "1", "married"]
+    severity: critical
+
+  - id: pregnant_male
+    name: "Male pregnancy needs review"
+    description: "Pregnant=Yes with Gender=Male may need review"
+    condition:
+      all:
+        - column: pregnant
+          op: in
+          value: ["yes", "y", "true", "1"]
+        - column: gender
+          op: in
+          value: ["male", "m", "man"]
+    severity: warning
+
+  - id: income_negative
+    name: "Negative income"
+    description: "Income should not be negative"
+    condition:
+      all:
+        - column: income
+          op: lt
+          value: 0
+    severity: warning
+
+# Column range constraints (Phase 7)
+ranges:
+  age:
+    min: 0
+    max: 120
+  income:
+    min: 0
+    max: null
+  score:
+    min: 1
+    max: 5
+  rating:
+    min: 1
+    max: 5
+  latitude:
+    min: -90
+    max: 90
+  longitude:
+    min: -180
+    max: 180
+
+# Sentinel missing values (Phase 4)
+missing_sentinels:
+  - "999"
+  - "-99"
+  - "-999"
+  - "99"
+  - "N/A"
+  - "n/a"
+  - "NA"
+  - "na"
+  - "NULL"
+  - "null"
+  - "None"
+  - "none"
+  - "Unknown"
+  - "unknown"
+  - "UNK"
+  - "."
+  - ""
+  - " "
+  - "#"
+  - "missing"
+  - "Missing"
+  - "MISSING"

@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { HiArrowLeft, HiPencilSquare, HiCheck } from "react-icons/hi2";
 import { useCategories } from "../../../hooks/useCategories";
 import { useListings } from "../../../hooks/useListings";
+import CatalogImagePicker from "../components/CatalogImagePicker";
+import LocationPicker, { type PickedLocation } from "../components/LocationPicker";
 import type { Category, Listing } from "../../../types/api.types";
 import "../styles/listings.css";
 
@@ -20,8 +22,13 @@ export default function EditListing() {
     type: "service",
     categoryId: "",
     price: "",
-    location: "",
     isAvailable: true,
+  });
+  const [imageUrl, setImageUrl] = useState("");
+  const [place, setPlace] = useState<PickedLocation>({
+    location: "",
+    latitude: null,
+    longitude: null,
   });
 
   useEffect(() => {
@@ -43,8 +50,13 @@ export default function EditListing() {
           type: listing.type,
           categoryId: listing.categoryId || "",
           price: String(listing.price),
-          location: listing.location,
           isAvailable: listing.isAvailable,
+        });
+        setImageUrl(listing.images?.[0] || "");
+        setPlace({
+          location: listing.location,
+          latitude: listing.latitude,
+          longitude: listing.longitude,
         });
       }
 
@@ -71,8 +83,11 @@ export default function EditListing() {
       type: form.type,
       categoryId,
       price: Number(form.price),
-      location: form.location.trim(),
+      location: place.location.trim(),
+      latitude: place.latitude,
+      longitude: place.longitude,
       isAvailable: form.isAvailable,
+      images: imageUrl ? [imageUrl] : [],
     });
 
     if (!result) return;
@@ -184,15 +199,9 @@ export default function EditListing() {
               />
             </div>
 
-            <div className="listing-form-field">
+            <div className="listing-form-field listing-form-field-full">
               <label className="label label-required">Location</label>
-              <input
-                className="input-text"
-                type="text"
-                value={form.location}
-                onChange={(e) => handleChange("location", e.target.value)}
-                required
-              />
+              <LocationPicker value={place} onChange={setPlace} />
             </div>
 
             <div className="listing-form-field listing-form-field-full">
@@ -204,6 +213,11 @@ export default function EditListing() {
                 onChange={(e) => handleChange("description", e.target.value)}
                 required
               />
+            </div>
+
+            <div className="listing-form-field listing-form-field-full">
+              <label className="label">Picture</label>
+              <CatalogImagePicker value={imageUrl} onChange={setImageUrl} />
             </div>
           </div>
 

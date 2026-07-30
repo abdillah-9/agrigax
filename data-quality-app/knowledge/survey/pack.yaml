@@ -1,0 +1,4 @@
+domain: survey
+display_name: Survey
+description: Household and respondent survey questionnaire data
+version: "1.0"

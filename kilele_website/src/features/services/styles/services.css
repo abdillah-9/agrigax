@@ -1,0 +1,107 @@
+.svcRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+  padding: 60px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.svcRow:last-child {
+  border-bottom: none;
+}
+
+@media (max-width: 900px) {
+  .svcRow {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .svcRow .photo {
+    order: -1;
+  }
+}
+
+.svcRow .photo {
+  min-height: 360px;
+  max-height: 430px;
+}
+
+.svcRow h3 {
+  font-size: clamp(24px, 2.6vw, 32px);
+  margin: 16px 0 14px 0;
+}
+
+.svcRow h3 .accent {
+  color: var(--gold);
+}
+
+.svcRow p {
+  color: var(--muted);
+  font-size: 16px;
+  margin-bottom: 18px;
+}
+
+.svcPoints {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.svcPoints li {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #d8d2c4;
+  font-size: 15px;
+}
+
+.svcPoints li svg {
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+/* Process steps */
+.stepsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  margin-top: 50px;
+}
+
+@media (max-width: 900px) {
+  .stepsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .stepsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stepCard {
+  padding: 30px 24px;
+  text-align: left;
+  position: relative;
+}
+
+.stepCard .stepNum {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 44px;
+  font-weight: 700;
+  color: rgba(242, 169, 10, 0.25);
+  line-height: 1;
+}
+
+.stepCard h4 {
+  font-size: 18px;
+  margin: 14px 0 8px 0;
+}
+
+.stepCard p {
+  color: var(--muted);
+  font-size: 14.5px;
+}

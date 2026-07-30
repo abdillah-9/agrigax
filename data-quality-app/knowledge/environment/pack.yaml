@@ -1,0 +1,4 @@
+domain: environment
+display_name: Environment
+description: Air quality, emissions, and environmental monitoring data
+version: "1.0"

@@ -184,6 +184,17 @@ export default function ProviderBookings() {
               </div>
             </div>
 
+            {booking.customerContact?.phone && (
+              <div className="booking-contact-banner">
+                <span>
+                  Reach <strong>{booking.customerContact.name}</strong> to arrange:
+                </span>
+                <a className="booking-call-btn" href={`tel:${booking.customerContact.phone}`}>
+                  📞 {booking.customerContact.phone}
+                </a>
+              </div>
+            )}
+
             {booking.status === "pending" && (
               <div className="booking-actions">
                 <button
@@ -286,6 +297,14 @@ export default function ProviderBookings() {
                     {selectedBooking.status}
                   </span>
                 </div>
+                {selectedBooking.customerContact?.phone && (
+                  <div className="booking-detail-modal-row">
+                    <span className="fw-semibold">Customer phone:</span>
+                    <a className="booking-call-btn" href={`tel:${selectedBooking.customerContact.phone}`}>
+                      📞 {selectedBooking.customerContact.phone}
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
             <div className="provider-modal-footer">

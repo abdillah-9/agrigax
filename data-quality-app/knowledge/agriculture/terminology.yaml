@@ -1,0 +1,21 @@
+description: Agriculture term normalization
+synonyms:
+  maize: Maize
+  corn: Maize
+  mealies: Maize
+  paddy: Rice
+  rice: Rice
+  beans: Beans
+  cassava: Cassava
+maps:
+  crop:
+    maize: Maize
+    corn: Maize
+    mealies: Maize
+    paddy: Rice
+    rice: Rice
+    beans: Beans
+    cassava: Cassava
+    sorghum: Sorghum
+    millet: Millet
+    wheat: Wheat

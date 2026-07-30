@@ -1,0 +1,26 @@
+yield:
+  possible_causes:
+    - Sign error or data entry mistake
+    - Unit confusion (kg vs tonnes)
+    - Failed harvest recorded incorrectly
+  recommendation: Verify yield against harvest records and confirm measurement units.
+  severity_hint: critical
+hectare:
+  possible_causes:
+    - Typing error with negative sign
+    - GPS/plot area calculation error
+  recommendation: Cross-check farm area with cadastral or survey measurements.
+  severity_hint: critical
+acreage:
+  possible_causes:
+    - Unit mix-up (acres vs hectares)
+    - Data entry error
+  recommendation: Confirm land area unit and recalculate from source farm registers.
+  severity_hint: warning
+rainfall_mm:
+  possible_causes:
+    - Sensor fault or station miscalibration
+    - Daily totals summed incorrectly into monthly
+    - Unit error (inches treated as mm)
+  recommendation: Compare with nearest meteorological station for the same period.
+  severity_hint: warning

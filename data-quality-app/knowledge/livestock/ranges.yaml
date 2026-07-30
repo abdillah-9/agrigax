@@ -1,0 +1,19 @@
+ranges:
+  cattle:
+    min: 0
+    max: null
+  goat:
+    min: 0
+    max: null
+  goats:
+    min: 0
+    max: null
+  sheep:
+    min: 0
+    max: null
+  poultry:
+    min: 0
+    max: null
+  pigs:
+    min: 0
+    max: null

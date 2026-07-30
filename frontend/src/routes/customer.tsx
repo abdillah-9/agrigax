@@ -6,7 +6,6 @@ import ListingsList from "../features/listings/pages/ListingsList";
 import ListingDetails from "../features/listings/pages/ListingDetails";
 import Bookings from "../features/bookings/pages/MyBookings";
 import Favorites from "../features/customer/pages/Favorites";
-import Wallet from "../features/customer/pages/Wallet";
 import Notifications from "../features/notifications/pages/Notifications";
 import Messages from "../features/chat/pages/Messages";
 import ChatRoom from "../features/chat/pages/ChatRoom";
@@ -22,7 +21,6 @@ export default function CustomerRoutes() {
         <Route path="listings/:id" element={<ListingDetails />} />
         <Route path="bookings" element={<Bookings />} />
         <Route path="favorites" element={<Favorites />} />
-        <Route path="wallet" element={<Wallet />} />
         <Route path="notifications" element={<Notifications />} />
         <Route path="messages" element={<Messages />} />
         <Route path="messages/:id" element={<ChatRoom />} />

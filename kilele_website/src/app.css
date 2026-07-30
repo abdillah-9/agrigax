@@ -1,0 +1,187 @@
+/* ============ Shared building blocks ============ */
+
+.container {
+  width: min(1180px, 92vw);
+  margin: 0 auto;
+}
+
+.section {
+  padding: 96px 0;
+}
+
+/* Small uppercase label above headings */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.kicker::before {
+  content: '';
+  width: 34px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+
+.sectionTitle {
+  font-size: clamp(30px, 4.2vw, 46px);
+  font-weight: 700;
+  margin: 14px 0 18px 0;
+}
+
+.sectionTitle .accent {
+  color: var(--gold);
+}
+
+.sectionLead {
+  color: var(--muted);
+  font-size: 17px;
+  max-width: 640px;
+}
+
+.center {
+  text-align: center;
+}
+
+.center .sectionLead {
+  margin: 0 auto;
+}
+
+.center .kicker::before {
+  display: none;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 30px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.btnGold {
+  background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+  color: #131313;
+  box-shadow: 0 12px 30px rgba(242, 169, 10, 0.25);
+}
+
+.btnGold:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(242, 169, 10, 0.38);
+}
+
+.btnGhost {
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+}
+
+.btnGhost:hover {
+  transform: translateY(-3px);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(242, 169, 10, 0.45);
+  box-shadow: var(--glow);
+}
+
+.iconBadge {
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  font-size: 26px;
+  color: var(--gold);
+  background: rgba(242, 169, 10, 0.1);
+  border: 1px solid rgba(242, 169, 10, 0.25);
+}
+
+/* Photo frame */
+.photo {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.photo:hover img {
+  transform: scale(1.05);
+}
+
+/* Simple reveal animation */
+.fadeUp {
+  animation: fadeUp 0.7s ease both;
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Page header used on inner pages */
+.pageHero {
+  position: relative;
+  padding: 170px 0 90px 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.pageHero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 11, 13, 0.82) 0%, rgba(11, 11, 13, 0.92) 70%, var(--bg) 100%);
+}
+
+.pageHero .container {
+  position: relative;
+  z-index: 1;
+}
+
+.pageHero h1 {
+  font-size: clamp(36px, 5.5vw, 60px);
+  margin: 14px 0 12px 0;
+}
+
+.pageHero p {
+  color: var(--muted);
+  max-width: 620px;
+  font-size: 17px;
+}

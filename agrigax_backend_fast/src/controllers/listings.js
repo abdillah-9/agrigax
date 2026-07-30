@@ -18,6 +18,10 @@ module.exports.getListings = async (req, res, next) => {
       category_id: req.query.category_id || req.query.categoryId,
       type: req.query.type,
       location: req.query.location,
+      search: req.query.search,
+      lat: req.query.lat,
+      lng: req.query.lng,
+      radius_km: req.query.radius_km || req.query.radiusKm,
     };
 
     const { data, total } = await listPublic({ offset, limit }, filters);

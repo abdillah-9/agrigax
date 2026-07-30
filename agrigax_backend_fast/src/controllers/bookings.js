@@ -42,7 +42,7 @@ module.exports.getProviderBookings = async (req, res, next) => {
 
 module.exports.getBookingById = async (req, res, next) => {
   try {
-    const data = await getBooking(req.params.id);
+    const data = await getBooking(req.params.id, req.user.id);
     return sendSuccess(res, data, "Booking fetched");
   } catch (e) {
     next(e);

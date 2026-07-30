@@ -1,0 +1,32 @@
+rules:
+  - id: finance_tax_rate_over_100
+    name: "Tax rate above 100%"
+    description: "Tax rate cannot exceed 100 percent"
+    condition:
+      all:
+        - column: tax_rate
+          op: gt
+          value: 100
+    severity: critical
+
+  - id: finance_tax_over_100
+    name: "Tax percent above 100"
+    description: "Tax percentage cannot exceed 100"
+    condition:
+      all:
+        - column: tax
+          op: gt
+          value: 100
+    severity: warning
+
+  - id: finance_negative_income
+    name: "Negative income"
+    description: "Income should not be negative"
+    condition:
+      all:
+        - column: income
+          op: lt
+          value: 0
+    severity: warning
+
+missing_sentinels: []

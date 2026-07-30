@@ -1,0 +1,30 @@
+description: Survey term normalization
+synonyms:
+  m: Male
+  male: Male
+  f: Female
+  female: Female
+  y: Yes
+  yes: Yes
+  n: No
+  no: No
+  true: Yes
+  false: No
+maps:
+  gender:
+    m: Male
+    male: Male
+    f: Female
+    female: Female
+  sex:
+    m: Male
+    male: Male
+    f: Female
+    female: Female
+  consent:
+    y: Yes
+    yes: Yes
+    n: No
+    no: No
+    "1": Yes
+    "0": No

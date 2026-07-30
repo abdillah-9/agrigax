@@ -1,0 +1,27 @@
+exam_score:
+  possible_causes:
+    - Score entered on a different scale (e.g. out of 50 or 200)
+    - Typing error or extra digit
+    - Aggregate of multiple subjects mistaken for a single score
+  recommendation: Confirm scoring scale with the examination register and correct out-of-range values.
+  severity_hint: critical
+attendance:
+  possible_causes:
+    - Percentage calculated incorrectly
+    - Days present counted as total days
+    - Duplicate attendance records summed
+  recommendation: Recalculate attendance from daily registers; ensure value is 0–100%.
+  severity_hint: warning
+attendance_pct:
+  possible_causes:
+    - Formula error (present/enrolled × 100)
+    - Missing days treated as present
+    - Data entry of raw days instead of percent
+  recommendation: Validate against school attendance registers for the reporting period.
+  severity_hint: warning
+grade:
+  possible_causes:
+    - Grade aliases not normalized (P1–P7 vs numeric)
+    - Secondary grade codes mixed with primary
+  recommendation: Map grade aliases to a consistent 1–13 scale before analysis.
+  severity_hint: warning

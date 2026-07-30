@@ -1,0 +1,18 @@
+employees:
+  possible_causes:
+    - Sign error during data entry
+    - Contractors counted with a negative adjustment
+  recommendation: Verify headcount against payroll or statutory returns; counts must be ≥ 0.
+  severity_hint: critical
+turnover:
+  possible_causes:
+    - Returns or credit notes netted incorrectly
+    - Currency or unit (thousands) confusion
+  recommendation: Reconcile turnover with financial statements or VAT returns.
+  severity_hint: critical
+vat:
+  possible_causes:
+    - Rate vs amount confusion
+    - Inclusive/exclusive VAT mix-up
+  recommendation: Confirm whether the field is VAT amount or rate and validate against tax filings.
+  severity_hint: warning

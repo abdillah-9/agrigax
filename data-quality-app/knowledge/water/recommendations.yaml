@@ -1,0 +1,20 @@
+depth_m:
+  possible_causes:
+    - Sign error during data entry
+    - Unit confusion (feet vs metres)
+    - GPS elevation mistaken for depth
+  recommendation: Verify borehole depth against drilling logs; depth must be ≥ 0 and within plausible limits.
+  severity_hint: critical
+distance_km:
+  possible_causes:
+    - Metres recorded as kilometres
+    - Round-trip distance counted twice
+    - Coordinate projection error
+  recommendation: Recalculate distance from household or facility coordinates to the waterpoint.
+  severity_hint: warning
+functionality:
+  possible_causes:
+    - Inconsistent status codes across surveys
+    - Seasonal vs permanent non-functionality not distinguished
+  recommendation: Normalize functionality codes to Functional / Non-functional using the WASH codebook.
+  severity_hint: warning

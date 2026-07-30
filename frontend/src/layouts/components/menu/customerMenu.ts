@@ -5,7 +5,6 @@ export const customerMenu: MenuItem[] = [
   { label: "Browse Listings", path: "/app/listings" },
   { label: "Bookings", path: "/app/bookings", requiresVerified: true },
   { label: "Favorites", path: "/app/favorites" },
-  { label: "Wallet", path: "/app/wallet", requiresVerified: true },
   { label: "Messages", path: "/app/messages", requiresVerified: true },
   { label: "Notifications", path: "/app/notifications" },
   {

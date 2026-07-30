@@ -1,0 +1,32 @@
+rules:
+  - id: agri_negative_yield
+    name: "Negative yield"
+    description: "Crop yield cannot be negative"
+    condition:
+      all:
+        - column: yield
+          op: lt
+          value: 0
+    severity: critical
+
+  - id: agri_negative_hectare
+    name: "Negative hectare"
+    description: "Farm area in hectares cannot be negative"
+    condition:
+      all:
+        - column: hectare
+          op: lt
+          value: 0
+    severity: critical
+
+  - id: agri_negative_acreage
+    name: "Negative acreage"
+    description: "Acreage cannot be negative"
+    condition:
+      all:
+        - column: acreage
+          op: lt
+          value: 0
+    severity: critical
+
+missing_sentinels: []

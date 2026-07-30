@@ -1,0 +1,63 @@
+name: CI unyama
+on:
+  push:
+    branches:
+      -  main
+jobs: 
+  CI-unyama:
+    runs-on: ubuntu-latest
+    env:
+      DB_CLIENT: mysql2
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3307
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_NAME: agrigax_test
+      PORT: 4000
+      MIGRATIONS_TABLE_NAME: knex_migrations
+      NODE_ENV: development
+      ACCESS_SECRET_KEY: test-access 
+      REFRESH_SECRET_KEY: test-refresh
+
+    services:
+      mysql:
+        image: mysql:8
+        env: 
+          MYSQL_ROOT_PASSWORD: ${{ env.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ env.DB_NAME }} 
+        ports:
+          - 3307:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost --password"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+          
+    steps:
+      - name: single command app cloning
+        uses: actions/checkout@v4
+
+      - name: installing node 
+        uses: actions/setup-node@v4
+        with:
+            node-version: 24
+      
+      - name: install npm
+        working-directory: agrigax_backend
+        run: npm ci
+
+      # - name: run eslint
+      #   working-directory: agrigax_backend
+      #   run: npm run lint
+
+      - name: run migrations
+        working-directory: agrigax_backend
+        run: npx knex migrate:latest
+
+      - name: run tests ...
+        working-directory: agrigax_backend
+        run: npx vitest -t signIn_test
+      
+      # - name: build the app
+      #   working-directory: agrigax_backend
+      #   run: npm run build

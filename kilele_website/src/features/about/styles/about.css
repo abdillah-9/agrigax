@@ -1,0 +1,165 @@
+.storySplit {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .storySplit {
+    grid-template-columns: 1fr;
+  }
+}
+
+.storySplit .photo {
+  min-height: 460px;
+}
+
+.storyText p {
+  color: var(--muted);
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+
+.sloganCard {
+  margin-top: 26px;
+  padding: 22px 26px;
+  border-left: 4px solid var(--gold);
+  background: rgba(242, 169, 10, 0.07);
+  border-radius: 0 14px 14px 0;
+}
+
+.sloganCard .sw {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold);
+  font-style: italic;
+}
+
+.sloganCard .en {
+  color: var(--muted);
+  font-size: 14.5px;
+  margin-top: 4px;
+}
+
+/* Values */
+.valGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin-top: 50px;
+}
+
+@media (max-width: 900px) {
+  .valGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.valCard {
+  padding: 34px 28px;
+  text-align: center;
+}
+
+.valCard .iconBadge {
+  margin: 0 auto;
+}
+
+.valCard h3 {
+  margin: 18px 0 10px 0;
+  font-size: 20px;
+}
+
+.valCard p {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+/* Team members */
+#team {
+  /* keep the section heading visible below the fixed navbar when anchored */
+  scroll-margin-top: 80px;
+}
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 50px;
+}
+
+@media (max-width: 900px) {
+  .teamGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .teamGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.teamCard {
+  overflow: hidden;
+  text-align: left;
+}
+
+.teamPhoto {
+  height: 300px;
+  overflow: hidden;
+}
+
+.teamPhoto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.45s ease;
+}
+
+.teamCard:hover .teamPhoto img {
+  transform: scale(1.06);
+}
+
+.teamInfo {
+  padding: 18px 20px 20px 20px;
+  border-top: 3px solid var(--gold);
+}
+
+.teamInfo h3 {
+  font-size: 18px;
+  margin-bottom: 3px;
+}
+
+.teamInfo span {
+  color: var(--gold);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Team culture gallery */
+.cultureGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 210px;
+  gap: 16px;
+  margin-top: 50px;
+}
+
+@media (max-width: 900px) {
+  .cultureGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.cultureGrid .photo:nth-child(1) {
+  grid-row: span 2;
+}
+
+.cultureGrid .photo:nth-child(4) {
+  grid-row: span 2;
+}

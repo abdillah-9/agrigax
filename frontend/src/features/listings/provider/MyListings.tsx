@@ -197,6 +197,9 @@ export default function MyListings() {
                   <div className="my-listing-stat">
                     <span className="stat-label">{listing.ratingCount} reviews</span>
                   </div>
+                  <div className="my-listing-stat">
+                    <span className="stat-label">{listing.views.toLocaleString()} views</span>
+                  </div>
                 </div>
 
                 <div className="my-listing-actions">

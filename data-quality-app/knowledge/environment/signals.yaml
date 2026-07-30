@@ -1,0 +1,35 @@
+strong_columns:
+  - pollutant
+  - emission
+  - aqi
+  - pm25
+  - pm10
+  - forest_cover
+  - biodiversity
+weak_columns:
+  - environment
+  - air_quality
+  - co2
+  - nox
+  - ozone
+  - deforestation
+  - habitat
+  - wastewater
+  - monitoring_station
+keywords:
+  - environment
+  - pollutant
+  - emission
+  - aqi
+  - pm25
+  - biodiversity
+  - forest
+exclude_columns:
+  - patient_id
+  - student_id
+  - farm_id
+  - account_id
+  - herd_id
+  - waterpoint_id
+  - exam_score
+  - enumerator

@@ -1,0 +1,39 @@
+strong_columns:  # high weight for detection
+  - patient_id
+  - diagnosis
+  - bp
+  - blood_pressure
+  - temperature
+  - pulse
+  - heart_rate
+  - admission_date
+  - discharge
+  - icd
+  - facility_code
+  - ward
+weak_columns:
+  - facility
+  - clinic
+  - hospital
+  - doctor
+  - nurse
+  - prescription
+  - medication
+  - vitals
+  - outpatient
+  - inpatient
+keywords:
+  - health
+  - clinical
+  - medical
+  - patient
+  - diagnosis
+  - hospital
+exclude_columns:
+  - student_id
+  - farm_id
+  - account_id
+  - transaction_id
+  - herd_id
+  - waterpoint_id
+  - exam_score

@@ -1,5 +1,4 @@
-import type { Booking, EnrichedBooking, Listing, Wallet } from "../types/api.types";
-import { formatWalletAmount } from "./walletHelpers";
+import type { Booking, EnrichedBooking, Listing } from "../types/api.types";
 import { userInitials } from "../utils/userDisplay";
 
 export function formatCompactCurrency(amount: number, currency = "TZS") {
@@ -10,7 +9,7 @@ export function formatCompactCurrency(amount: number, currency = "TZS") {
   if (amount >= 1_000) {
     return `${currency} ${Math.round(amount / 1_000)}K`;
   }
-  return formatWalletAmount(amount, currency);
+  return `${currency} ${amount.toLocaleString()}`;
 }
 
 export function dashboardBadgeClass(status: Booking["status"]) {
@@ -37,25 +36,15 @@ export function sortBookingsNewest<T extends { createdAt: string; scheduledAt?: 
   );
 }
 
-export function customerDashboardStats(
-  bookings: EnrichedBooking[],
-  favoriteCount: number,
-  wallet: Wallet | null
-) {
+export function customerDashboardStats(bookings: EnrichedBooking[], favoriteCount: number) {
   const activeBookings = bookings.filter((b) => b.status === "accepted").length;
   return {
     activeBookings,
     favoriteCount,
-    walletBalance: wallet?.balance ?? 0,
-    walletCurrency: wallet?.currency ?? "TZS",
   };
 }
 
-export function providerDashboardStats(
-  bookings: EnrichedBooking[],
-  listings: Listing[],
-  wallet: Wallet | null
-) {
+export function providerDashboardStats(bookings: EnrichedBooking[], listings: Listing[]) {
   const activeListings = listings.filter((l) => l.isAvailable && l.isApproved).length;
   const pendingApproval = listings.filter((l) => !l.isApproved).length;
   const pendingBookings = bookings.filter((b) => b.status === "pending").length;
@@ -64,8 +53,7 @@ export function providerDashboardStats(
     .reduce((sum, b) => sum + b.price, 0);
 
   return {
-    walletBalance: wallet?.balance ?? 0,
-    walletCurrency: wallet?.currency ?? "TZS",
+    currency: "TZS",
     activeListings,
     pendingApproval,
     pendingBookings,

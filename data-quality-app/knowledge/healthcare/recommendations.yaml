@@ -1,0 +1,43 @@
+temperature:
+  possible_causes:
+    - Typing error
+    - Wrong unit (Fahrenheit recorded as Celsius)
+    - Equipment calibration error
+    - Decimal point misplaced
+  recommendation: Verify original patient record and confirm measurement unit (°C vs °F).
+  severity_hint: critical
+pulse:
+  possible_causes:
+    - Data entry error
+    - Sensor or monitor fault
+    - Confused with respiratory rate
+  recommendation: Cross-check with clinical notes and vital signs chart.
+  severity_hint: critical
+heart_rate:
+  possible_causes:
+    - Data entry error
+    - Device malfunction
+    - Swapped with another vital sign
+  recommendation: Reconcile with ECG or pulse oximeter reading if available.
+  severity_hint: critical
+systolic_bp:
+  possible_causes:
+    - Transposed systolic/diastolic values
+    - Typing error
+    - Wrong cuff size or measurement technique
+  recommendation: Recheck blood pressure against source clinical documentation.
+  severity_hint: warning
+diastolic_bp:
+  possible_causes:
+    - Transposed systolic/diastolic values
+    - Data entry error
+    - Measurement technique issue
+  recommendation: Recheck blood pressure against source clinical documentation.
+  severity_hint: warning
+bp:
+  possible_causes:
+    - Format inconsistency (e.g. 120/80 vs separate fields)
+    - Typing error
+    - Unit or device misread
+  recommendation: Parse and validate against expected systolic/diastolic ranges.
+  severity_hint: warning

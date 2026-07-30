@@ -1,0 +1,4 @@
+domain: healthcare
+display_name: Healthcare
+description: Clinical and health facility reporting data
+version: "1.0"

@@ -1,0 +1,27 @@
+description: Environment term normalization
+synonyms:
+  pm2.5: PM2.5
+  pm25: PM2.5
+  pm10: PM10
+  aqi: AQI
+maps:
+  pollutant:
+    pm25: PM2.5
+    "pm2.5": PM2.5
+    pm10: PM10
+    co2: CO2
+    nox: NOx
+    so2: SO2
+    o3: Ozone
+    ozone: Ozone
+  aqi_category:
+    good: Good
+    moderate: Moderate
+    unhealthy: Unhealthy
+    hazardous: Hazardous
+    "1": Good
+    "2": Moderate
+    "3": Unhealthy for sensitive groups
+    "4": Unhealthy
+    "5": Very unhealthy
+    "6": Hazardous

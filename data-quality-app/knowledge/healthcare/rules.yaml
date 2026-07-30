@@ -1,0 +1,65 @@
+rules:
+  - id: health_pregnant_male
+    name: "Male pregnancy needs review"
+    description: "Pregnant=Yes with Gender=Male may need clinical review"
+    condition:
+      all:
+        - column: pregnant
+          op: in
+          value: ["yes", "y", "true", "1"]
+        - column: gender
+          op: in
+          value: ["male", "m", "man"]
+    severity: warning
+
+  - id: health_temp_impossible_high
+    name: "Impossible body temperature"
+    description: "Body temperature above 45°C is physiologically impossible"
+    condition:
+      all:
+        - column: temperature
+          op: gt
+          value: 45
+    severity: critical
+
+  - id: health_temp_impossible_low
+    name: "Impossible low body temperature"
+    description: "Body temperature below 30°C is physiologically impossible for a living patient"
+    condition:
+      all:
+        - column: temperature
+          op: lt
+          value: 30
+    severity: critical
+
+  - id: health_pulse_impossible
+    name: "Impossible pulse rate"
+    description: "Pulse above 250 bpm is physiologically impossible"
+    condition:
+      all:
+        - column: pulse
+          op: gt
+          value: 250
+    severity: critical
+
+  - id: health_heart_rate_impossible
+    name: "Impossible heart rate"
+    description: "Heart rate above 250 bpm is physiologically impossible"
+    condition:
+      all:
+        - column: heart_rate
+          op: gt
+          value: 250
+    severity: critical
+
+  - id: health_negative_age
+    name: "Negative age"
+    description: "Age cannot be negative"
+    condition:
+      all:
+        - column: age
+          op: lt
+          value: 0
+    severity: critical
+
+missing_sentinels: []

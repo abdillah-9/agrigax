@@ -1,0 +1,377 @@
+/* ============ Navbar ============ */
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
+  padding: 18px 0;
+}
+
+.nav.scrolled {
+  background: rgba(11, 11, 13, 0.88);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.navInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.navBrand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navBrand img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(242, 169, 10, 0.5);
+}
+
+.navBrand .brandName {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.navBrand .brandName span {
+  color: var(--gold);
+}
+
+.navBrand .brandTag {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.navLinks a {
+  padding: 9px 13px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--muted);
+  transition: color 0.25s ease, background-color 0.25s ease;
+}
+
+.navLinks a:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.navLinks a.active {
+  color: #131313;
+  background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+  font-weight: 600;
+}
+
+.navCta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Keep the nav CTA compact so everything fits in one row */
+.navCta .btn {
+  padding: 11px 20px;
+  font-size: 13.5px;
+  white-space: nowrap;
+}
+
+.langToggle {
+  display: flex;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.langToggle button {
+  padding: 7px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.langToggle button.on {
+  background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+  color: #131313;
+}
+
+.navBurger {
+  display: none;
+  font-size: 24px;
+  color: var(--text);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+/* Mobile menu */
+.mobileMenu {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(11, 11, 13, 0.97);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  animation: fadeUp 0.3s ease both;
+}
+
+.mobileMenu a {
+  font-size: 22px;
+  font-weight: 600;
+  padding: 12px 30px;
+  border-radius: 999px;
+  color: var(--text);
+}
+
+.mobileMenu a.active {
+  color: #131313;
+  background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+}
+
+.mobileClose {
+  position: absolute;
+  top: 26px;
+  right: 30px;
+  font-size: 30px;
+  color: var(--text);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+/* Tighten further on medium screens (Swahili labels are longer) */
+@media (max-width: 1240px) {
+  .navLinks a {
+    font-size: 12.5px;
+    padding: 8px 10px;
+  }
+
+  .navCta .btn {
+    padding: 10px 16px;
+    font-size: 12.5px;
+  }
+
+  .navBrand .brandName {
+    font-size: 17px;
+  }
+
+  .navBrand .brandTag {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 1080px) {
+  .navBrand .brandTag {
+    display: none;
+  }
+
+  .navBrand img {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 960px) {
+  .navLinks,
+  .navCta .btn {
+    display: none;
+  }
+
+  .navBurger {
+    display: block;
+  }
+}
+
+/* Very small phones (down to ~300px): shrink brand, toggle and burger */
+@media (max-width: 480px) {
+  .nav {
+    padding: 12px 0;
+  }
+
+  .navInner {
+    gap: 10px;
+  }
+
+  .navBrand {
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .navBrand img {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+
+  .navBrand .brandName {
+    font-size: 14px;
+  }
+
+  .navCta {
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .langToggle button {
+    padding: 6px 9px;
+    font-size: 10.5px;
+  }
+
+  .navBurger {
+    font-size: 21px;
+  }
+}
+
+@media (max-width: 340px) {
+  .navBrand .brandName {
+    font-size: 12.5px;
+  }
+
+  .langToggle button {
+    padding: 5px 7px;
+    font-size: 10px;
+  }
+}
+
+/* ============ Footer ============ */
+
+.footer {
+  border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--bg) 0%, #0e0d08 100%);
+  padding: 70px 0 0 0;
+  margin-top: 40px;
+}
+
+.footerGrid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 50px;
+}
+
+@media (max-width: 800px) {
+  .footerGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.footerBrand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.footerBrand img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(242, 169, 10, 0.5);
+}
+
+.footer h4 {
+  font-size: 17px;
+  margin-bottom: 18px;
+  color: var(--gold);
+}
+
+.footer p,
+.footer a {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.footerLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footerLinks a:hover {
+  color: var(--gold);
+}
+
+.footerContact {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footerContact a,
+.footerContact div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footerContact a:hover {
+  color: var(--gold);
+}
+
+.footerBottom {
+  border-top: 1px solid var(--line);
+  padding: 22px 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.footerBottom span {
+  color: var(--gold);
+}
+
+/* Floating WhatsApp button */
+.whatsFloat {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 40;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #25d366;
+  color: white;
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 30px rgba(37, 211, 102, 0.4);
+  transition: transform 0.25s ease;
+}
+
+.whatsFloat:hover {
+  transform: scale(1.1) translateY(-3px);
+}

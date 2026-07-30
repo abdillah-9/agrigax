@@ -1,0 +1,4 @@
+domain: livestock
+display_name: Livestock
+description: Herd counts, animal types, and vaccination reporting data
+version: "1.0"

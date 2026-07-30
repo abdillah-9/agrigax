@@ -1,0 +1,4 @@
+domain: water
+display_name: Water
+description: Water supply, sanitation, and waterpoint functionality data
+version: "1.0"

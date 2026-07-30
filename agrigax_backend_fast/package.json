@@ -2,7 +2,9 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "node src/index.js",
-    "migrate": "knex migrate:latest --knexfile knexfile.js"
+    "migrate": "knex migrate:latest --knexfile knexfile.js",
+    "test": "vitest run test/subscriptions",
+    "test:watch": "vitest test/subscriptions"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

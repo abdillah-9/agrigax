@@ -1,0 +1,46 @@
+rules:
+  - id: survey_likert_out_of_range
+    name: "Likert outside 1–5"
+    description: "Likert scale responses must be between 1 and 5"
+    condition:
+      any:
+        - column: likert
+          op: lt
+          value: 1
+        - column: likert
+          op: gt
+          value: 5
+    severity: warning
+
+  - id: survey_score_out_of_range
+    name: "Score outside 1–5"
+    description: "Survey score must be between 1 and 5"
+    condition:
+      any:
+        - column: score
+          op: lt
+          value: 1
+        - column: score
+          op: gt
+          value: 5
+    severity: warning
+
+  - id: survey_age_doctor
+    name: "Child cannot be a doctor"
+    description: "Age under 18 with occupation Doctor is impossible"
+    condition:
+      all:
+        - column: age
+          op: lt
+          value: 18
+        - column: occupation
+          op: icontains
+          value: doctor
+    severity: critical
+
+missing_sentinels:
+  - "999"
+  - "-99"
+  - "98"
+  - "97"
+  - "96"

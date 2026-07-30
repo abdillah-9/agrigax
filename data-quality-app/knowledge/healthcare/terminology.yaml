@@ -1,0 +1,28 @@
+description: Healthcare term normalization
+synonyms:
+  m: Male
+  male: Male
+  f: Female
+  female: Female
+  htn: Hypertension
+  dm: Diabetes
+  tb: Tuberculosis
+  yes: Yes
+  no: No
+  y: Yes
+  n: No
+maps:
+  gender:
+    m: Male
+    male: Male
+    f: Female
+    female: Female
+  sex:
+    m: Male
+    male: Male
+    f: Female
+    female: Female
+  diagnosis:
+    htn: Hypertension
+    dm: Diabetes
+    tb: Tuberculosis

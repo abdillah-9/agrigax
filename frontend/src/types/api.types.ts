@@ -77,15 +77,60 @@ export interface Listing {
   type: string;
   categoryId: string | null;
   location: string;
+  latitude: number | null;
+  longitude: number | null;
+  /** Only present when browsing in nearby mode */
+  distanceKm: number | null;
   price: number;
   isAvailable: boolean;
   isApproved: boolean;
   providerId: string | null;
   ratingAvg: number;
   ratingCount: number;
+  views: number;
   images: string[];
   createdAt?: string;
   updatedAt?: string;
+}
+
+// Curated image catalog (no user uploads — vendors pick from these)
+export interface CatalogImage {
+  id: string;
+  name: string;
+  keywords: string | null;
+  categoryId: string | null;
+  url: string;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export type CatalogRequestStatus = "pending" | "added" | "dismissed";
+
+export interface CatalogImageRequest {
+  id: string;
+  term: string;
+  hits: number;
+  requested: boolean;
+  lastVendorId: string | null;
+  status: CatalogRequestStatus;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CatalogImagePayload {
+  name: string;
+  keywords?: string;
+  url: string;
+  isActive?: boolean;
+}
+
+// Vendor-level rating (customer rates a provider after a booking)
+export interface ProviderRating {
+  average: number;
+  count: number;
+  myRating: number | null;
+  canRate: boolean;
 }
 
 export interface CreateListingPayload {
@@ -95,6 +140,8 @@ export interface CreateListingPayload {
   categoryId: number;
   price: number;
   location: string;
+  latitude?: number | null;
+  longitude?: number | null;
   isAvailable: boolean;
   images?: string[];
 }
@@ -112,6 +159,11 @@ export interface Category {
 // Bookings
 export type BookingStatus = "pending" | "accepted" | "rejected" | "completed" | "cancelled";
 
+export interface BookingContact {
+  name: string;
+  phone: string | null;
+}
+
 export interface Booking {
   id: string;
   listingId: string;
@@ -120,6 +172,9 @@ export interface Booking {
   status: BookingStatus;
   scheduledAt: string | null;
   notes: string | null;
+  /** Present only once the booking is accepted or completed */
+  customerContact?: BookingContact | null;
+  providerContact?: BookingContact | null;
   createdAt: string;
   updatedAt?: string;
 }
@@ -138,32 +193,140 @@ export interface CreateBookingPayload {
   notes?: string;
 }
 
-// Payments / Wallet
-export interface Wallet {
+// Subscriptions — vendor plans, payment instructions, manual payment requests
+export interface SubscriptionPlan {
   id: string;
-  balance: number;
+  name: string;
+  description: string;
+  price: number;
   currency: string;
+  durationDays: number;
+  features: Record<string, boolean>;
+  limits: Record<string, number>;
+  isDefaultVendorPlan: boolean;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-export interface WalletTransaction {
+export type PaymentMethodType = "mobile_money" | "bank_account" | "other";
+
+export interface PaymentMethod {
   id: string;
-  type: "credit" | "debit";
+  name: string;
+  type: PaymentMethodType;
+  accountName: string | null;
+  accountNumber: string | null;
+  phoneNumber: string | null;
+  instructions: string | null;
+  displayOrder: number;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export type SubscriptionRequestStatus = "pending" | "approved" | "rejected" | "expired";
+
+export interface SubscriptionRequest {
+  id: string;
+  vendorId: string;
+  planId: string;
+  paymentMethodId: string;
   amount: number;
-  reference: string | null;
-  description: string | null;
+  transactionReference: string;
+  receiptUrl: string | null;
+  notes: string | null;
+  status: SubscriptionRequestStatus;
+  verifiedBy: string | null;
+  verifiedAt: string | null;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface SubscriptionRequestLog {
+  id: string;
+  requestId: string;
+  adminId: string;
+  action: "approved" | "rejected";
+  comment: string | null;
   createdAt: string;
 }
 
-export interface DepositPayload {
-  amount: number;
-  method: string;
-  phone: string;
+export interface SubscriptionRequestDetail extends SubscriptionRequest {
+  logs: SubscriptionRequestLog[];
 }
 
-export interface WithdrawPayload {
+export type VendorSubscriptionStatus = "pending" | "active" | "expired" | "cancelled";
+
+export interface VendorSubscription {
+  id: string;
+  vendorId: string;
+  planId: string;
+  status: VendorSubscriptionStatus;
+  startDate: string;
+  endDate: string | null;
+  createdFromRequestId: string | null;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface CurrentSubscription extends VendorSubscription {
+  plan: SubscriptionPlan | null;
+}
+
+export interface CreateSubscriptionRequestPayload {
+  planId: string;
+  paymentMethodId: string;
   amount: number;
-  method: string;
-  phone: string;
+  transactionReference: string;
+  receiptUrl?: string;
+  notes?: string;
+}
+
+export interface SubscriptionPlanPayload {
+  name: string;
+  description: string;
+  price: number;
+  currency: string;
+  durationDays: number;
+  features: Record<string, boolean>;
+  limits: Record<string, number>;
+  isDefaultVendorPlan?: boolean;
+  isActive?: boolean;
+}
+
+export interface PaymentMethodPayload {
+  name: string;
+  type: PaymentMethodType;
+  accountName?: string;
+  accountNumber?: string;
+  phoneNumber?: string;
+  instructions?: string;
+  displayOrder?: number;
+  isActive?: boolean;
+}
+
+export interface RevenueReport {
+  period: "total" | "monthly" | "yearly";
+  total?: number;
+  data?: { period: string | number; revenue: number }[];
+}
+
+export interface VendorCountsReport {
+  activeVendors: number;
+  starterVendors: number;
+  paidVendors: number;
+}
+
+export interface RequestCountsReport {
+  pending: number;
+  approved: number;
+  rejected: number;
+}
+
+export interface ExpirationsReport {
+  expiredCount: number;
+  upcoming: { in7Days: number; in3Days: number };
 }
 
 // Users
@@ -270,8 +433,6 @@ export interface AdminDashboardStats {
   reviews: number;
   pendingListings: number;
   openDisputes: number;
-  payments: number;
-  transactions: number;
   conversations: number;
 }
 
@@ -291,20 +452,6 @@ export interface AdminBooking {
   amount: number | null;
 }
 
-export interface AdminPayment {
-  id: string;
-  bookingId: string;
-  payerId: string;
-  receiverId: string;
-  amount: number;
-  method: string | null;
-  status: string;
-  transactionRef: string | null;
-  createdAt: string;
-  customerName: string | null;
-  providerName: string | null;
-}
-
 export interface AdminProvider {
   id: string;
   username: string;
@@ -315,18 +462,6 @@ export interface AdminProvider {
   isSuspended: boolean;
   totalListings: number;
   createdAt: string;
-}
-
-export interface AdminTransaction {
-  id: string;
-  type: "credit" | "debit";
-  amount: number;
-  reference: string | null;
-  description: string | null;
-  createdAt: string;
-  userId: string;
-  userName: string;
-  userUsername: string;
 }
 
 export interface AdminConversation {

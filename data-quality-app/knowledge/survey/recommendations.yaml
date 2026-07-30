@@ -1,0 +1,26 @@
+missing_codes:
+  possible_causes:
+    - Survey missing/refusal codes (999, -99, 98, 97, 96) left as numeric values
+    - Don't know / refused coded inconsistently across modules
+    - Export from CAPI tool without sentinel mapping
+  recommendation: Convert domain missing sentinels (999, -99, 98, 97, 96) to true missing before analysis.
+  severity_hint: warning
+likert:
+  possible_causes:
+    - Off-by-one coding (0–4 vs 1–5)
+    - Multi-select stored in a single Likert field
+    - Refuse/DK codes not filtered
+  recommendation: Restrict Likert items to 1–5 and map refuse/don't-know codes to missing.
+  severity_hint: warning
+score:
+  possible_causes:
+    - Scale mismatch across questionnaire versions
+    - Sentinel codes treated as valid scores
+  recommendation: Validate against the questionnaire codebook; treat out-of-range and sentinel values as missing.
+  severity_hint: warning
+weight:
+  possible_causes:
+    - Sampling weight not applied or inverted
+    - Zero or negative weights from design errors
+  recommendation: Check sampling design documentation and ensure weights are non-negative.
+  severity_hint: warning

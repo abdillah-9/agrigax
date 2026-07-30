@@ -1,0 +1,4 @@
+domain: agriculture
+display_name: Agriculture
+description: Farm production, crop yield, and input reporting data
+version: "1.0"

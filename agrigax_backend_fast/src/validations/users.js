@@ -13,3 +13,8 @@ module.exports.updateSettings = Joi.object({
   email: Joi.string().email().max(100),
   phone: Joi.string().max(20).allow(null, ""),
 }).min(1);
+
+module.exports.rateProvider = Joi.object({
+  rating: Joi.number().integer().min(1).max(5).required(),
+  comment: Joi.string().max(500).allow(null, ""),
+});

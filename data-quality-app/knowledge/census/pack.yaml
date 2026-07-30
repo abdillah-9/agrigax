@@ -1,0 +1,4 @@
+domain: census
+display_name: Census
+description: Population and household enumeration data
+version: "1.0"

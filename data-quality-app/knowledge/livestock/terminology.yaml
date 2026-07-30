@@ -1,0 +1,31 @@
+description: Livestock term normalization
+synonyms:
+  cattle: Cattle
+  cow: Cattle
+  cows: Cattle
+  goat: Goat
+  goats: Goat
+  sheep: Sheep
+  poultry: Poultry
+  chicken: Poultry
+  chickens: Poultry
+maps:
+  livestock_type:
+    cattle: Cattle
+    cow: Cattle
+    cows: Cattle
+    goat: Goat
+    goats: Goat
+    sheep: Sheep
+    poultry: Poultry
+    chicken: Poultry
+    chickens: Poultry
+    pig: Pig
+    pigs: Pig
+  vaccination:
+    yes: Vaccinated
+    y: Vaccinated
+    no: Not vaccinated
+    n: Not vaccinated
+    "1": Vaccinated
+    "0": Not vaccinated

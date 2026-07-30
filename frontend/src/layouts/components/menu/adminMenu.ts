@@ -40,6 +40,10 @@ export const adminMenu = [
       {
         label: "Featured Services",
         path: "/admin/featured-listings"
+      },
+      {
+        label: "Image Catalog",
+        path: "/admin/image-catalog"
       }
     ]
   },
@@ -63,19 +67,27 @@ export const adminMenu = [
   },
 
   {
-    label: "Payments",
+    label: "Subscriptions",
     children: [
       {
-        label: "Transactions",
-        path: "/admin/payments"
+        label: "Requests",
+        path: "/admin/subscription-requests"
       },
       {
-        label: "Commissions",
-        path: "/admin/commissions"
+        label: "Plans",
+        path: "/admin/subscription-plans"
       },
       {
-        label: "Refunds",
-        path: "/admin/refunds"
+        label: "Payment Methods",
+        path: "/admin/payment-methods"
+      },
+      {
+        label: "Vendor Subscriptions",
+        path: "/admin/vendor-subscriptions"
+      },
+      {
+        label: "Reports",
+        path: "/admin/subscription-reports"
       }
     ]
   },

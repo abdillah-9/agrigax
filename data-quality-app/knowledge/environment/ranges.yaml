@@ -1,0 +1,16 @@
+ranges:
+  aqi:
+    min: 0
+    max: 500
+  pm25:
+    min: 0
+    max: 1000
+  pm10:
+    min: 0
+    max: 1000
+  forest_cover:
+    min: 0
+    max: 100
+  emission:
+    min: 0
+    max: null

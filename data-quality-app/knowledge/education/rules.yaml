@@ -1,0 +1,42 @@
+rules:
+  - id: edu_exam_score_over_100
+    name: "Exam score above 100"
+    description: "Exam score cannot exceed 100 on a percentage scale"
+    condition:
+      all:
+        - column: exam_score
+          op: gt
+          value: 100
+    severity: critical
+
+  - id: edu_attendance_over_100
+    name: "Attendance above 100%"
+    description: "Attendance percentage cannot exceed 100"
+    condition:
+      all:
+        - column: attendance
+          op: gt
+          value: 100
+    severity: critical
+
+  - id: edu_attendance_pct_over_100
+    name: "Attendance percent above 100"
+    description: "Attendance percentage cannot exceed 100"
+    condition:
+      all:
+        - column: attendance_pct
+          op: gt
+          value: 100
+    severity: critical
+
+  - id: edu_age_too_young_primary
+    name: "Age under 3 in primary"
+    description: "Age under 3 is too young for primary school enrollment"
+    condition:
+      all:
+        - column: age
+          op: lt
+          value: 3
+    severity: warning
+
+missing_sentinels: []

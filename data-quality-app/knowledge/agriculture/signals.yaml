@@ -1,0 +1,35 @@
+strong_columns:
+  - farm_id
+  - crop
+  - yield
+  - hectare
+  - harvest
+  - fertilizer
+  - rainfall
+  - acreage
+weak_columns:
+  - farm
+  - plot
+  - seed
+  - irrigation
+  - planting
+  - season
+  - variety
+  - pesticide
+  - soil
+keywords:
+  - agriculture
+  - farm
+  - crop
+  - harvest
+  - yield
+  - fertilizer
+exclude_columns:
+  - patient_id
+  - student_id
+  - account_id
+  - transaction_id
+  - herd_id
+  - cattle
+  - aqi
+  - pm25

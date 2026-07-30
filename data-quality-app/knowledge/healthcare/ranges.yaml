@@ -1,0 +1,31 @@
+ranges:
+  temperature:
+    min: 34
+    max: 43
+  pulse:
+    min: 30
+    max: 220
+  heart_rate:
+    min: 30
+    max: 220
+  systolic_bp:
+    min: 60
+    max: 250
+  diastolic_bp:
+    min: 30
+    max: 150
+  bp_systolic:
+    min: 60
+    max: 250
+  bp_diastolic:
+    min: 30
+    max: 150
+  age:
+    min: 0
+    max: 120
+  weight_kg:
+    min: 0.5
+    max: 400
+  height_cm:
+    min: 20
+    max: 250

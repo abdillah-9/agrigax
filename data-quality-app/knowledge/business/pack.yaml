@@ -1,0 +1,4 @@
+domain: business
+display_name: Business
+description: Company registration, tax, and enterprise reporting data
+version: "1.0"

@@ -1,0 +1,34 @@
+strong_columns:
+  - business_id
+  - company_name
+  - tin
+  - vat
+  - employees
+  - turnover
+  - registration_number
+weak_columns:
+  - company
+  - enterprise
+  - business
+  - director
+  - shareholding
+  - sector
+  - license
+  - sme
+keywords:
+  - business
+  - company
+  - enterprise
+  - tin
+  - vat
+  - turnover
+  - registration
+exclude_columns:
+  - patient_id
+  - student_id
+  - farm_id
+  - herd_id
+  - waterpoint_id
+  - enumerator
+  - pollutant
+  - household_id

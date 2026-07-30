@@ -20,6 +20,7 @@ export const USERS = {
   PROFILE: "/users/profile",
   SETTINGS: "/users/settings",
   PROVIDERS: "/users/providers",
+  PROVIDER_RATING: (id: string) => `/users/providers/${id}/rating`,
   BY_ID: (id: string) => `/users/${id}`,
 };
 
@@ -51,13 +52,16 @@ export const BOOKINGS = {
 };
 
 // =====================================================
-// WALLET
+// SUBSCRIPTIONS (vendor-facing)
 // =====================================================
-export const WALLET = {
-  BALANCE: "/wallet",
-  TRANSACTIONS: "/wallet/transactions",
-  DEPOSIT: "/wallet/deposit",
-  WITHDRAW: "/wallet/withdraw",
+export const SUBSCRIPTIONS = {
+  PLANS: "/subscription-plans",
+  PLAN_BY_ID: (id: string) => `/subscription-plans/${id}`,
+  PAYMENT_METHODS: "/payment-methods",
+  REQUESTS: "/subscription-requests",
+  REQUEST_BY_ID: (id: string) => `/subscription-requests/${id}`,
+  CURRENT: "/subscriptions/current",
+  HISTORY: "/subscriptions/history",
 };
 
 // =====================================================
@@ -96,6 +100,14 @@ export const MESSAGES = {
 };
 
 // =====================================================
+// CATALOG IMAGES (curated listing pictures)
+// =====================================================
+export const CATALOG = {
+  IMAGES: "/catalog-images",
+  REQUESTS: "/catalog-images/requests",
+};
+
+// =====================================================
 // ADMIN
 // =====================================================
 export const ADMIN = {
@@ -109,9 +121,23 @@ export const ADMIN = {
   BOOKING_BY_ID: (id: string) => `/admin/bookings/${id}`,
   CATEGORIES: "/admin/categories",
   CATEGORY_BY_ID: (id: string) => `/admin/categories/${id}`,
-  PAYMENTS: "/admin/payments",
-  REFUNDS: "/admin/refunds",
-  TRANSACTIONS: "/admin/transactions",
+  SUBSCRIPTION_PLANS: "/admin/subscription-plans",
+  SUBSCRIPTION_PLAN_BY_ID: (id: string) => `/admin/subscription-plans/${id}`,
+  PAYMENT_METHODS: "/admin/payment-methods",
+  PAYMENT_METHOD_BY_ID: (id: string) => `/admin/payment-methods/${id}`,
+  SUBSCRIPTION_REQUESTS: "/admin/subscription-requests",
+  SUBSCRIPTION_REQUEST_BY_ID: (id: string) => `/admin/subscription-requests/${id}`,
+  APPROVE_SUBSCRIPTION_REQUEST: (id: string) => `/admin/subscription-requests/${id}/approve`,
+  REJECT_SUBSCRIPTION_REQUEST: (id: string) => `/admin/subscription-requests/${id}/reject`,
+  VENDOR_SUBSCRIPTIONS: "/admin/vendor-subscriptions",
+  CATALOG_IMAGES: "/admin/catalog-images",
+  CATALOG_IMAGE_BY_ID: (id: string) => `/admin/catalog-images/${id}`,
+  CATALOG_REQUESTS: "/admin/catalog-requests",
+  CATALOG_REQUEST_BY_ID: (id: string) => `/admin/catalog-requests/${id}`,
+  REPORT_REVENUE: "/admin/reports/revenue",
+  REPORT_VENDORS: "/admin/reports/vendors",
+  REPORT_REQUESTS: "/admin/reports/requests",
+  REPORT_EXPIRATIONS: "/admin/reports/expirations",
   MESSAGES_CONVERSATIONS: "/admin/messages/conversations",
   MESSAGE_BY_ID: (id: string) => `/admin/messages/${id}`,
   FEATURED: "/admin/featured",

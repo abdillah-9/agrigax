@@ -1,0 +1,19 @@
+description: Finance term normalization
+synonyms:
+  dr: Debit
+  cr: Credit
+  debit: Debit
+  credit: Credit
+maps:
+  transaction_type:
+    dr: Debit
+    cr: Credit
+    debit: Debit
+    credit: Credit
+    d: Debit
+    c: Credit
+  entry_type:
+    dr: Debit
+    cr: Credit
+    debit: Debit
+    credit: Credit

@@ -6,9 +6,7 @@ import type {
   AdminBooking,
   AdminConversation,
   AdminDashboardStats,
-  AdminPayment,
   AdminProvider,
-  AdminTransaction,
   AdminUser,
   ApiResponse,
   Category,
@@ -146,57 +144,6 @@ export function useAdmin() {
       return { items: data.data, pagination: data.pagination };
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to fetch bookings");
-      return { items: [], pagination: undefined };
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const fetchPayments = useCallback(async (params?: Record<string, string>) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const { data } = await apiClient.get<ApiResponse<AdminPayment[]> & { pagination?: Pagination }>(
-        ADMIN.PAYMENTS,
-        { params }
-      );
-      return { items: data.data, pagination: data.pagination };
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to fetch payments");
-      return { items: [], pagination: undefined };
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const fetchRefunds = useCallback(async (params?: Record<string, string>) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const { data } = await apiClient.get<ApiResponse<AdminPayment[]> & { pagination?: Pagination }>(
-        ADMIN.REFUNDS,
-        { params }
-      );
-      return { items: data.data, pagination: data.pagination };
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to fetch refunds");
-      return { items: [], pagination: undefined };
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const fetchTransactions = useCallback(async (params?: Record<string, string>) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const { data } = await apiClient.get<ApiResponse<AdminTransaction[]> & { pagination?: Pagination }>(
-        ADMIN.TRANSACTIONS,
-        { params }
-      );
-      return { items: data.data, pagination: data.pagination };
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to fetch transactions");
       return { items: [], pagination: undefined };
     } finally {
       setLoading(false);
@@ -361,9 +308,6 @@ export function useAdmin() {
     approveListing,
     rejectListing,
     fetchBookings,
-    fetchPayments,
-    fetchRefunds,
-    fetchTransactions,
     fetchConversations,
     fetchConversationMessages,
     fetchDisputes,

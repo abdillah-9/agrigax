@@ -1,0 +1,9 @@
+student_id,school_id,grade,enrollment,attendance,exam_score,teacher_id,classroom,gender
+S001,SCH-01,P5,Yes,95,78,T01,A,Male
+S002,SCH-01,P5,Yes,88,82,T01,A,F
+S003,SCH-02,P6,Yes,100,105,T02,B,Female
+S004,SCH-02,P4,Yes,70,55,T03,C,M
+S005,SCH-01,P7,Yes,110,90,T01,A,male
+S006,SCH-03,P3,Yes,60,40,T04,B,Female
+S007,SCH-03,P5,No,0,0,T04,A,MALE
+S008,SCH-02,P6,Yes,92,88,T02,B,Female

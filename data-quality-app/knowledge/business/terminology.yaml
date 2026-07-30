@@ -1,0 +1,19 @@
+description: Business term normalization
+synonyms:
+  ltd: Limited
+  limited: Limited
+  plc: Public Limited Company
+  sme: SME
+maps:
+  legal_form:
+    ltd: Limited
+    limited: Limited
+    plc: Public Limited Company
+    sole: Sole Proprietorship
+    partnership: Partnership
+  business_status:
+    active: Active
+    dormant: Dormant
+    dissolved: Dissolved
+    "a": Active
+    "d": Dormant

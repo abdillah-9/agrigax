@@ -1,0 +1,11 @@
+patient_id,diagnosis,temperature,pulse,systolic_bp,diastolic_bp,gender,pregnant,age,facility_code,ward
+P001,HTN,36.8,72,120,80,Male,No,45,FAC-01,A
+P002,DM,37.1,80,130,85,F,No,52,FAC-01,B
+P003,TB,38.5,95,110,70,M,No,33,FAC-02,A
+P004,Malaria,55.0,88,118,76,Female,Yes,28,FAC-02,C
+P005,HTN,36.5,250,200,120,male,No,61,FAC-01,A
+P006,DM,29.0,40,90,50,Female,No,40,FAC-03,B
+P007,Asthma,36.9,70,125,82,MALE,Yes,22,FAC-01,A
+P008,HTN,37.0,75,135,88,Other,No,55,FAC-02,C
+P009,TB,36.6,68,115,75,m,No,-3,FAC-03,A
+P010,DM,37.2,82,140,90,Female,No,48,FAC-01,B

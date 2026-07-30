@@ -1,0 +1,31 @@
+strong_columns:
+  - household_id
+  - dwelling
+  - relationship_to_head
+  - enumeration_area
+  - ea_code
+  - household_size
+weak_columns:
+  - household
+  - head_of_household
+  - marital_status
+  - nationality
+  - residence
+  - census
+  - person_number
+  - structure
+keywords:
+  - census
+  - household
+  - enumeration
+  - dwelling
+  - population
+exclude_columns:
+  - patient_id
+  - diagnosis
+  - farm_id
+  - transaction_id
+  - exam_score
+  - pollutant
+  - waterpoint_id
+  - herd_id

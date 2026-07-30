@@ -1,0 +1,10 @@
+ranges:
+  employees:
+    min: 0
+    max: null
+  turnover:
+    min: 0
+    max: null
+  vat:
+    min: 0
+    max: null

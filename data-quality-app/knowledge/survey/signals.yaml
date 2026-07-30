@@ -1,0 +1,34 @@
+strong_columns:
+  - respondent_id
+  - questionnaire
+  - likert
+  - enumerator
+  - survey_id
+  - weight
+  - stratum
+  - psu
+weak_columns:
+  - response
+  - interview
+  - consent
+  - sampling
+  - cluster
+  - module
+  - qid
+  - skip_pattern
+keywords:
+  - survey
+  - respondent
+  - enumerator
+  - questionnaire
+  - likert
+  - stratum
+exclude_columns:
+  - patient_id
+  - diagnosis
+  - farm_id
+  - account_id
+  - transaction_id
+  - waterpoint_id
+  - pollutant
+  - herd_id

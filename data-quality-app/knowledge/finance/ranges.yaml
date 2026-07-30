@@ -1,0 +1,25 @@
+ranges:
+  income:
+    min: 0
+    max: null
+  revenue:
+    min: 0
+    max: null
+  expenditure:
+    min: 0
+    max: null
+  tax_rate:
+    min: 0
+    max: 100
+  amount:
+    min: null
+    max: null
+  balance:
+    min: null
+    max: null
+  debit:
+    min: 0
+    max: null
+  credit:
+    min: 0
+    max: null

@@ -1,0 +1,32 @@
+description: Water and sanitation term normalization
+synonyms:
+  functional: Functional
+  non_functional: Non-functional
+  non-functional: Non-functional
+  nf: Non-functional
+  f: Functional
+maps:
+  functionality:
+    functional: Functional
+    f: Functional
+    yes: Functional
+    "1": Functional
+    non_functional: Non-functional
+    "non-functional": Non-functional
+    nf: Non-functional
+    no: Non-functional
+    "0": Non-functional
+    broken: Non-functional
+  water_source:
+    borehole: Borehole
+    well: Well
+    spring: Spring
+    tap: Piped tap
+    rainwater: Rainwater
+    surface: Surface water
+  sanitation:
+    latrine: Latrine
+    vip: VIP latrine
+    flush: Flush toilet
+    none: None
+    open: Open defecation

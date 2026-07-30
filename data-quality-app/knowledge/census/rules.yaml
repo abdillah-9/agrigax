@@ -1,0 +1,32 @@
+rules:
+  - id: census_household_size_zero
+    name: "Household size is zero"
+    description: "Household size of 0 is invalid for an enumerated household"
+    condition:
+      all:
+        - column: household_size
+          op: eq
+          value: 0
+    severity: critical
+
+  - id: census_age_over_120
+    name: "Age above 120"
+    description: "Age above 120 years is implausible"
+    condition:
+      all:
+        - column: age
+          op: gt
+          value: 120
+    severity: critical
+
+  - id: census_negative_household_size
+    name: "Negative household size"
+    description: "Household size cannot be negative"
+    condition:
+      all:
+        - column: household_size
+          op: lt
+          value: 0
+    severity: critical
+
+missing_sentinels: []

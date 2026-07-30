@@ -1,0 +1,21 @@
+id,name,age,gender,occupation,married,pregnant,income,email,phone,score,city,join_date,notes,latitude,longitude
+1,John Smith,34,Male,Engineer,Yes,No,55000,john.smith@email.com,+1-555-0101,4,Dar es Salaam,2024-01-15,Good employee,-6.7924,39.2083
+2,john smith,34,male,Engineer,yes,no,55000,john.smith@email.com,15550101,4,Dar es Salaam,15/01/2024,Good employee,-6.7924,39.2083
+3,Jane Doe,28,Female,Doctor,Yes,No,72000,jane.doe@email.com,+1-555-0102,5,Nairobi,2023-06-20,Senior staff,-1.2921,36.8219
+4,JANE DOE,28,FEMALE,Doctor,Y,N,72000,jane.doe@email.com,+1-555-0102,5,Nairobi,20 Jun 2023,Senior staff,-1.2921,36.8219
+5,Bob Wilson,10,Male,Doctor,Yes,No,999,bob@email.com,+1-555-0103,7,Kampala,01/02/26,Impossible age/job,0.3476,32.5825
+6,Alice Brown,45,F,Teacher,No,No,48000,alice.brown@email.com,+1-555-0104,3, Mombasa ,2022-11-01,  Leading spaces ,-4.0435,39.6682
+7,Alice  Brown,45,female,Teacher,no,no,48000,alice.brown@email.com,+1-555-0104,3,Mombasa,2022-11-01,Leading spaces,-4.0435,39.6682
+8,Mike Jones,22,M,Student,No,No,-300,mike.jones@email.com,+1-555-0105,2,Arusha,2025-03-10,Negative income,-3.3869,36.6830
+9,Sara Ahmed,30,Female,Nurse,Yes,Yes,51000,sara.ahmed@email.com,+1-555-0106,4,Zanzibar,1 Feb 2026,Valid pregnancy,-6.1659,39.2026
+10,Tom Lee,4,Male,None,Yes,No,0,tom.lee@email.com,+1-555-0107,1,Dodoma,2021-08-08,Child married,-6.1630,35.7516
+11,Unknown Person,999,Unknown,N/A,N/A,N/A,999,not-an-email,123,99,Unknown,N/A,Missing sentinels,999,999
+12,MÃ¼ller Hans,52,Male,Engineer,Yes,No,61000,hans.muller@email.com,+49-555-0108,4,Berlin,2020-05-05,Mojibake name,52.5200,13.4050
+13,John Smyth,35,male,Engineer,Yes,No,56000,john.smyth@email.com,+1-555-0109,4,Dar es Salaam,2024-02-01,Fuzzy near John Smith,-6.8000,39.2100
+14,Lisa Park,19,Female,Student,No,No,,lisa.park@email.com,+1-555-0110,5,Kigali,,Empty income/date,-1.9441,30.0619
+15,Chris Ng,-5,Male,Driver,No,No,30000,chris.ng@email.com,+1-555-0111,3,Jinja,2023-01-01,Negative age,0.4244,33.2041
+16,Pat Taylor,40,Other,Analyst,Yes,No,65000,pat.taylor@email.com,+1-555-0112,4,Entebbe,2024-07-07,Non-binary gender,0.0611,32.4649
+17,Sam Okello,33,Male,Farmer,Yes,No,22000,sam.okello@email.com,+1-555-0113,2,Mbeya,07/15/2023,US date format,-8.9094,33.4608
+18,Rita Mwangi,29,Female,Lawyer,No,Yes,80000,rita@email.com,+1-555-0114,5,Nakuru,2024-09-09,,-0.3031,36.0800
+19,Dan Costa,61,m,Retired,Yes,No,15000,dan.costa@email.com,+1-555-0115,1,Maputo,2019-12-12,emoji note 😀,-25.9692,32.5732
+20,Eve Ncube,27,Female,Doctor,Yes,No,90000,eve.ncube@email.com,+1-555-0116,5,Harare,2025-01-20,Top earner,-17.8252,31.0335

@@ -1,0 +1,34 @@
+strong_columns:
+  - waterpoint_id
+  - borehole
+  - latrine
+  - water_source
+  - functionality
+  - wss
+  - sanitation
+weak_columns:
+  - water
+  - well
+  - pump
+  - tap
+  - handpump
+  - wash
+  - hygiene
+  - toilet
+  - spring
+keywords:
+  - water
+  - borehole
+  - sanitation
+  - latrine
+  - waterpoint
+  - wash
+exclude_columns:
+  - patient_id
+  - student_id
+  - farm_id
+  - account_id
+  - herd_id
+  - pollutant
+  - aqi
+  - exam_score

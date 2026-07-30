@@ -1,0 +1,42 @@
+rules:
+  - id: livestock_negative_cattle
+    name: "Negative cattle count"
+    description: "Cattle count cannot be negative"
+    condition:
+      all:
+        - column: cattle
+          op: lt
+          value: 0
+    severity: critical
+
+  - id: livestock_negative_goat
+    name: "Negative goat count"
+    description: "Goat count cannot be negative"
+    condition:
+      all:
+        - column: goat
+          op: lt
+          value: 0
+    severity: critical
+
+  - id: livestock_negative_sheep
+    name: "Negative sheep count"
+    description: "Sheep count cannot be negative"
+    condition:
+      all:
+        - column: sheep
+          op: lt
+          value: 0
+    severity: critical
+
+  - id: livestock_negative_poultry
+    name: "Negative poultry count"
+    description: "Poultry count cannot be negative"
+    condition:
+      all:
+        - column: poultry
+          op: lt
+          value: 0
+    severity: critical
+
+missing_sentinels: []

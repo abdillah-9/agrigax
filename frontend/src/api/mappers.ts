@@ -6,6 +6,8 @@ export const toListingCreateBody = (payload: CreateListingPayload) => ({
   type: payload.type,
   category_id: payload.categoryId,
   location: payload.location,
+  latitude: payload.latitude ?? null,
+  longitude: payload.longitude ?? null,
   price: payload.price,
   is_available: payload.isAvailable,
   images: payload.images || [],
@@ -19,6 +21,8 @@ export const toListingUpdateBody = (payload: UpdateListingPayload) => {
   if (payload.type !== undefined) body.type = payload.type;
   if (payload.categoryId !== undefined) body.category_id = payload.categoryId;
   if (payload.location !== undefined) body.location = payload.location;
+  if (payload.latitude !== undefined) body.latitude = payload.latitude;
+  if (payload.longitude !== undefined) body.longitude = payload.longitude;
   if (payload.price !== undefined) body.price = payload.price;
   if (payload.isAvailable !== undefined) body.is_available = payload.isAvailable;
   if (payload.images !== undefined) body.images = payload.images;
